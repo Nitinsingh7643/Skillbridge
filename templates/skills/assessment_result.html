@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Assessment Results: {{ assessment.skill.name }} | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       PROCTORED ASSESSMENT RESULTS & AUDIT REVIEW - GLASSMORPHISM
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Cards */
+    .result-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.1);
+        transition: border-color 0.25s ease;
+    }
+
+    [data-bs-theme="light"] .result-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.92) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Score Tile */
+    .score-metric-box {
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 16px 20px;
+    }
+
+    [data-bs-theme="light"] .score-metric-box {
+        background: rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Review Item Row */
+    .review-item-card {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .review-item-card:hover {
+        background: rgba(30, 41, 59, 0.6);
+        border-color: rgba(99, 102, 241, 0.35);
+    }
+
+    [data-bs-theme="light"] .review-item-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Explanation Box */
+    .explanation-callout {
+        background: rgba(99, 102, 241, 0.08);
+        border-left: 3px solid #6366f1;
+        border-radius: 0 10px 10px 0;
+        padding: 10px 14px;
+        font-size: 0.8rem;
+    }
+
+    [data-bs-theme="light"] .explanation-callout {
+        background: #f8fafc;
+        border-left-color: #3b82f6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            
+            <!-- Results Header Card -->
+            <div class="result-glass-card p-5 text-center mb-4">
+                <div class="mb-4">
+                    {% if passed %}
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 88px; height: 88px; background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%); border: 2px solid #10b981; box-shadow: 0 0 25px rgba(16, 185, 129, 0.4); color: #34d399;">
+                            <i class="fa-solid fa-award display-5"></i>
+                        </div>
+                        <h2 class="font-space fw-bold text-main mb-1">Proctored Assessment Passed!</h2>
+                        <p class="text-secondary small mb-0">
+                            Congratulations! You met the industry competency criteria for <strong class="text-main">{{ assessment.skill.name }}</strong>.
+                        </p>
+                    {% else %}
+                        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width: 88px; height: 88px; background: radial-gradient(circle, rgba(239, 68, 68, 0.25) 0%, rgba(15, 23, 42, 0.8) 100%); border: 2px solid #ef4444; box-shadow: 0 0 25px rgba(239, 68, 68, 0.35); color: #f87171;">
+                            <i class="fa-solid fa-circle-exclamation display-5"></i>
+                        </div>
+                        <h2 class="font-space fw-bold text-main mb-1">Passing Benchmark Not Met</h2>
+                        <p class="text-secondary small mb-0">
+                            A minimum passing score of <strong class="text-warning">{{ assessment.passing_score }}%</strong> is required to earn a verified credential.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Scores & Status Metric Tiles -->
+                <div class="row justify-content-center g-3 mb-4">
+                    <div class="col-sm-5 col-6">
+                        <div class="score-metric-box">
+                            <span class="text-secondary small d-block mb-1">Your Proctored Score</span>
+                            <div class="font-space fw-bold {% if passed %}text-emerald{% else %}text-danger{% endif %} fs-2 mb-0">
+                                {{ score_pct }}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 col-6">
+                        <div class="score-metric-box">
+                            <span class="text-secondary small d-block mb-1">Portfolio Credential</span>
+                            <div class="font-space fw-bold {% if passed %}text-emerald{% else %}text-warning{% endif %} fs-2 mb-0">
+                                {% if passed %}VERIFIED{% else %}RETAKE READY{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if passed %}
+                    <div class="p-3 rounded-3 mb-4 d-inline-flex align-items-center gap-2" style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35);">
+                        <i class="fa-solid fa-circle-check text-emerald fs-5"></i>
+                        <span class="text-main small">
+                            <strong>Credential Attached:</strong> A verified badge with a score of <strong>{{ score_pct }}%</strong> has been applied to your student profile!
+                        </span>
+                    </div>
+                {% endif %}
+
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a href="{% url 'assessment_list' %}" class="btn btn-outline-secondary btn-sm px-4 py-2 rounded-3">
+                        <i class="fa-solid fa-list me-1"></i> All Assessments
+                    </a>
+                    <a href="{% url 'student_skills_manage' %}" class="btn btn-primary btn-sm px-4 py-2 rounded-3">
+                        <i class="fa-solid fa-sliders me-1"></i> View Updated Skills Portfolio
+                    </a>
+                </div>
+            </div>
+
+            <!-- Question Review Breakdown -->
+            <div class="result-glass-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="font-space fw-bold text-main mb-0">
+                        <i class="fa-solid fa-list-check text-primary me-2"></i>Question-by-Question Audit ({{ results_breakdown|length }} MCQs)
+                    </h5>
+                    <span class="badge bg-secondary-subtle text-secondary font-mono small">
+                        Detailed Answers
+                    </span>
+                </div>
+
+                <div class="review-list">
+                    {% for item in results_breakdown %}
+                        <div class="review-item-card">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                                <h6 class="fw-bold text-main mb-0 font-space" style="font-size: 0.95rem;">
+                                    <span class="text-secondary font-mono me-1">Q{{ forloop.counter }}.</span>
+                                    {{ item.question.question_text }}
+                                </h6>
+                                {% if item.is_correct %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle font-mono small flex-shrink-0">
+                                        <i class="fa-solid fa-check"></i> Correct
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono small flex-shrink-0">
+                                        <i class="fa-solid fa-xmark"></i> Incorrect
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="small text-secondary mb-2 font-mono">
+                                <span class="me-3">Your Answer: <strong class="text-main">Option {{ item.selected|default:"None" }}</strong></span>
+                                <span>Correct Answer: <strong class="text-emerald">Option {{ item.correct }}</strong></span>
+                            </div>
+
+                            {% if item.explanation %}
+                                <div class="explanation-callout text-secondary">
+                                    <i class="fa-regular fa-lightbulb text-warning me-1"></i>
+                                    <strong class="text-main">Technical Explanation:</strong> {{ item.explanation }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Recommended Learning Resources for Gap Bridging -->
+            {% if learning_resources %}
+                <div class="result-glass-card p-4">
+                    <h5 class="font-space fw-bold text-main mb-3">
+                        <i class="fa-solid fa-book-open-reader text-success me-2"></i>Curated Learning Modules for {{ assessment.skill.name }}
+                    </h5>
+                    <div class="row g-3">
+                        {% for r in learning_resources %}
+                            <div class="col-md-6">
+                                <div class="p-3 rounded-3 d-flex justify-content-between align-items-center" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.08);">
+                                    <div>
+                                        <span class="badge bg-secondary-subtle text-secondary small mb-1">{{ r.get_resource_type_display }}</span>
+                                        <h6 class="fw-bold text-main mb-0 font-space small">{{ r.title }}</h6>
+                                        <small class="text-secondary">{{ r.provider }}</small>
+                                    </div>
+                                    <a href="{{ r.url }}" target="_blank" class="btn btn-outline-success btn-sm ms-2 font-mono">
+                                        Study &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

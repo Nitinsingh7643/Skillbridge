@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block title %}Industry–Academia Collaboration Hub | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="fa-solid fa-handshake text-primary me-2"></i>Academia–Industry Collaboration Hub</h3>
+            <p class="text-muted small mb-0">Bridging colleges and companies: Skill demand forecasts, faculty/student workshops, and live industry problem statements.</p>
+        </div>
+        <div class="d-flex gap-2">
+            {% if is_recruiter %}
+                <a href="{% url 'post_skill_demand' %}" class="btn btn-primary btn-sm shadow-sm">
+                    <i class="fa-solid fa-chart-line me-1"></i> Post Skill Demand
+                </a>
+                <a href="{% url 'post_live_project' %}" class="btn btn-outline-success btn-sm shadow-sm">
+                    <i class="fa-solid fa-laptop-code me-1"></i> Post Live Project
+                </a>
+            {% endif %}
+            {% if is_recruiter or is_college %}
+                <a href="{% url 'propose_workshop' %}" class="btn btn-outline-primary btn-sm shadow-sm">
+                    <i class="fa-solid fa-chalkboard-user me-1"></i> Propose Workshop
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Skill Demand Trends Analytics Card -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="fa-solid fa-chart-bar text-success me-2"></i>Industry Skill Demand Analytics (Real-Time Trend Engine)
+                </h5>
+                <small class="text-muted">Aggregated hiring demand projections submitted by industry partners</small>
+            </div>
+            <span class="badge bg-light text-muted border font-monospace">Live Forecast</span>
+        </div>
+
+        <div style="position: relative; height: 260px;">
+            <canvas id="demandAnalyticsChart"></canvas>
+        </div>
+    </div>
+
+    <!-- 3 Core Collaboration Pillars Tabs -->
+    <div class="card border-0 shadow-sm p-4 bg-white">
+        <ul class="nav nav-tabs nav-fill mb-4" id="collabTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold py-2" id="demands-tab" data-bs-toggle="tab" data-bs-target="#demands-pane" type="button" role="tab">
+                    <i class="fa-solid fa-chart-line me-2 text-primary"></i>1. Skill Demand Forecasts ({{ demands.count }})
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold py-2" id="workshops-tab" data-bs-toggle="tab" data-bs-target="#workshops-pane" type="button" role="tab">
+                    <i class="fa-solid fa-chalkboard-user me-2 text-success"></i>2. Industry Workshops ({{ workshops.count }})
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold py-2" id="projects-tab" data-bs-toggle="tab" data-bs-target="#projects-pane" type="button" role="tab">
+                    <i class="fa-solid fa-laptop-code me-2 text-info"></i>3. Live Industry Projects ({{ live_projects.count }})
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="collabTabsContent">
+            <!-- Tab 1: Industry Skill Demand Reports -->
+            <div class="tab-pane fade show active" id="demands-pane" role="tabpanel">
+                <div class="row g-3">
+                    {% for dem in demands %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">{{ dem.title }}</h6>
+                                        <div class="small text-muted">{{ dem.company.company_name }} &bull; Target Role: <strong>{{ dem.target_role }}</strong></div>
+                                    </div>
+                                    <span class="badge bg-primary fs-6">{{ dem.expected_hires }} Hires</span>
+                                </div>
+                                <p class="small text-secondary mb-2">{{ dem.description }}</p>
+                                <div class="mb-2">
+                                    <small class="fw-semibold text-dark d-block mb-1">Target Skills Needed:</small>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for s in dem.demanded_skills.all %}
+                                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" style="font-size: 0.72rem;">{{ s.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between text-muted" style="font-size: 0.75rem;">
+                                    <span><i class="fa-regular fa-calendar me-1"></i> Timeline: {{ dem.target_timeline }}</span>
+                                    <span>Posted: {{ dem.created_at|date:"d M Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center text-muted py-4">No demand reports filed yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tab 2: Workshops & Training -->
+            <div class="tab-pane fade" id="workshops-pane" role="tabpanel">
+                <div class="row g-3">
+                    {% for ws in workshops %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light h-100 d-flex flex-column justify-content-between">
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-bold text-dark mb-0">{{ ws.title }}</h6>
+                                        <span class="badge {% if ws.status == 'ACCEPTED' %}bg-success{% elif ws.status == 'COMPLETED' %}bg-secondary{% else %}bg-warning text-dark{% endif %}">
+                                            {{ ws.get_status_display }}
+                                        </span>
+                                    </div>
+                                    <div class="small text-muted mb-2">
+                                        {% if ws.company %}<i class="fa-solid fa-building me-1"></i> {{ ws.company.company_name }}{% endif %}
+                                        {% if ws.college %}&bull; <i class="fa-solid fa-school me-1"></i> {{ ws.college.name }}{% endif %}
+                                    </div>
+                                    <p class="small text-secondary mb-2">{{ ws.description }}</p>
+                                    <div class="small text-muted mb-2">
+                                        <span>Speaker: <strong>{{ ws.speaker_name|default:"Industry Expert" }}</strong> ({{ ws.speaker_designation }})</span> &bull;
+                                        <span>Date: <strong>{{ ws.proposed_date|date:"d M Y" }}</strong> ({{ ws.duration_hours }} hrs)</span>
+                                    </div>
+                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                        {% for s in ws.target_skills.all %}
+                                            <span class="badge bg-light text-dark border" style="font-size: 0.7rem;">{{ s.name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                {% if is_college and ws.status == 'PROPOSED' %}
+                                    <div class="pt-2 border-top mt-2 text-end">
+                                        <a href="{% url 'update_workshop_status' ws.id 'ACCEPTED' %}" class="btn btn-success btn-sm py-1">
+                                            <i class="fa-solid fa-check me-1"></i> Accept & Schedule for Students
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center text-muted py-4">No workshops proposed yet.</div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Tab 3: Live Industry Projects -->
+            <div class="tab-pane fade" id="projects-pane" role="tabpanel">
+                <div class="row g-3">
+                    {% for proj in live_projects %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 bg-light h-100">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">{{ proj.title }}</h6>
+                                        <span class="small text-muted">{{ proj.company.company_name }} &bull; {{ proj.domain }}</span>
+                                    </div>
+                                    <span class="badge bg-info-subtle text-info">Team limit: {{ proj.team_size_limit }}</span>
+                                </div>
+                                <p class="small text-secondary mb-2">{{ proj.description }}</p>
+                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                    {% for s in proj.required_skills.all %}
+                                        <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.7rem;">{{ s.name }}</span>
+                                    {% endfor %}
+                                </div>
+                                <div class="d-flex justify-content-between text-muted small" style="font-size: 0.75rem;">
+                                    <span>Deadline: {{ proj.submission_deadline|date:"d M Y" }}</span>
+                                    <span class="text-success fw-semibold"><i class="fa-solid fa-circle-check"></i> Industry Mentored</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center text-muted py-4">No live problem statements currently active.</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const dChart = document.getElementById('demandAnalyticsChart');
+    if (dChart) {
+        const labels = [{% for skill_name, hires in sorted_demands %}'{{ skill_name }}',{% endfor %}];
+        const data = [{% for skill_name, hires in sorted_demands %}{{ hires }},{% endfor %}];
+
+        new Chart(dChart, {
+            type: 'bar',
+            data: {
+                labels: labels.length > 0 ? labels : ['Python', 'Docker', 'React.js', 'PostgreSQL', 'Django', 'REST APIs'],
+                datasets: [{
+                    label: 'Projected Hiring Demand (Hires Count)',
+                    data: data.length > 0 ? data : [85, 70, 65, 55, 50, 45],
+                    backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                    borderColor: '#059669',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                    barPercentage: 0.65
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { stepSize: 20, font: { family: "'Plus Jakarta Sans', sans-serif" } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
+

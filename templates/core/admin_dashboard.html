@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Command Center | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="fa-solid fa-gauge-high text-warning me-2"></i>Platform Administration & Governance</h3>
+            <p class="text-muted small mb-0">Monitor verification status, user roles, institutional compliance, and platform integrity</p>
+        </div>
+        <a href="/admin/" target="_blank" class="btn btn-outline-dark btn-sm">
+            <i class="fa-solid fa-shield me-1"></i> Django Admin Site
+        </a>
+    </div>
+
+    <!-- Quick Stats Metric Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Total Users</div>
+                <h4 class="fw-bold text-dark mb-0">{{ total_users }}</h4>
+            </div>
+        </div>
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Students</div>
+                <h4 class="fw-bold text-primary mb-0">{{ total_students }}</h4>
+            </div>
+        </div>
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Colleges</div>
+                <h4 class="fw-bold text-info mb-0">{{ total_colleges }}</h4>
+            </div>
+        </div>
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Companies</div>
+                <h4 class="fw-bold text-success mb-0">{{ total_companies }}</h4>
+            </div>
+        </div>
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Active Jobs</div>
+                <h4 class="fw-bold text-warning mb-0">{{ total_jobs }}</h4>
+            </div>
+        </div>
+        <div class="col-md-2 col-4">
+            <div class="card p-3 bg-white text-center">
+                <div class="text-muted small">Applications</div>
+                <h4 class="fw-bold text-danger mb-0">{{ total_applications }}</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Partner Institutions Verification -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-building-columns text-primary me-2"></i>Institutional Colleges</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle small mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>College Name</th>
+                                <th>TPO Lead</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for col in colleges %}
+                                <tr>
+                                    <td class="fw-semibold">{{ col.name }}</td>
+                                    <td>{{ col.tpo_name|default:col.user.email }}</td>
+                                    <td>
+                                        {% if col.is_verified %}
+                                            <span class="badge bg-success-subtle text-success">Verified</span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_toggle_verify' 'college' col.id %}" class="btn btn-sm btn-outline-secondary py-0">
+                                            Toggle
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-muted text-center py-3">No colleges registered yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hiring Partner Verification -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-briefcase text-success me-2"></i>Industry Partners & Companies</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle small mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Company</th>
+                                <th>Industry</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for comp in companies %}
+                                <tr>
+                                    <td class="fw-semibold">{{ comp.company_name }}</td>
+                                    <td>{{ comp.industry_type }}</td>
+                                    <td>
+                                        {% if comp.is_verified %}
+                                            <span class="badge bg-success-subtle text-success">Verified</span>
+                                        {% else %}
+                                            <span class="badge bg-warning-subtle text-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin_toggle_verify' 'company' comp.id %}" class="btn btn-sm btn-outline-secondary py-0">
+                                            Toggle
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr><td colspan="4" class="text-muted text-center py-3">No industry partners registered yet</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Platform Activity Feed -->
+    <div class="card border-0 shadow-sm p-4 bg-white">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-clock-rotate-left text-secondary me-2"></i>Recent Cross-Platform Applications</h5>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Candidate</th>
+                        <th>College / Dept</th>
+                        <th>Company & Job Title</th>
+                        <th>Match Score</th>
+                        <th>Status</th>
+                        <th>Applied On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in recent_applications %}
+                        <tr>
+                            <td class="fw-semibold">{{ app.student.user.get_full_name|default:app.student.user.username }}</td>
+                            <td>{{ app.student.college.name|default:"General" }} ({{ app.student.department.code|default:"N/A" }})</td>
+                            <td>{{ app.job.company.company_name }} — {{ app.job.title }}</td>
+                            <td>
+                                <span class="badge {% if app.match_score_at_application >= 75 %}bg-success{% elif app.match_score_at_application >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                    {{ app.match_score_at_application }}%
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary">{{ app.get_status_display }}</span>
+                            </td>
+                            <td class="text-muted">{{ app.applied_at|date:"d M Y, H:i" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="text-center text-muted py-3">No applications logged yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

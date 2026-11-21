@@ -1,0 +1,589 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Skill Verification Assessments | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       MODERN ENTERPRISE SKILL VERIFICATION ENGINE - GLASSMORPHISM
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Cards */
+    .assessment-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.1);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .assessment-glass-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.6), 0 0 25px rgba(99, 102, 241, 0.2);
+    }
+
+    [data-bs-theme="light"] .assessment-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06), 0 0 15px rgba(99, 102, 241, 0.06);
+    }
+
+    [data-bs-theme="light"] .assessment-glass-card:hover {
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.1), 0 0 20px rgba(99, 102, 241, 0.12);
+    }
+
+    /* Beacon & Pulsing Indicators */
+    .skills-beacon-badge {
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34d399;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .beacon-pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #10b981;
+        box-shadow: 0 0 8px #10b981;
+        display: inline-block;
+        animation: beaconPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes beaconPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .skills-verified-pill {
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fbbf24;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Buttons */
+    .btn-hero-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 0.88rem;
+        padding: 9px 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(251, 191, 36, 0.4);
+        box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+    }
+
+    .btn-hero-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5);
+        border-color: #fde047;
+    }
+
+    .btn-glass-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--bs-body-color) !important;
+        font-weight: 600;
+        font-size: 0.84rem;
+        padding: 8px 16px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+    }
+
+    .btn-glass-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* KPI Cards */
+    .kpi-metric-box {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 18px 20px;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.25s ease;
+    }
+
+    .kpi-metric-box:hover {
+        transform: translateY(-3px);
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-bs-theme="light"] .kpi-metric-box {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .kpi-metric-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    /* Filter Toolbar */
+    .filter-panel-card {
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        padding: 16px 20px;
+    }
+
+    [data-bs-theme="light"] .filter-panel-card {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .category-filter-btn {
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .category-filter-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .category-filter-btn.active {
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+    }
+
+    [data-bs-theme="light"] .category-filter-btn {
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .category-filter-btn.active {
+        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+        color: #ffffff;
+    }
+
+    /* Technology Avatar */
+    .tech-avatar-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Status Badges */
+    .badge-passed {
+        background: rgba(16, 185, 129, 0.14);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #34d399;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-retake {
+        background: rgba(239, 68, 68, 0.14);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+        color: #f87171;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .badge-unattempted {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 4px 10px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Parameter Container */
+    .params-container {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.8rem;
+    }
+
+    [data-bs-theme="light"] .params-container {
+        background: rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Hero Header Bar -->
+    <div class="assessment-glass-card p-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="skills-beacon-badge">
+                        <span class="beacon-pulse"></span> Automated Proctored Verification Active
+                    </span>
+                    <span class="skills-verified-pill">
+                        <i class="fa-solid fa-award text-warning"></i> 3.2x Recruiter Visibility Multiplier
+                    </span>
+                </div>
+                <h2 class="font-space fw-bold text-main mb-1">
+                    <i class="fa-solid fa-certificate text-warning me-2"></i>Skill Verification Engine & Proctored Assessments
+                </h2>
+                <p class="text-secondary small mb-0">
+                    Validate self-reported technical proficiencies through automated, timed multiple-choice assessments to earn cryptographically verifiable credential badges.
+                </p>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{% url 'student_skills_manage' %}" class="btn-glass-secondary">
+                    <i class="fa-solid fa-sliders text-primary me-1"></i> My Skills Portfolio
+                </a>
+                <a href="{% url 'resume_parser' %}" class="btn-glass-secondary">
+                    <i class="fa-solid fa-file-invoice text-info me-1"></i> AI Resume Parser
+                </a>
+                <a href="{% url 'job_browse' %}" class="btn-hero-warning">
+                    <i class="fa-solid fa-briefcase text-white me-1"></i> Jobs & Matches
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telemetry KPI Intelligence Grid (4 Visual Cards) -->
+    <div class="row g-3 mb-4">
+        <!-- KPI 1: Total Assessments -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary font-mono small">
+                        {{ categories|length }} Domains
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-main fs-3 mb-0">{{ total_assessments_count }}</div>
+                <div class="text-secondary small fw-semibold">Proctored Assessments</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-primary small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-microchip"></i> {{ total_questions_count }} MCQs Active
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 2: Verified Badges Earned -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <span class="badge bg-success-subtle text-success font-mono small">
+                        {{ pass_rate }}% Pass Rate
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-emerald fs-3 mb-0">{{ passed_count }}</div>
+                <div class="text-secondary small fw-semibold">Verified Badges Earned</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-success small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-circle-check"></i> Prioritized in Recruiter Feeds
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 3: Unattempted Evaluations -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <span class="badge bg-indigo-subtle text-indigo font-mono small" style="background: rgba(99, 102, 241, 0.1); color: #a5b4fc;">
+                        Ready
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-main fs-3 mb-0">{{ unattempted_count }}</div>
+                <div class="text-secondary small fw-semibold">Pending Evaluations</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-secondary small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-play"></i> Instant Credentialing
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 4: Passing Standard -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning font-mono small">
+                        Standard
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-warning fs-3 mb-0">60%</div>
+                <div class="text-secondary small fw-semibold">Passing Standard Threshold</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-secondary small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-award text-warning"></i> Industry Benchmark Met
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter & Search Toolbar -->
+    <div class="filter-panel-card mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <!-- Category Filter Pills -->
+            <div class="d-flex flex-wrap gap-2" id="categoryFilterContainer">
+                <button type="button" class="category-filter-btn active" data-category="ALL" onclick="filterAssessments('ALL', this)">
+                    All Assessments ({{ total_assessments_count }})
+                </button>
+                {% for cat in categories %}
+                    <button type="button" class="category-filter-btn" data-category="{{ cat }}" onclick="filterAssessments('{{ cat }}', this)">
+                        {{ cat }}
+                    </button>
+                {% endfor %}
+            </div>
+
+            <!-- Instant Search Input -->
+            <div style="min-width: 240px;">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-transparent border-end-0 text-secondary" style="border-color: rgba(255,255,255,0.12);">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="assessmentSearchInput" class="form-control bg-transparent border-start-0 text-main" placeholder="Search assessments..." oninput="searchAssessments()" style="border-color: rgba(255,255,255,0.12);">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assessments Cards Grid -->
+    <div class="row g-4" id="assessmentsGrid">
+        {% for item in assessments_data %}
+            <div class="col-md-6 col-lg-4 assessment-item" data-category="{{ item.assessment.skill.category.name }}" data-title="{{ item.assessment.title|lower }}" data-skill="{{ item.assessment.skill.name|lower }}">
+                <div class="assessment-glass-card p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <!-- Header: Category + Status Badge -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-secondary-subtle text-secondary font-mono" style="font-size: 0.72rem;">
+                                {{ item.assessment.skill.category.name }}
+                            </span>
+                            {% if item.attempt %}
+                                {% if item.attempt.passed %}
+                                    <span class="badge-passed" title="Completed on {{ item.attempt.completed_at|date:'d M Y' }}">
+                                        <i class="fa-solid fa-circle-check"></i> Passed ({{ item.attempt.score }}%)
+                                    </span>
+                                {% else %}
+                                    <span class="badge-retake">
+                                        <i class="fa-solid fa-arrow-rotate-right"></i> Retake Needed ({{ item.attempt.score }}%)
+                                    </span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge-unattempted">
+                                    <i class="fa-regular fa-circle"></i> Unattempted
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Brand Avatar + Assessment Title -->
+                        <div class="d-flex align-items-start gap-3 mb-2">
+                            <div class="tech-avatar-box"
+                                {% if 'python' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fbbf24;"
+                                {% elif 'react' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #0e7490, #06b6d4); color: #67e8f9;"
+                                {% elif 'javascript' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #78350f, #d97706); color: #fde047;"
+                                {% elif 'django' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #064e3b, #059669); color: #a7f3d0;"
+                                {% elif 'git' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #7c2d12, #ea580c); color: #fed7aa;"
+                                {% elif 'sql' in item.assessment.skill.name|lower or 'database' in item.assessment.skill.name|lower or 'mongo' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #4c1d95, #7c3aed); color: #ddd6fe;"
+                                {% elif 'docker' in item.assessment.skill.name|lower or 'cloud' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #0284c7, #38bdf8); color: #e0f2fe;"
+                                {% elif 'data structure' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #1e1b4b, #6366f1); color: #c7d2fe;"
+                                {% else %}style="background: linear-gradient(135deg, #334155, #475569); color: #f8fafc;"{% endif %}>
+                                
+                                {% if 'python' in item.assessment.skill.name|lower %}<i class="fa-brands fa-python"></i>
+                                {% elif 'react' in item.assessment.skill.name|lower %}<i class="fa-brands fa-react"></i>
+                                {% elif 'javascript' in item.assessment.skill.name|lower %}<i class="fa-brands fa-js"></i>
+                                {% elif 'git' in item.assessment.skill.name|lower %}<i class="fa-brands fa-github"></i>
+                                {% elif 'sql' in item.assessment.skill.name|lower or 'mongo' in item.assessment.skill.name|lower %}style="background: linear-gradient(135deg, #4c1d95, #7c3aed); color: #ddd6fe;"<i class="fa-solid fa-database"></i>
+                                {% elif 'docker' in item.assessment.skill.name|lower %}<i class="fa-brands fa-docker"></i>
+                                {% elif 'data structure' in item.assessment.skill.name|lower %}<i class="fa-solid fa-network-wired"></i>
+                                {% else %}<i class="fa-solid fa-code"></i>{% endif %}
+                            </div>
+
+                            <div>
+                                <h5 class="fw-bold text-main mb-1 font-space" style="font-size: 1.05rem;">
+                                    {{ item.assessment.title }}
+                                </h5>
+                                <div class="text-primary fw-semibold small font-mono" style="font-size: 0.76rem;">
+                                    {{ item.assessment.skill.name }} Competency
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Description Snippet -->
+                        <p class="small text-secondary mb-3" style="line-height: 1.45; min-height: 42px;">
+                            {{ item.assessment.description|default:"Timed multiple-choice evaluation covering core concepts, syntax, edge cases, and industry practices." }}
+                        </p>
+
+                        <!-- Assessment Specification Parameters -->
+                        <div class="params-container mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-secondary"><i class="fa-solid fa-list-ol text-primary me-2"></i> Total Questions:</span>
+                                <strong class="text-main font-mono">{{ item.question_count }} MCQs</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="text-secondary"><i class="fa-regular fa-clock text-info me-2"></i> Time Limit:</span>
+                                <strong class="text-main font-mono">{{ item.assessment.time_limit_minutes }} Minutes</strong>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-secondary"><i class="fa-solid fa-trophy text-warning me-2"></i> Passing Score:</span>
+                                <strong class="text-warning font-mono">{{ item.assessment.passing_score }}%</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div>
+                        {% if user.is_student or user.role == 'STUDENT' %}
+                            {% if item.attempt and item.attempt.passed %}
+                                <a href="{% url 'take_assessment' item.assessment.id %}" class="btn btn-outline-success w-100 py-2 fw-bold font-space rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="fa-solid fa-rotate-right"></i>
+                                    <span>Retake to Improve Score</span>
+                                </a>
+                            {% elif item.attempt and not item.attempt.passed %}
+                                <a href="{% url 'take_assessment' item.assessment.id %}" class="btn btn-outline-danger w-100 py-2 fw-bold font-space rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Retake Assessment Now</span>
+                                </a>
+                            {% else %}
+                                <a href="{% url 'take_assessment' item.assessment.id %}" class="btn btn-primary w-100 py-2 fw-bold font-space rounded-3 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                    <i class="fa-solid fa-play"></i>
+                                    <span>Start Proctored Assessment</span>
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn btn-glass-secondary w-100 text-secondary" disabled>
+                                <i class="fa-solid fa-lock me-1"></i> Student Access Only
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center text-secondary py-5">
+                <i class="fa-solid fa-clipboard-question fs-1 mb-3 text-secondary opacity-50"></i>
+                <h5 class="fw-bold text-main">No Assessments Available</h5>
+                <p class="small text-secondary">Assessments will appear here once configured in the skill database.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<!-- Interactive Client-side Category & Search Script -->
+<script>
+    let activeCategory = 'ALL';
+
+    function filterAssessments(category, btnElem) {
+        activeCategory = category;
+        document.querySelectorAll('.category-filter-btn').forEach(btn => btn.classList.remove('active'));
+        btnElem.classList.add('active');
+        applyFilters();
+    }
+
+    function searchAssessments() {
+        applyFilters();
+    }
+
+    function applyFilters() {
+        const query = document.getElementById('assessmentSearchInput').value.trim().toLowerCase();
+        const items = document.querySelectorAll('.assessment-item');
+
+        items.forEach(item => {
+            const cat = item.getAttribute('data-category') || '';
+            const title = item.getAttribute('data-title') || '';
+            const skill = item.getAttribute('data-skill') || '';
+
+            const matchesCategory = (activeCategory === 'ALL' || cat === activeCategory);
+            const matchesQuery = (!query || title.includes(query) || skill.includes(query) || cat.toLowerCase().includes(query));
+
+            if (matchesCategory && matchesQuery) {
+                item.classList.remove('d-none');
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+    }
+</script>
+{% endblock %}

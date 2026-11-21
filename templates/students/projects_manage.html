@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Projects | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="fa-solid fa-laptop-code text-success me-2"></i>Projects & Portfolio</h3>
+            <p class="text-muted small mb-0">Showcase your technical and collaborative projects to impress recruiters and boost placement readiness.</p>
+        </div>
+        <a href="{% url 'student_profile_view' %}" class="btn btn-outline-secondary btn-sm">View Portfolio</a>
+    </div>
+
+    <div class="row g-4">
+        <!-- Add Project Form -->
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-plus-circle text-success me-2"></i>Add New Project</h5>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Project Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="e.g. Distributed Task Queue" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Technologies Used</label>
+                        <input type="text" name="technologies" class="form-control" placeholder="e.g. Django, Celery, Redis, Docker" required>
+                        <small class="text-muted">Comma-separated stack</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">GitHub Repository Link</label>
+                        <input type="url" name="github_link" class="form-control" placeholder="https://github.com/username/project">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Live Demo Link</label>
+                        <input type="url" name="live_link" class="form-control" placeholder="https://myproject.demo.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold">Project Description</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Explain the problem solved, architecture, and key achievements..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 py-2 shadow-sm">
+                        <i class="fa-solid fa-plus me-1"></i> Add Project
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Existing Projects List -->
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-diagram-project text-secondary me-2"></i>Your Projects ({{ projects.count }})</h5>
+
+                <div class="list-group list-group-flush">
+                    {% for p in projects %}
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">{{ p.title }}</h6>
+                                    <span class="badge bg-secondary-subtle text-secondary small">{{ p.technologies }}</span>
+                                </div>
+                                <div>
+                                    <form method="POST" onsubmit="return confirm('Delete this project?');" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="project_id" value="{{ p.id }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm py-0 border-0">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <p class="small text-secondary mt-2 mb-2">{{ p.description }}</p>
+                            <div class="d-flex gap-3 small">
+                                {% if p.github_link %}
+                                    <a href="{{ p.github_link }}" target="_blank" class="text-dark text-decoration-none">
+                                        <i class="fa-brands fa-github me-1"></i> GitHub Repository
+                                    </a>
+                                {% endif %}
+                                {% if p.live_link %}
+                                    <a href="{{ p.live_link }}" target="_blank" class="text-primary text-decoration-none">
+                                        <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Live Demo
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            No projects added yet. Add projects to demonstrate practical competence!
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+
+{% block title %}{{ profile.user.get_full_name|default:profile.user.username }} | Academic Portfolio{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Profile Header Card -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <div class="row align-items-center">
+            <div class="col-md-2 text-center mb-3 mb-md-0">
+                {% if profile.user.profile_image %}
+                    <img src="{{ profile.user.profile_image.url }}" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
+                {% else %}
+                    <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold;">
+                        {{ profile.user.first_name|first|default:profile.user.username|first|upper }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-7">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <h3 class="fw-bold text-dark mb-0">{{ profile.user.get_full_name|default:profile.user.username }}</h3>
+                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ profile.degree }}</span>
+                </div>
+                <div class="text-muted small mb-2">
+                    <i class="fa-solid fa-graduation-cap me-1 text-primary"></i> {{ profile.college.name|default:"College Institution" }} &bull;
+                    <i class="fa-solid fa-building me-1 text-info"></i> {{ profile.department.name|default:"Department of Engineering" }}
+                </div>
+                <div class="text-secondary small mb-3">
+                    <span class="me-3"><i class="fa-solid fa-id-badge me-1"></i> Roll: <strong>{{ profile.roll_number|default:"N/A" }}</strong></span>
+                    <span class="me-3"><i class="fa-solid fa-calendar me-1"></i> Sem: <strong>{{ profile.semester }}</strong></span>
+                    <span class="me-3"><i class="fa-solid fa-star text-warning me-1"></i> CGPA: <strong>{{ profile.cgpa }} / 10.0</strong></span>
+                    <span><i class="fa-solid fa-clock me-1"></i> Batch: <strong>{{ profile.graduation_year }}</strong></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    {% if profile.github_url %}
+                        <a href="{{ profile.github_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill">
+                            <i class="fa-brands fa-github me-1"></i> GitHub
+                        </a>
+                    {% endif %}
+                    {% if profile.linkedin_url %}
+                        <a href="{{ profile.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="fa-brands fa-linkedin me-1"></i> LinkedIn
+                        </a>
+                    {% endif %}
+                    {% if profile.portfolio_url %}
+                        <a href="{{ profile.portfolio_url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="fa-solid fa-globe me-1"></i> Portfolio
+                        </a>
+                    {% endif %}
+                    {% if profile.resume %}
+                        <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill">
+                            <i class="fa-solid fa-file-pdf me-1"></i> Resume PDF
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                <div class="p-3 bg-light rounded-3 border text-center mb-2">
+                    <div class="text-muted small fw-semibold">Placement Readiness</div>
+                    <div class="display-6 fw-bold text-primary">{{ placement_readiness }}%</div>
+                    <small class="text-muted">Calculated Skill Score</small>
+                </div>
+                {% if is_owner %}
+                    <a href="{% url 'student_profile_edit' %}" class="btn btn-primary btn-sm w-100">
+                        <i class="fa-solid fa-pen me-1"></i> Edit Portfolio
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if profile.bio %}
+            <div class="border-top pt-3 mt-3">
+                <h6 class="fw-bold text-dark mb-1">About Me</h6>
+                <p class="text-secondary small mb-0">{{ profile.bio }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row g-4">
+        <!-- Verified Skills and Proficiencies -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-certificate text-primary me-2"></i>Skills & Proficiency Matrix</h5>
+                    {% if is_owner %}
+                        <a href="{% url 'student_skills_manage' %}" class="btn btn-outline-primary btn-sm">Update Skills</a>
+                    {% endif %}
+                </div>
+
+                <div class="list-group list-group-flush">
+                    {% for ss in student_skills %}
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-semibold text-dark">
+                                    {{ ss.skill.name }}
+                                    {% if ss.is_verified %}
+                                        <span class="verified-badge ms-1"><i class="fa-solid fa-check"></i> Verified</span>
+                                    {% endif %}
+                                </span>
+                                <span class="fw-bold text-primary small">{{ ss.proficiency }}%</span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar {% if ss.is_verified %}bg-success{% else %}bg-primary{% endif %}" role="progressbar" style="width: {{ ss.proficiency }}%"></div>
+                            </div>
+                            <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.75rem;">
+                                <span>{{ ss.skill.category.name }}</span>
+                                {% if ss.is_verified %}
+                                    <span class="text-success">Assessment Score: {{ ss.verified_score }}%</span>
+                                {% else %}
+                                    <span class="text-muted">Self-Reported</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            No skills added yet. Add skills to compute your match score!
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic & Real-World Projects -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-laptop-code text-success me-2"></i>Projects & Portfolios</h5>
+                    {% if is_owner %}
+                        <a href="{% url 'student_projects_manage' %}" class="btn btn-outline-success btn-sm">Add Project</a>
+                    {% endif %}
+                </div>
+
+                <div class="list-group list-group-flush">
+                    {% for p in projects %}
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex justify-content-between align-items-baseline mb-1">
+                                <h6 class="fw-bold text-dark mb-0">{{ p.title }}</h6>
+                                <div class="d-flex gap-2">
+                                    {% if p.github_link %}
+                                        <a href="{{ p.github_link }}" target="_blank" class="text-dark small"><i class="fa-brands fa-github"></i> Code</a>
+                                    {% endif %}
+                                    {% if p.live_link %}
+                                        <a href="{{ p.live_link }}" target="_blank" class="text-primary small"><i class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <p class="small text-secondary mb-2">{{ p.description }}</p>
+                            <div>
+                                <span class="badge bg-secondary-subtle text-secondary small">{{ p.technologies }}</span>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            No projects added yet. Hands-on projects substantially boost your placement readiness score!
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

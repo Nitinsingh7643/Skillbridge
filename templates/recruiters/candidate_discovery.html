@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Candidate Discovery & Talent Sourcing | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="fa-solid fa-user-tag text-primary me-2"></i>Candidate Discovery & Skill Sourcing</h3>
+            <p class="text-muted small mb-0">Discover and scout pre-screened student candidates from partner institutions ranked by skill compatibility.</p>
+        </div>
+        <a href="{% url 'recruiter_dashboard' %}" class="btn btn-outline-secondary btn-sm">Return to Dashboard</a>
+    </div>
+
+    <!-- Sourcing Filter Engine -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-5">
+                <label class="form-label small fw-semibold text-dark">Match Against My Posted Job (Optional):</label>
+                <select name="job_id" class="form-select">
+                    <option value="">-- Rank by General Placement Readiness --</option>
+                    {% for j in jobs %}
+                        <option value="{{ j.id }}" {% if selected_job and selected_job.id == j.id %}selected{% endif %}>
+                            {{ j.title }} ({{ j.get_job_type_display }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label small fw-semibold text-dark">Branch / Department:</label>
+                <input type="text" name="dept" class="form-control" placeholder="e.g. CSE, IT, ECE" value="{{ dept_filter }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-semibold text-dark">Min CGPA:</label>
+                <input type="number" step="0.1" name="min_cgpa" class="form-control" placeholder="e.g. 7.5" value="{{ min_cgpa }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fa-solid fa-magnifying-glass me-1"></i> Search Talent
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Candidate Cards Grid -->
+    <div class="row g-4">
+        {% for cand in ranked_candidates %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm p-4 bg-white h-100 card-hover d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <h6 class="fw-bold text-dark mb-0">{{ cand.student.user.get_full_name|default:cand.student.user.username }}</h6>
+                                <div class="small text-muted">{{ cand.student.college.name|default:"College" }}</div>
+                                <div class="small text-secondary">
+                                    {{ cand.student.degree }} ({{ cand.student.department.code|default:"General" }}) &bull; CGPA: <strong>{{ cand.student.cgpa }}</strong>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <div class="score-circle {% if cand.match_score >= 75 %}match-high{% elif cand.match_score >= 50 %}match-med{% else %}match-low{% endif %}" style="width: 58px; height: 58px; font-size: 1.05rem;">
+                                    {{ cand.match_score }}%
+                                </div>
+                                <small class="text-muted d-block" style="font-size: 0.65rem;">
+                                    {% if selected_job %}Job Match{% else %}Readiness{% endif %}
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="my-3 border-top pt-2">
+                            <small class="text-muted fw-semibold d-block mb-1">Key Profile Skills:</small>
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for ss in cand.skills %}
+                                    <span class="badge {% if ss.is_verified %}bg-success-subtle text-success border border-success-subtle{% else %}bg-light text-dark border{% endif %}" style="font-size: 0.72rem;">
+                                        {{ ss.skill.name }} ({{ ss.proficiency }}%)
+                                        {% if ss.is_verified %}<i class="fa-solid fa-check"></i>{% endif %}
+                                    </span>
+                                {% empty %}
+                                    <span class="text-muted small">No verified skills yet</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-2">
+                        <span class="small text-muted">
+                            <i class="fa-solid fa-code me-1 text-primary"></i> Tech: {{ cand.tech_score }}%
+                        </span>
+                        <a href="{% url 'student_profile_detail' cand.student.id %}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fa-solid fa-id-card me-1"></i> View Portfolio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center text-muted py-5">
+                <i class="fa-solid fa-user-astronaut fs-1 mb-3 text-secondary"></i>
+                <h5>No student profiles match your filter criteria</h5>
+                <p class="small">Try broadening your search or adjusting the minimum CGPA filter.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,1520 @@
+{% extends "base.html" %}
+
+{% block title %}SkillBridge | National Academia–Industry Competency & Placement Platform{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ==========================================================================
+       ENTERPRISE INSTITUTIONAL DESIGN SYSTEM WITH ADVANCED VISUAL GRAPHICS
+       ========================================================================== */
+
+    .hero-wrapper {
+        position: relative;
+        padding: 48px 0 64px 0;
+    }
+
+    /* Subtle Enterprise Grid & Technical Blueprint Mesh */
+    .enterprise-grid-overlay {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 36px 36px;
+        pointer-events: none;
+        z-index: 1;
+        mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
+        -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 75%);
+    }
+
+    [data-bs-theme="light"] .enterprise-grid-overlay {
+        background-image: 
+            linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    }
+
+    /* Ambient Institutional Lighting */
+    .hero-glow-orb {
+        position: absolute;
+        width: 700px;
+        height: 700px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(67, 56, 202, 0.18) 0%, rgba(14, 165, 233, 0.08) 50%, transparent 70%);
+        top: -140px;
+        left: 50%;
+        transform: translateX(-50%);
+        filter: blur(100px);
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Full-width GradientASCII WebGL2 Background */
+    .hero-ascii-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 740px;
+        z-index: 0;
+        overflow: hidden;
+        pointer-events: none;
+        opacity: 0.45;
+    }
+
+    #hero-gradient-ascii {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        pointer-events: auto;
+        background: radial-gradient(circle at 75% 30%, rgba(99, 102, 241, 0.28) 0%, rgba(6, 182, 212, 0.16) 40%, transparent 70%),
+                    radial-gradient(circle at 25% 75%, rgba(14, 165, 233, 0.22) 0%, transparent 55%);
+        animation: heroMeshFloat 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes heroMeshFloat {
+        0% { transform: scale(1) translateY(0); }
+        100% { transform: scale(1.08) translateY(-15px); }
+    }
+
+    .hero-ascii-fade {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 220px;
+        background: linear-gradient(to bottom, rgba(9, 13, 22, 0) 0%, rgba(9, 13, 22, 0.7) 50%, var(--bg-body, #090d16) 100%);
+        pointer-events: none;
+    }
+
+    /* Authority Header Badge */
+    .gov-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.32);
+        backdrop-filter: blur(12px);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: #93c5fd;
+        box-shadow: 0 0 16px rgba(59, 130, 246, 0.2);
+    }
+
+    .gov-divider {
+        width: 1px;
+        height: 12px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Enterprise Typography */
+    .gradient-text-enterprise {
+        background: linear-gradient(135deg, #60a5fa 0%, #818cf8 45%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Live System Telemetry Status Chips (Zero Overlap) */
+    .system-status-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 9999px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+        font-size: 0.74rem;
+        font-weight: 600;
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .system-status-chip:hover {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.45);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+    }
+
+    /* Executive KPI Strip */
+    .kpi-strip {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 16px 20px;
+        backdrop-filter: blur(16px);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-strip::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+        animation: lightShimmer 7s infinite;
+    }
+
+    @keyframes lightShimmer {
+        0% { left: -100%; }
+        25%, 100% { left: 200%; }
+    }
+
+    .kpi-stat-value {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 800;
+        font-size: 1.45rem;
+        line-height: 1.1;
+        margin-bottom: 2px;
+    }
+
+    .kpi-stat-label {
+        font-size: 0.68rem;
+        color: #94a3b8;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+    }
+
+    /* Institutional Candidate Verification Terminal (Audit Terminal) */
+    .sim-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 25px rgba(99, 102, 241, 0.18);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .sim-card:hover {
+        box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(99, 102, 241, 0.3);
+    }
+
+    .sim-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+    }
+
+    .sim-pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10b981;
+        box-shadow: 0 0 8px #10b981;
+        display: inline-block;
+        animation: pulseBeacon 2s infinite;
+    }
+
+    @keyframes pulseBeacon {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.65; }
+    }
+
+    .sim-tabs-container {
+        display: inline-flex;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        padding: 2px 4px;
+        gap: 2px;
+        align-items: center;
+    }
+
+    .sim-nav-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        font-size: 0.8rem;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 0;
+    }
+
+    .sim-nav-btn:hover {
+        color: #ffffff;
+        background: rgba(99, 102, 241, 0.35);
+    }
+
+    .sim-counter {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #94a3b8;
+        padding: 0 8px;
+        white-space: nowrap;
+        font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .sim-counter .current {
+        color: #ffffff;
+        font-weight: 700;
+    }
+
+    .sim-profile-box {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        padding: 14px 16px;
+    }
+
+    .score-circle-modern {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #10b981;
+        background: rgba(16, 185, 129, 0.12);
+        box-shadow: 0 0 16px rgba(16, 185, 129, 0.25);
+        transition: all 0.3s ease;
+    }
+
+    /* Clean Progress Meters */
+    .clean-track {
+        height: 7px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+        margin-top: 5px;
+    }
+
+    .clean-fill {
+        height: 100%;
+        border-radius: 999px;
+        transition: width 0.5s ease;
+    }
+
+    .fill-emerald {
+        background: linear-gradient(90deg, #059669, #10b981);
+    }
+
+    .fill-amber {
+        background: linear-gradient(90deg, #d97706, #f59e0b);
+    }
+
+    .fill-crimson {
+        background: linear-gradient(90deg, #dc2626, #ef4444);
+    }
+
+    /* Telemetry Dock */
+    .telemetry-dock {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 12px 6px;
+    }
+
+    .telemetry-pod {
+        text-align: center;
+        position: relative;
+    }
+
+    .telemetry-pod:not(:last-child)::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.08);
+    }
+
+    .telemetry-num {
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 800;
+        font-size: 1.25rem;
+        line-height: 1.1;
+        margin-bottom: 2px;
+    }
+
+    .telemetry-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 600;
+    }
+
+    /* National Impact & Problem Statement Card */
+    .impact-pillar-card {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 24px;
+        height: 100%;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .impact-pillar-card:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(99, 102, 241, 0.45);
+        transform: translateY(-4px);
+        box-shadow: 0 16px 36px -10px rgba(99, 102, 241, 0.2);
+    }
+
+    /* Institutional Bento Matrix */
+    .bento-card {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 26px;
+        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(99, 102, 241, 0.45);
+        box-shadow: 0 20px 45px -12px rgba(99, 102, 241, 0.25);
+    }
+
+    .bento-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    }
+
+    .bento-badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Visual Graphic: Simulated Git Activity Heatmap */
+    .git-grid-visual {
+        display: grid;
+        grid-template-columns: repeat(14, 1fr);
+        gap: 3px;
+        padding: 8px 10px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .git-cell {
+        width: 100%;
+        padding-bottom: 100%;
+        border-radius: 2px;
+        background: rgba(255, 255, 255, 0.05);
+        transition: all 0.2s ease;
+    }
+
+    .git-cell.lvl-1 { background: rgba(16, 185, 129, 0.25); }
+    .git-cell.lvl-2 { background: rgba(16, 185, 129, 0.5); }
+    .git-cell.lvl-3 { background: rgba(16, 185, 129, 0.75); }
+    .git-cell.lvl-4 { background: #10b981; box-shadow: 0 0 6px #10b981; }
+
+    /* Visual Graphic: Mini SVG Placement Velocity Curve */
+    .placement-curve-svg {
+        width: 100%;
+        height: 70px;
+        overflow: visible;
+    }
+
+    .curve-path {
+        stroke: #38bdf8;
+        stroke-width: 2.5;
+        fill: none;
+        stroke-dasharray: 400;
+        stroke-dashoffset: 400;
+        animation: drawCurve 3s ease forwards infinite alternate;
+    }
+
+    .curve-area {
+        fill: url(#placementGradient);
+        opacity: 0.25;
+    }
+
+    @keyframes drawCurve {
+        to { stroke-dashoffset: 0; }
+    }
+
+    /* Visual Graphic: Animated Radar Network Graphic */
+    .network-radar-box {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 30px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .radar-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1px dashed rgba(99, 102, 241, 0.3);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .radar-ring-1 { width: 140px; height: 140px; animation: radarSpin 24s linear infinite; }
+    .radar-ring-2 { width: 280px; height: 280px; animation: radarSpinReverse 32s linear infinite; }
+    .radar-ring-3 { width: 420px; height: 420px; animation: radarSpin 40s linear infinite; }
+
+    @keyframes radarSpin {
+        from { transform: translate(-50%, -50%) rotate(0deg); }
+        to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes radarSpinReverse {
+        from { transform: translate(-50%, -50%) rotate(360deg); }
+        to { transform: translate(-50%, -50%) rotate(0deg); }
+    }
+
+    .node-hub {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4338ca, #3b82f6);
+        box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 1.5rem;
+        z-index: 2;
+        position: relative;
+        animation: pulseCore 3s infinite ease-in-out;
+    }
+
+    @keyframes pulseCore {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(59, 130, 246, 0.4); }
+        50% { transform: scale(1.08); box-shadow: 0 0 35px rgba(99, 102, 241, 0.7); }
+    }
+
+    /* Enterprise Trust Bar */
+    .trust-bar {
+        background: rgba(255, 255, 255, 0.02);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 20px 0;
+    }
+
+    .trust-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .trust-pill:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #ffffff;
+        border-color: rgba(99, 102, 241, 0.35);
+        transform: translateY(-2px);
+    }
+
+    /* Enterprise Institutional CTA Banner */
+    .cta-banner {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 27, 75, 0.9) 100%);
+        border: 1px solid rgba(129, 140, 248, 0.28);
+        border-radius: 24px;
+        padding: 56px 40px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+    }
+
+    .cta-banner::before {
+        content: '';
+        position: absolute;
+        top: -40%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.2), transparent 70%);
+        filter: blur(70px);
+        pointer-events: none;
+    }
+
+    /* Light Theme Adjustments */
+    [data-bs-theme="light"] .bento-card,
+    [data-bs-theme="light"] .impact-pillar-card,
+    [data-bs-theme="light"] .network-radar-box {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    [data-bs-theme="light"] .system-status-chip {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    }
+
+    [data-bs-theme="light"] .system-status-chip span.text-white {
+        color: #0f172a !important;
+    }
+
+    [data-bs-theme="light"] .kpi-strip {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    [data-bs-theme="light"] .kpi-stat-label {
+        color: #64748b;
+    }
+
+    [data-bs-theme="light"] .git-grid-visual {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.08);
+    }
+
+    [data-bs-theme="light"] .git-cell {
+        background: rgba(0, 0, 0, 0.06);
+    }
+
+    [data-bs-theme="light"] .trust-bar {
+        background: rgba(0, 0, 0, 0.02);
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+
+    [data-bs-theme="light"] .trust-pill {
+        background: rgba(0, 0, 0, 0.03);
+        border-color: rgba(0, 0, 0, 0.08);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .trust-pill:hover {
+        background: rgba(0, 0, 0, 0.06);
+        color: #0f172a;
+    }
+
+    [data-bs-theme="light"] .cta-banner {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        box-shadow: 0 20px 45px -10px rgba(99, 102, 241, 0.12);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Full-width GradientASCII WebGL2 Background Shader -->
+<div class="hero-ascii-backdrop">
+    <div id="hero-gradient-ascii" class="gradient-ascii-container">
+        <canvas class="gradient-ascii-canvas" aria-hidden="true"></canvas>
+    </div>
+    <div class="hero-ascii-fade"></div>
+</div>
+
+<!-- Subtle Enterprise Blueprint Mesh -->
+<div class="enterprise-grid-overlay"></div>
+
+<div class="container hero-wrapper position-relative" style="z-index: 2;">
+    <!-- Ambient Radial Glow -->
+    <div class="hero-glow-orb"></div>
+
+    <!-- Main Hero Split Row -->
+    <div class="row align-items-center mb-5 position-relative" style="z-index: 2;">
+        <!-- Left Hero Content -->
+        <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+            <!-- Authority Header Badge -->
+            <div class="gov-badge mb-3">
+                <span class="sim-pulse-dot me-1"></span>
+                <span>Next-Gen Talent Infrastructure</span>
+                <span class="gov-divider"></span>
+                <span>AICTE &amp; NEP 2020 Aligned</span>
+            </div>
+
+            <h1 class="display-4 fw-extrabold text-white tracking-tight mb-3 font-space" style="letter-spacing: -1.4px; line-height: 1.14;">
+                National Academia–Industry <br>
+                <span class="gradient-text-enterprise">Competency &amp; Placement Grid</span>
+            </h1>
+
+            <p class="lead text-white-50 mb-4" style="font-size: 1.12rem; line-height: 1.7; max-width: 540px;">
+                SkillBridge unites Higher Education Institutions (HEIs) and corporate recruiters on a verified talent exchange. Evaluate verified skills with deterministic mathematics, eliminate graduate employability gaps, and automate NAAC &amp; NIRF accreditation analytics.
+            </p>
+
+            <div class="d-flex flex-wrap gap-3 mb-4">
+                <a href="{% url 'register' %}" class="btn-primary-glow px-4 py-3" style="font-size: 1rem;">
+                    <i class="fa-solid fa-graduation-cap me-1"></i> Enter Institutional Portal <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+                <a href="{% url 'login' %}" class="btn-outline-glass px-4 py-3" style="font-size: 1rem;">
+                    <i class="fa-solid fa-shield-halved me-1"></i> Access Dashboard
+                </a>
+            </div>
+
+            <!-- Executive KPI Strip -->
+            <div class="kpi-strip">
+                <div class="row g-2 text-center text-md-start">
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-stat-value text-white">94.8%</div>
+                        <div class="kpi-stat-label">Match Precision</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-stat-value text-info">100%</div>
+                        <div class="kpi-stat-label">Deterministic Math</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-stat-value text-success">Zero</div>
+                        <div class="kpi-stat-label">Subjective Bias</div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="kpi-stat-value text-warning">NAAC 5.2</div>
+                        <div class="kpi-stat-label">Audit-Ready BI</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side: Candidate Competency Audit Terminal -->
+        <div class="col-lg-6">
+            <!-- System Telemetry Status Strip (Zero Overlap) -->
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 px-1">
+                <div class="system-status-chip">
+                    <span class="badge rounded-circle p-1 bg-success d-inline-flex align-items-center justify-content-center" style="width: 18px; height: 18px;">
+                        <i class="fa-solid fa-check text-white" style="font-size: 0.55rem;"></i>
+                    </span>
+                    <span class="text-white small fw-bold">Live Skill Match Verified</span>
+                </div>
+                <div class="system-status-chip">
+                    <span class="badge rounded-circle p-1 bg-info d-inline-flex align-items-center justify-content-center" style="width: 18px; height: 18px;">
+                        <i class="fa-solid fa-bolt text-white" style="font-size: 0.55rem;"></i>
+                    </span>
+                    <span class="text-white small fw-bold">Algorithmic Gap Calculus Active</span>
+                </div>
+            </div>
+
+            <div class="sim-card">
+                <!-- Simulation Top Header & Terminal Status -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="sim-pulse-dot"></span>
+                        <span class="fw-bold small text-white font-space">COMPETENCY AUDIT TERMINAL</span>
+                        <span class="badge rounded-pill bg-success-subtle text-success" style="font-size: 0.65rem;">Active Engine</span>
+                    </div>
+
+                    <!-- Candidate Navigator & Play/Pause -->
+                    <div class="sim-tabs-container">
+                        <button type="button" class="sim-nav-btn" id="sim-prev" onclick="simNav(-1)" title="Previous Candidate">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span class="sim-counter">
+                            <span class="current" id="sim-idx">1</span> / <span id="sim-total">{{ candidates_count|default:"0" }}</span>
+                        </span>
+                        <button type="button" class="sim-nav-btn" id="sim-next" onclick="simNav(1)" title="Next Candidate">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                        <button type="button" class="sim-nav-btn text-info" id="sim-play-btn" onclick="toggleAutoRotate()" title="Pause/Play Auto Rotation">
+                            <i class="fa-solid fa-pause" id="sim-play-icon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Candidate Profile & Score Badge -->
+                <div class="sim-profile-box mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center gap-3">
+                            <div id="cand-avatar" class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold fs-4" style="width: 48px; height: 48px; background: linear-gradient(135deg, #4338ca, #3b82f6); box-shadow: 0 0 12px rgba(67, 56, 202, 0.4); flex-shrink: 0;">
+                                R
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <h6 id="cand-name" class="fw-bold text-white mb-0" style="font-size: 1.05rem;">Rahul Verma</h6>
+                                    <i class="fa-solid fa-circle-check text-info" style="font-size: 0.82rem;" title="Institutional Verified Profile"></i>
+                                </div>
+                                <div id="cand-dept" class="small text-white-50" style="font-size: 0.78rem;">RV College of Engineering &bull; CSE &bull; CGPA: <strong class="text-white">8.85</strong></div>
+                                <span id="cand-role" class="badge mt-1" style="background: rgba(99, 102, 241, 0.2); color: #c7d2fe; border: 1px solid rgba(99, 102, 241, 0.35); font-size: 0.68rem;">
+                                    Target: Full Stack Cloud Developer
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Modern Score Circle -->
+                        <div class="text-center ms-3">
+                            <div id="cand-circle" class="score-circle-modern mx-auto mb-1">
+                                <span id="cand-score" class="fw-extrabold font-space text-white" style="font-size: 1.15rem;">84%</span>
+                            </div>
+                            <span id="cand-badge" class="badge rounded-pill text-success" style="background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.35); font-size: 0.65rem;">
+                                High Fit
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clean Competency Meters (Zero Overlap) -->
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between small text-white-50 mb-2">
+                        <span>Industry Competency Benchmark vs. Student Level:</span>
+                        <span>Audit Status</span>
+                    </div>
+
+                    <!-- Skill 1 -->
+                    <div class="mb-3" id="skill-row-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-white">
+                                <span id="skill-1-name" class="fw-semibold">JavaScript</span>
+                                <span id="skill-1-req" class="text-white-50 ms-1">(Req: 85%)</span>
+                            </span>
+                            <span id="skill-1-status" class="badge rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                                <i class="fa-solid fa-circle-check me-1"></i>90% &bull; Compliant
+                            </span>
+                        </div>
+                        <div class="clean-track">
+                            <div id="skill-1-bar" class="clean-fill fill-emerald" style="width: 90%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 2 -->
+                    <div class="mb-3" id="skill-row-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-white">
+                                <span id="skill-2-name" class="fw-semibold">React.js</span>
+                                <span id="skill-2-req" class="text-white-50 ms-1">(Req: 80%)</span>
+                            </span>
+                            <span id="skill-2-status" class="badge rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                                <i class="fa-solid fa-circle-exclamation me-1"></i>65% &bull; 15% Deficit
+                            </span>
+                        </div>
+                        <div class="clean-track">
+                            <div id="skill-2-bar" class="clean-fill fill-amber" style="width: 65%;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Skill 3 -->
+                    <div class="mb-3" id="skill-row-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="small text-white">
+                                <span id="skill-3-name" class="fw-semibold">MongoDB</span>
+                                <span id="skill-3-req" class="text-white-50 ms-1">(Req: 75%)</span>
+                            </span>
+                            <span id="skill-3-status" class="badge rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i>40% &bull; 35% Deficit
+                            </span>
+                        </div>
+                        <div class="clean-track">
+                            <div id="skill-3-bar" class="clean-fill fill-crimson" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Unified Glass Telemetry Dock (Connected Pods) -->
+                <div class="telemetry-dock">
+                    <div class="row g-0 align-items-center">
+                        <div class="col-3 telemetry-pod">
+                            <div class="telemetry-num text-white">{{ stats.total_students|default:"3" }}</div>
+                            <div class="telemetry-label">Students</div>
+                        </div>
+                        <div class="col-3 telemetry-pod">
+                            <div class="telemetry-num text-info">{{ stats.total_colleges|default:"1" }}</div>
+                            <div class="telemetry-label">HEIs / TPOs</div>
+                        </div>
+                        <div class="col-3 telemetry-pod">
+                            <div class="telemetry-num text-success">{{ stats.total_companies|default:"2" }}</div>
+                            <div class="telemetry-label">Enterprises</div>
+                        </div>
+                        <div class="col-3 telemetry-pod">
+                            <div class="telemetry-num text-warning">{{ stats.total_jobs|default:"3" }}</div>
+                            <div class="telemetry-label">Live Openings</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enterprise & Academic Trust Bar (Institutional Grid) -->
+<div class="trust-bar my-4">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="small fw-bold text-white-50 text-uppercase" style="letter-spacing: 0.8px; font-size: 0.72rem;">
+                <i class="fa-solid fa-building-columns text-primary me-2"></i>Institutional &amp; Industry Ecosystem Partners:
+            </div>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <span class="trust-pill"><i class="fa-solid fa-graduation-cap text-info"></i> RV College of Engg.</span>
+                <span class="trust-pill"><i class="fa-brands fa-google text-danger"></i> Google Cloud</span>
+                <span class="trust-pill"><i class="fa-solid fa-microchip text-primary"></i> Tata Consultancy Services</span>
+                <span class="trust-pill"><i class="fa-solid fa-university text-warning"></i> PES University</span>
+                <span class="trust-pill"><i class="fa-brands fa-aws text-warning"></i> AWS Academy</span>
+                <span class="trust-pill"><i class="fa-brands fa-microsoft text-info"></i> Microsoft Learn</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Visual Graphic: Animated Radar Network Graphic -->
+    <div class="my-5">
+        <div class="network-radar-box text-center position-relative">
+            <div class="radar-ring radar-ring-1"></div>
+            <div class="radar-ring radar-ring-2"></div>
+            <div class="radar-ring radar-ring-3"></div>
+
+            <div class="row align-items-center justify-content-center position-relative" style="z-index: 3;">
+                <div class="col-md-3 mb-4 mb-md-0">
+                    <div class="p-3 rounded-4" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(59, 130, 246, 0.3);">
+                        <i class="fa-solid fa-building-columns fs-3 text-info mb-2"></i>
+                        <h6 class="fw-bold text-white mb-1">Accredited HEIs</h6>
+                        <small class="text-white-50 d-block" style="font-size: 0.72rem;">Curriculum Alignment &bull; TPO Cohort Data</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4 mb-4 mb-md-0 d-flex flex-column align-items-center">
+                    <div class="node-hub mb-3">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-1 font-space">SkillBridge Engine</h5>
+                    <span class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle">
+                        <i class="fa-solid fa-bolt me-1"></i> Deterministic Skill Exchange
+                    </span>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="p-3 rounded-4" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(16, 185, 129, 0.3);">
+                        <i class="fa-solid fa-briefcase fs-3 text-success mb-2"></i>
+                        <h6 class="fw-bold text-white mb-1">Enterprises</h6>
+                        <small class="text-white-50 d-block" style="font-size: 0.72rem;">Weighted JD Matching &bull; Pre-vetted Talent</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- National Problem Statement & Strategic Impact Section -->
+    <div class="my-5 py-3">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(59, 130, 246, 0.12); border: 1px solid rgba(59, 130, 246, 0.35);">
+                <i class="fa-solid fa-bullseye text-primary"></i>
+                <span class="fw-bold small text-white" style="letter-spacing: 0.5px;">SYSTEMIC IMPACT MATRIX</span>
+            </div>
+            <h2 class="display-6 fw-extrabold text-white font-space tracking-tight">Addressing the Core Employability Challenge</h2>
+            <p class="text-white-50" style="max-width: 720px; margin: 0 auto;">How SkillBridge modernizes campus placement workflows to solve systemic institutional bottlenecks.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Problem 1 -->
+            <div class="col-md-4">
+                <div class="impact-pillar-card">
+                    <div class="d-flex align-items-center gap-2 text-danger mb-3">
+                        <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                        <span class="fw-bold small text-uppercase" style="letter-spacing: 0.5px;">The Problem</span>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2 font-space">Graduate Employability Paradox</h5>
+                    <p class="text-white-50 small mb-3">
+                        Over 65% of engineering graduates face placement rejection because academic grades do not reflect real-time production software standards or cloud competencies.
+                    </p>
+                    <div class="pt-2 border-top border-white-10">
+                        <span class="small text-info fw-semibold"><i class="fa-solid fa-circle-check text-success me-1"></i> SkillBridge Solution:</span>
+                        <p class="text-white-50 small mt-1 mb-0">Deterministic gap engine that computes exact skill deficits against live corporate job descriptions.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 2 -->
+            <div class="col-md-4">
+                <div class="impact-pillar-card">
+                    <div class="d-flex align-items-center gap-2 text-warning mb-3">
+                        <i class="fa-solid fa-clock-rotate-left fs-5"></i>
+                        <span class="fw-bold small text-uppercase" style="letter-spacing: 0.5px;">The Problem</span>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2 font-space">Resume Inflation &amp; Screening Costs</h5>
+                    <p class="text-white-50 small mb-3">
+                        Corporate HR teams spend 30+ days filtering unverified CV claims, conducting repetitive preliminary screenings with high dropout and mismatch rates.
+                    </p>
+                    <div class="pt-2 border-top border-white-10">
+                        <span class="small text-info fw-semibold"><i class="fa-solid fa-circle-check text-success me-1"></i> SkillBridge Solution:</span>
+                        <p class="text-white-50 small mt-1 mb-0">Proctored, timed assessments and algorithmic shortlisting that verify proficiency before applications reach recruiters.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Problem 3 -->
+            <div class="col-md-4">
+                <div class="impact-pillar-card">
+                    <div class="d-flex align-items-center gap-2 text-primary mb-3">
+                        <i class="fa-solid fa-file-invoice fs-5"></i>
+                        <span class="fw-bold small text-uppercase" style="letter-spacing: 0.5px;">The Problem</span>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2 font-space">Manual NAAC &amp; NIRF Auditing</h5>
+                    <p class="text-white-50 small mb-3">
+                        Colleges and TPOs spend months manually compiling Criterion 5.2 placement records, lacking auditable proofs of industry-academia collaboration.
+                    </p>
+                    <div class="pt-2 border-top border-white-10">
+                        <span class="small text-info fw-semibold"><i class="fa-solid fa-circle-check text-success me-1"></i> SkillBridge Solution:</span>
+                        <p class="text-white-50 small mt-1 mb-0">One-click export of accredited placement dossiers, verified company partnerships, and cohort readiness analytics.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bento Grid Showcase: Precision Platform Architecture With Rich Visual Graphics -->
+    <div class="my-5 py-4">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(99, 102, 241, 0.12); border: 1px solid rgba(99, 102, 241, 0.35);">
+                <i class="fa-solid fa-microchip text-primary"></i>
+                <span class="fw-bold small text-white" style="letter-spacing: 0.5px;">SYSTEM ARCHITECTURE</span>
+            </div>
+            <h2 class="display-6 fw-extrabold text-white font-space tracking-tight">Enterprise Architecture Matrix</h2>
+            <p class="text-white-50" style="max-width: 680px; margin: 0 auto;">Five tightly integrated modules delivering transparent, deterministic career matching.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Bento 1: Weighted Skill Gap Engine (7-col card) -->
+            <div class="col-lg-7">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="bento-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <i class="fa-solid fa-calculator me-1"></i> Core Algorithm
+                        </span>
+                        <span class="text-white-50 small"><i class="fa-solid fa-shield-check text-success me-1"></i> Deterministic</span>
+                    </div>
+
+                    <h4 class="fw-bold text-white mb-2 font-space">Algorithmic Weighted Gap Engine</h4>
+                    <p class="text-white-50 small mb-4">
+                        Replaces subjective keyword matching with transparent mathematical proficiency calculus. Normalizes candidate proficiencies against corporate requirement weights:
+                    </p>
+
+                    <!-- Interactive Micro Visualizer -->
+                    <div class="p-3 rounded-4 mb-3" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.06);">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-white-50 font-monospace" style="font-size: 0.78rem;">MatchScore = 100 - ( &Sigma; w_i &bull; Gap_i / &Sigma; w_i )</span>
+                            <span class="badge bg-success-subtle text-success">Zero Bias Guaranteed</span>
+                        </div>
+                        <div class="row g-2 text-center small">
+                            <div class="col-4">
+                                <div class="p-2 rounded-3" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">INDUSTRY REQ</div>
+                                    <div class="fw-bold text-white">85% Threshold</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded-3" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">VERIFIED SCORE</div>
+                                    <div class="fw-bold text-info">90% Assessed</div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded-3" style="background: rgba(255, 255, 255, 0.04);">
+                                    <div class="text-white-50" style="font-size: 0.65rem;">CALCULATED DEFICIT</div>
+                                    <div class="fw-bold text-success">0% (Compliant)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto d-flex flex-wrap gap-2">
+                        <span class="badge rounded-pill" style="background: rgba(99, 102, 241, 0.15); color: #c7d2fe;">Multi-Skill Normalization</span>
+                        <span class="badge rounded-pill" style="background: rgba(6, 182, 212, 0.15); color: #a5f3fc;">Instant Ranking</span>
+                        <span class="badge rounded-pill" style="background: rgba(16, 185, 129, 0.15); color: #a7f3d0;">Deficit Remediation</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento 2: Timed MCQ & Assessment Engine (5-col card) -->
+            <div class="col-lg-5">
+                <div class="bento-card">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="bento-badge" style="background: rgba(6, 182, 212, 0.15); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.3);">
+                            <i class="fa-solid fa-clock me-1"></i> Proctored Testing
+                        </span>
+                        <span class="badge bg-danger-subtle text-danger" style="font-size: 0.68rem;">
+                            <i class="fa-regular fa-clock me-1"></i> 09:42 Remaining
+                        </span>
+                    </div>
+
+                    <h4 class="fw-bold text-white mb-2 font-space">Timed MCQ &amp; Verification</h4>
+                    <p class="text-white-50 small mb-3">
+                        Standardized question banks aligned with industry benchmarks. Includes anti-cheat timers, automatic grading, and tamper-proof verification credentials.
+                    </p>
+
+                    <!-- Question Simulation Snippet -->
+                    <div class="p-3 rounded-4 mb-3" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.06);">
+                        <div class="small text-white-50 mb-2" style="font-size: 0.72rem;">SAMPLE ASSESSMENT QUESTION #4:</div>
+                        <div class="small text-white fw-semibold mb-2">Which HTTP status indicates an idempotent resource modification?</div>
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-2" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
+                            <span class="small text-success fw-bold"><i class="fa-solid fa-check-circle me-1"></i> 200 OK / 204 No Content</span>
+                            <span class="badge bg-success" style="font-size: 0.6rem;">Verified</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a href="{% url 'assessment_list' %}" class="small text-info fw-bold text-decoration-none d-inline-flex align-items-center gap-1">
+                            Explore Assessment Catalog <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento 3: AI Resume & GitHub Visual Heatmap (4-col card) -->
+            <div class="col-lg-4">
+                <div class="bento-card">
+                    <span class="bento-badge mb-3" style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); width: fit-content;">
+                        <i class="fa-solid fa-file-code me-1"></i> Portfolio AI
+                    </span>
+                    <h5 class="fw-bold text-white mb-2 font-space">AI Portfolio &amp; Git Indexer</h5>
+                    <p class="text-white-50 small mb-2">
+                        Cross-references resume claims against actual GitHub repositories, commit frequency, and production tech stacks.
+                    </p>
+
+                    <!-- Visual Graphic: Simulated Git Activity Heatmap -->
+                    <div class="my-2">
+                        <div class="d-flex justify-content-between text-white-50 small mb-1" style="font-size: 0.65rem;">
+                            <span>GitHub Verified Activity</span>
+                            <span class="text-success"><i class="fa-solid fa-check me-1"></i>348 Commits</span>
+                        </div>
+                        <div class="git-grid-visual">
+                            <div class="git-cell lvl-2"></div><div class="git-cell lvl-4"></div><div class="git-cell lvl-1"></div><div class="git-cell lvl-3"></div>
+                            <div class="git-cell lvl-4"></div><div class="git-cell lvl-2"></div><div class="git-cell lvl-3"></div><div class="git-cell lvl-4"></div>
+                            <div class="git-cell lvl-1"></div><div class="git-cell lvl-4"></div><div class="git-cell lvl-3"></div><div class="git-cell lvl-2"></div>
+                            <div class="git-cell lvl-4"></div><div class="git-cell lvl-3"></div>
+                            <!-- row 2 -->
+                            <div class="git-cell lvl-3"></div><div class="git-cell lvl-1"></div><div class="git-cell lvl-4"></div><div class="git-cell lvl-2"></div>
+                            <div class="git-cell lvl-1"></div><div class="git-cell lvl-3"></div><div class="git-cell lvl-4"></div><div class="git-cell lvl-1"></div>
+                            <div class="git-cell lvl-2"></div><div class="git-cell lvl-4"></div><div class="git-cell lvl-3"></div><div class="git-cell lvl-4"></div>
+                            <div class="git-cell lvl-2"></div><div class="git-cell lvl-4"></div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-auto pt-2">
+                        <span class="badge bg-dark border border-secondary-subtle">PDF Text Parser</span>
+                        <span class="badge bg-dark border border-secondary-subtle">Repo Verification</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento 4: TPO Institutional Analytics With Velocity SVG Curve (4-col card) -->
+            <div class="col-lg-4">
+                <div class="bento-card">
+                    <span class="bento-badge mb-3" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); width: fit-content;">
+                        <i class="fa-solid fa-chart-line me-1"></i> Institutional BI
+                    </span>
+                    <h5 class="fw-bold text-white mb-2 font-space">TPO &amp; Accreditation BI</h5>
+                    <p class="text-white-50 small mb-2">
+                        Accreditation-ready reporting for NAAC Criterion 5 and NIRF Metric 5.2. Filter students by branch and placement velocity.
+                    </p>
+
+                    <!-- Visual Graphic: Mini SVG Placement Curve -->
+                    <div class="my-2 p-2 rounded-3" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.06);">
+                        <div class="d-flex justify-content-between text-white-50 small mb-1" style="font-size: 0.65rem;">
+                            <span>Placement Velocity Growth</span>
+                            <span class="text-info fw-bold">+38% vs Prev Batch</span>
+                        </div>
+                        <svg class="placement-curve-svg" viewBox="0 0 200 60" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="placementGradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.5"/>
+                                    <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <path class="curve-area" d="M 0,55 Q 50,45 100,28 T 200,8 L 200,60 L 0,60 Z"/>
+                            <path class="curve-path" d="M 0,55 Q 50,45 100,28 T 200,8"/>
+                        </svg>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-auto pt-2">
+                        <span class="badge bg-dark border border-secondary-subtle">NAAC Criterion 5.2</span>
+                        <span class="badge bg-dark border border-secondary-subtle">NIRF Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento 5: Corporate Recruitment Pipeline (4-col card) -->
+            <div class="col-lg-4">
+                <div class="bento-card">
+                    <span class="bento-badge mb-3" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); width: fit-content;">
+                        <i class="fa-solid fa-briefcase me-1"></i> ATS Integration
+                    </span>
+                    <h5 class="fw-bold text-white mb-2 font-space">5-Stage Recruiter ATS</h5>
+                    <p class="text-white-50 small mb-3">
+                        End-to-end recruitment lifecycle from skill-ranked application to review, live interview scheduling, and official offer letter generation.
+                    </p>
+
+                    <!-- Visual Graphic: Animated Mini Pipeline Stepper -->
+                    <div class="d-flex align-items-center justify-content-between p-2 rounded-3 mb-2" style="background: rgba(0, 0, 0, 0.25); border: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.65rem;">
+                        <span class="text-white-50">Applied</span>
+                        <i class="fa-solid fa-chevron-right text-white-50" style="font-size: 0.6rem;"></i>
+                        <span class="text-white-50">Review</span>
+                        <i class="fa-solid fa-chevron-right text-white-50" style="font-size: 0.6rem;"></i>
+                        <span class="text-info fw-bold">Shortlisted</span>
+                        <i class="fa-solid fa-chevron-right text-white-50" style="font-size: 0.6rem;"></i>
+                        <span class="text-success fw-bold">Offer</span>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 mt-auto">
+                        <span class="badge bg-dark border border-secondary-subtle">Google Meet Link</span>
+                        <span class="badge bg-dark border border-secondary-subtle">Audit Trail</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The 4 Stakeholders Section (Institutional Portals) -->
+    <div class="my-5 py-4">
+        <div class="text-center mb-5">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-2" style="background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.35);">
+                <i class="fa-solid fa-users text-info"></i>
+                <span class="fw-bold small text-info">COLLABORATION ECOSYSTEM</span>
+            </div>
+            <h2 class="display-6 fw-extrabold text-white font-space tracking-tight">One Platform, Four Integrated Stakeholders</h2>
+            <p class="text-white-50" style="max-width: 650px; margin: 0 auto;">Designed to seamlessly bridge the gap between academic education and modern industry skill requirements.</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Student -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 card-hover p-4" style="border-top: 3px solid #06b6d4 !important;">
+                    <div class="kpi-icon kpi-info mb-3">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">Students</h5>
+                    <p class="small text-white-50 mb-3">
+                        Build verifiable portfolios, take timed MCQ assessments, calculate mathematical skill gaps against specific JDs, and receive targeted learning recommendations.
+                    </p>
+                    <div class="small text-white-50 mb-3">
+                        <div><i class="fa-solid fa-check text-info me-1"></i> Verifiable Skill Passport</div>
+                        <div><i class="fa-solid fa-check text-info me-1"></i> Live Assessment Scores</div>
+                    </div>
+                    <a href="{% url 'register' %}" class="small text-info fw-bold text-decoration-none d-inline-flex align-items-center gap-1 mt-auto">
+                        Student Access <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- College / TPO -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 card-hover p-4" style="border-top: 3px solid #a855f7 !important;">
+                    <div class="kpi-icon kpi-purple mb-3">
+                        <i class="fa-solid fa-school"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">Colleges / TPOs</h5>
+                    <p class="small text-white-50 mb-3">
+                        Monitor cohort readiness, filter students meeting recruiter criteria across CSE/IT/ECE, export accreditation placement reports, and schedule industry bootcamps.
+                    </p>
+                    <div class="small text-white-50 mb-3">
+                        <div><i class="fa-solid fa-check text-purple me-1" style="color: #c084fc;"></i> Batch Gap Reports</div>
+                        <div><i class="fa-solid fa-check text-purple me-1" style="color: #c084fc;"></i> Accreditation BI</div>
+                    </div>
+                    <a href="{% url 'register' %}" class="small text-purple fw-bold text-decoration-none d-inline-flex align-items-center gap-1 mt-auto" style="color: #c084fc;">
+                        TPO Portal <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Industry / Recruiter -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 card-hover p-4" style="border-top: 3px solid #10b981 !important;">
+                    <div class="kpi-icon kpi-success mb-3">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">Industry / Recruiters</h5>
+                    <p class="small text-white-50 mb-3">
+                        Post openings with weighted skill requirements, scout candidates ranked by match score, manage the 5-stage interview pipeline, and post live projects.
+                    </p>
+                    <div class="small text-white-50 mb-3">
+                        <div><i class="fa-solid fa-check text-success me-1"></i> Algorithmic Shortlists</div>
+                        <div><i class="fa-solid fa-check text-success me-1"></i> Live Capstones &amp; Projects</div>
+                    </div>
+                    <a href="{% url 'register' %}" class="small text-success fw-bold text-decoration-none d-inline-flex align-items-center gap-1 mt-auto">
+                        Recruiter Portal <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Platform Administrator -->
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 card-hover p-4" style="border-top: 3px solid #f59e0b !important;">
+                    <div class="kpi-icon kpi-warning mb-3">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h5 class="fw-bold text-white mb-2">Administrators</h5>
+                    <p class="small text-white-50 mb-3">
+                        Verify institutions and corporate partners, manage master skill taxonomies and question banks, monitor system health, and enforce strict role boundaries.
+                    </p>
+                    <div class="small text-white-50 mb-3">
+                        <div><i class="fa-solid fa-check text-warning me-1"></i> Institutional Verification</div>
+                        <div><i class="fa-solid fa-check text-warning me-1"></i> Taxonomy Governance</div>
+                    </div>
+                    <a href="{% url 'login' %}" class="small text-warning fw-bold text-decoration-none d-inline-flex align-items-center gap-1 mt-auto">
+                        Admin Login <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Openings Grid -->
+    <div class="card border-0 p-4 mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h4 class="fw-bold text-white mb-0 font-space d-flex align-items-center gap-2">
+                    <span class="p-1 px-2 rounded-2 text-white" style="background: linear-gradient(135deg, #f59e0b, #ef4444); font-size: 0.85rem;">
+                        <i class="fa-solid fa-fire"></i>
+                    </span>
+                    Active Placement &amp; Internship Openings
+                </h4>
+                <p class="text-white-50 small mb-0">Live career opportunities with algorithmic skill mapping</p>
+            </div>
+            <a href="{% url 'job_browse' %}" class="btn-outline-glass btn-sm">Explore All Openings</a>
+        </div>
+
+        <div class="row g-3">
+            {% for job in recent_jobs %}
+                <div class="col-md-6">
+                    <div class="p-3 rounded-4 card-hover d-flex justify-content-between align-items-center" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+                        <div>
+                            <span class="badge border border-white-10 mb-1" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc;">{{ job.get_job_type_display }}</span>
+                            <h6 class="fw-bold text-white mb-1">{{ job.title }}</h6>
+                            <div class="small text-white-50 mb-1">
+                                <i class="fa-solid fa-building me-1 text-primary"></i> {{ job.company.company_name }} &bull; 
+                                <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ job.location_city }} ({{ job.get_location_type_display }})
+                            </div>
+                            <div class="small text-success fw-bold">
+                                <i class="fa-solid fa-money-bill-wave me-1"></i> {{ job.stipend_salary }}
+                            </div>
+                        </div>
+                        <a href="{% url 'job_detail' job.id %}" class="btn-white-pill btn-sm px-3">Analyze Match</a>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center text-white-50 py-4">
+                    <i class="fa-solid fa-clipboard-list fs-2 mb-2"></i>
+                    <div>Openings will appear here once posted by verified industry partners.</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- High-Impact Enterprise CTA Banner -->
+    <div class="cta-banner my-5 text-center">
+        <div class="position-relative" style="z-index: 2; max-width: 760px; margin: 0 auto;">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill mb-3" style="background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4);">
+                <i class="fa-solid fa-award text-info"></i>
+                <span class="small fw-bold text-white">NATIONAL INSTITUTIONAL TALENT INFRASTRUCTURE</span>
+            </div>
+
+            <h2 class="display-6 fw-extrabold text-white font-space mb-3">
+                Transforming Campus Placements with <br>
+                <span class="gradient-text-enterprise">Deterministic Skill Verification</span>
+            </h2>
+
+            <p class="text-white-50 lead mb-4" style="font-size: 1.1rem;">
+                Join verified students, colleges, and enterprise recruiters modernizing university placements on India's premier competency collaboration grid.
+            </p>
+
+            <div class="d-flex justify-content-center flex-wrap gap-3 mb-3">
+                <a href="{% url 'register' %}" class="btn-primary-glow btn-lg px-4 py-3">
+                    <i class="fa-solid fa-user-plus me-1"></i> Register Institutional Account
+                </a>
+                <a href="{% url 'skill_catalog' %}" class="btn-outline-glass btn-lg px-4 py-3">
+                    <i class="fa-solid fa-layer-group me-1"></i> Explore Skill Taxonomies
+                </a>
+            </div>
+
+            <div class="small text-white-50">
+                <i class="fa-solid fa-shield-halved text-success me-1"></i> Role-Based Access Control (RBAC) &bull; Verified Institutional Authentication &bull; NAAC Criterion 5.2.1 Audit Compliant
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Dynamic Candidate Data from Database
+const candidateProfiles = {{ candidates_json|safe }};
+let simIndex = 0;
+let simAutoTimer = null;
+let isPlaying = true;
+
+function renderCandidate(idx) {
+    if (!candidateProfiles.length) return;
+    const data = candidateProfiles[idx];
+
+    // Update counter
+    const idxEl = document.getElementById('sim-idx');
+    if (idxEl) idxEl.textContent = idx + 1;
+    const totalEl = document.getElementById('sim-total');
+    if (totalEl) totalEl.textContent = candidateProfiles.length;
+
+    // Avatar
+    const avatar = document.getElementById('cand-avatar');
+    if (avatar) {
+        avatar.textContent = data.initial;
+        avatar.style.background = data.avatarBg;
+    }
+
+    // Name, dept, role
+    const nameEl = document.getElementById('cand-name');
+    if (nameEl) nameEl.textContent = data.name;
+
+    const deptEl = document.getElementById('cand-dept');
+    if (deptEl) deptEl.innerHTML = data.college + ' &bull; ' + data.dept + ' &bull; CGPA: <strong class="text-white">' + data.cgpa + '</strong>';
+
+    const roleEl = document.getElementById('cand-role');
+    if (roleEl) roleEl.textContent = 'Overall Skill Score: ' + data.score + '%';
+
+    // Score circle
+    const scoreEl = document.getElementById('cand-score');
+    if (scoreEl) scoreEl.textContent = data.score + '%';
+
+    const circleEl = document.getElementById('cand-circle');
+    if (circleEl) {
+        circleEl.style.border = '2px solid ' + data.badgeColor;
+        circleEl.style.background = data.badgeColor + '20';
+        circleEl.style.boxShadow = '0 0 16px ' + data.badgeColor + '40';
+    }
+
+    const badgeEl = document.getElementById('cand-badge');
+    if (badgeEl) {
+        badgeEl.textContent = data.badgeText;
+        badgeEl.style.cssText = 'background: ' + data.badgeColor + '30; border: 1px solid ' + data.badgeColor + '58; font-size: 0.65rem; color: ' + data.badgeColor + ';';
+    }
+
+    // Skills (up to 3)
+    for (let i = 0; i < 3; i++) {
+        const sk = data.skills[i];
+        const nameSpan = document.getElementById('skill-' + (i + 1) + '-name');
+        const reqSpan = document.getElementById('skill-' + (i + 1) + '-req');
+        const statusSpan = document.getElementById('skill-' + (i + 1) + '-status');
+        const bar = document.getElementById('skill-' + (i + 1) + '-bar');
+        const row = document.getElementById('skill-row-' + (i + 1));
+
+        if (sk) {
+            if (row) row.style.display = '';
+            if (nameSpan) nameSpan.textContent = sk.name;
+            if (reqSpan) reqSpan.textContent = '(Req: ' + (sk.prof > 80 ? '80%' : '75%') + ')';
+            if (statusSpan) {
+                statusSpan.innerHTML = '<i class="fa-solid ' + sk.icon + ' me-1"></i>' + sk.label;
+                statusSpan.style.cssText = 'background: ' + sk.bg + '; color: ' + sk.color + '; border: 1px solid ' + sk.border + '; font-size: 0.7rem;';
+            }
+            if (bar) {
+                bar.className = sk.fillClass;
+                bar.style.width = sk.prof + '%';
+            }
+        } else {
+            if (row) row.style.display = 'none';
+        }
+    }
+}
+
+function simNav(dir) {
+    if (!candidateProfiles.length) return;
+    simIndex = (simIndex + dir + candidateProfiles.length) % candidateProfiles.length;
+    renderCandidate(simIndex);
+    if (isPlaying) resetAutoRotate();
+}
+
+function toggleAutoRotate() {
+    isPlaying = !isPlaying;
+    const icon = document.getElementById('sim-play-icon');
+    const btn = document.getElementById('sim-play-btn');
+    if (!isPlaying) {
+        clearInterval(simAutoTimer);
+        if (icon) icon.className = 'fa-solid fa-play';
+        if (btn) btn.title = 'Resume Auto Rotation';
+    } else {
+        if (icon) icon.className = 'fa-solid fa-pause';
+        if (btn) btn.title = 'Pause Auto Rotation';
+        resetAutoRotate();
+    }
+}
+
+function resetAutoRotate() {
+    clearInterval(simAutoTimer);
+    if (candidateProfiles.length > 1 && isPlaying) {
+        simAutoTimer = setInterval(function() {
+            simIndex = (simIndex + 1) % candidateProfiles.length;
+            renderCandidate(simIndex);
+        }, 5000);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Render first candidate
+    if (candidateProfiles.length) {
+        renderCandidate(0);
+        resetAutoRotate();
+    }
+
+    // Pause auto-rotate on hover
+    var simCard = document.querySelector('.sim-card');
+    if (simCard) {
+        simCard.addEventListener('mouseenter', function() {
+            if (isPlaying) clearInterval(simAutoTimer);
+        });
+        simCard.addEventListener('mouseleave', function() {
+            if (isPlaying) resetAutoRotate();
+        });
+    }
+
+    // GradientASCII WebGL2 Background
+    if (typeof window.GradientASCII !== 'function') return;
+
+    var heroContainer = document.getElementById('hero-gradient-ascii');
+    if (heroContainer) {
+        window.GradientASCII(heroContainer, {
+            colors: ['#1e3fd8', '#f6f8ff', '#a5d8ff', '#38bdf8'],
+            shape: 'horizon',
+            characters: ' =+xX0S8#@',
+            cellSize: 18,
+            density: 0.75,
+            glyphOpacity: 0.85,
+            gradientOpacity: 0.8,
+            glow: 0.25,
+            scale: 1.05,
+            flow: 0.45,
+            speed: 0.85,
+            mouseInteraction: true,
+            clickEffect: 'wave',
+            intro: false
+        });
+    }
+});
+</script>
+{% endblock %}

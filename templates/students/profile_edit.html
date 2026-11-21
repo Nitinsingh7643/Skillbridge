@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Academic Portfolio | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 bg-white">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+                    <div>
+                        <h4 class="fw-bold text-dark mb-0"><i class="fa-solid fa-user-pen text-primary me-2"></i>Edit Student Profile</h4>
+                        <small class="text-muted">Keep your academic and professional details up to date</small>
+                    </div>
+                    <a href="{% url 'student_profile_view' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                </div>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-id-card me-2 text-primary"></i>Personal Information</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Phone Number</label>
+                            <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Profile Picture</label>
+                            <input type="file" name="profile_image" class="form-control">
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-school me-2 text-info"></i>Academic Credentials</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">College / University</label>
+                            <select name="college" class="form-select">
+                                <option value="">Select College</option>
+                                {% for col in colleges %}
+                                    <option value="{{ col.id }}" {% if profile.college_id == col.id %}selected{% endif %}>{{ col.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-semibold">Department / Branch</label>
+                            <select name="department" class="form-select">
+                                <option value="">Select Department</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.id }}" {% if profile.department_id == dept.id %}selected{% endif %}>{{ dept.name }} ({{ dept.code }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Roll Number / USN</label>
+                            <input type="text" name="roll_number" class="form-control" value="{{ profile.roll_number }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Degree</label>
+                            <input type="text" name="degree" class="form-control" value="{{ profile.degree }}">
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-semibold">Semester</label>
+                            <input type="number" name="semester" class="form-control" value="{{ profile.semester }}" min="1" max="8">
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <label class="form-label small fw-semibold">CGPA (0-10)</label>
+                            <input type="number" step="0.01" name="cgpa" class="form-control" value="{{ profile.cgpa }}" min="0" max="10">
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold text-dark mb-3"><i class="fa-solid fa-link me-2 text-success"></i>Professional Links & Bio</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">GitHub Profile URL</label>
+                            <input type="url" name="github_url" class="form-control" placeholder="https://github.com/..." value="{{ profile.github_url }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">LinkedIn Profile URL</label>
+                            <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/..." value="{{ profile.linkedin_url }}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold">Personal Portfolio URL</label>
+                            <input type="url" name="portfolio_url" class="form-control" placeholder="https://..." value="{{ profile.portfolio_url }}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small fw-semibold">Professional Bio & Career Objective</label>
+                            <textarea name="bio" class="form-control" rows="3" placeholder="Brief summary of your background, career focus, and aspirations...">{{ profile.bio }}</textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Save Changes
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

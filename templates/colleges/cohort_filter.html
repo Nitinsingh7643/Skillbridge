@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Cohort Eligibility & Skill Match Engine | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumb & Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <a href="{% url 'tpo_dashboard' %}" class="small text-muted text-decoration-none mb-1 d-inline-block">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to TPO Dashboard
+            </a>
+            <h3 class="fw-bold text-dark mb-0"><i class="fa-solid fa-filter-circle-dollar text-primary me-2"></i>Cohort Eligibility & Company Skill Match Engine</h3>
+            <p class="text-muted small mb-0">Select any industry requirement to instantly evaluate which students qualify and identify cohort training gaps.</p>
+        </div>
+        <a href="{% url 'propose_workshop' %}" class="btn btn-outline-success btn-sm">
+            <i class="fa-solid fa-chalkboard-user me-1"></i> Propose Training Workshop
+        </a>
+    </div>
+
+    <!-- Company Requirement Selector Card -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-9">
+                <label class="form-label small fw-semibold text-dark">Select Industry Requirement / Job Opening to Evaluate Against:</label>
+                <select name="job_id" class="form-select form-select-lg" onchange="this.form.submit()">
+                    <option value="">-- Choose an active industry opening --</option>
+                    {% for job in active_jobs %}
+                        <option value="{{ job.id }}" {% if selected_job and selected_job.id == job.id %}selected{% endif %}>
+                            {{ job.company.company_name }} &bull; {{ job.title }} (Min CGPA: {{ job.min_cgpa }}, Depts: {{ job.eligible_departments }}, {{ job.stipend_salary }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fa-solid fa-magnifying-glass-chart me-1"></i> Run Analysis
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if selected_job %}
+        <!-- Analysis Metric Cards for Selected Job -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="card p-3 bg-white text-center h-100 border-start border-4 border-primary">
+                    <small class="text-muted">Total Evaluated</small>
+                    <h3 class="fw-bold text-dark mb-0">{{ total_evaluated }}</h3>
+                    <small class="text-muted">College students</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="card p-3 bg-white text-center h-100 border-start border-4 border-success">
+                    <small class="text-muted">Eligible Candidates</small>
+                    <h3 class="fw-bold text-success mb-0">{{ total_eligible }}</h3>
+                    <small class="text-muted">Meet CGPA & Branch criteria</small>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <!-- Cohort Gaps Alert -->
+                <div class="card p-3 bg-light h-100 border">
+                    <div class="fw-bold text-dark small mb-1">
+                        <i class="fa-solid fa-triangle-exclamation text-warning me-1"></i> Top Skill Deficits Across Evaluated Students:
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        {% for skill_name, count in sorted_cohort_gaps %}
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle p-2">
+                                {{ skill_name }}: {{ count }} students have a deficit
+                            </span>
+                        {% empty %}
+                            <small class="text-success fw-semibold">No critical cohort skill gaps identified.</small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Candidate Table Ranked by Match Score -->
+        <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0">
+                    <i class="fa-solid fa-users-viewfinder text-primary me-2"></i>Ranked Student Cohort for {{ selected_job.title }} ({{ selected_job.company.company_name }})
+                </h5>
+                <span class="badge bg-light text-muted border font-monospace">Ranked by Match Score</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle small mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Student</th>
+                            <th>Branch</th>
+                            <th>CGPA</th>
+                            <th>Eligibility Criteria</th>
+                            <th>Skill Match Score</th>
+                            <th>Matching Strengths</th>
+                            <th>Gaps Requiring Training</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in evaluated_students %}
+                            <tr class="{% if not item.is_eligible %}opacity-75 bg-light{% endif %}">
+                                <td>
+                                    <div class="fw-bold text-dark">{{ item.student.user.get_full_name|default:item.student.user.username }}</div>
+                                    <small class="text-muted">Roll: {{ item.student.roll_number|default:"-" }}</small>
+                                </td>
+                                <td><span class="badge bg-secondary-subtle text-secondary">{{ item.student.department.code|default:"N/A" }}</span></td>
+                                <td>
+                                    <strong>{{ item.student.cgpa }}</strong>
+                                    {% if item.cgpa_pass %}
+                                        <i class="fa-solid fa-check text-success" title="Passes CGPA"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-xmark text-danger" title="Below CGPA"></i>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if item.is_eligible %}
+                                        <span class="badge bg-success-subtle text-success"><i class="fa-solid fa-check-circle me-1"></i> Eligible</span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger"><i class="fa-solid fa-xmark-circle me-1"></i> Ineligible</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge {% if item.match_score >= 75 %}bg-success{% elif item.match_score >= 50 %}bg-warning text-dark{% else %}bg-danger{% endif %} p-2">
+                                            {{ item.match_score }}% Match
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for s in item.matching_skills %}
+                                            <span class="badge bg-success-subtle text-success" style="font-size: 0.7rem;">{{ s.skill_name }}</span>
+                                        {% empty %}
+                                            <span class="text-muted small">-</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="d-flex flex-wrap gap-1">
+                                        {% for g in item.gap_skills %}
+                                            <span class="badge bg-danger-subtle text-danger" style="font-size: 0.7rem;">{{ g.skill_name }} ({{ g.gap }}%)</span>
+                                        {% empty %}
+                                            <span class="badge bg-success-subtle text-success" style="font-size: 0.7rem;">None</span>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{% url 'student_profile_detail' item.student.id %}" class="btn btn-outline-secondary btn-sm py-0">
+                                        Portfolio
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="8" class="text-center text-muted py-4">No students enrolled under your college yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="card border-0 shadow-sm p-5 bg-white text-center text-muted">
+            <i class="fa-solid fa-building-user fs-1 mb-3 text-secondary"></i>
+            <h5>Select an opening above to begin cohort evaluation</h5>
+            <p class="small">The platform will automatically compare company required skills against your students' verified competencies.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Posted Openings | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h3 class="fw-bold text-dark mb-1"><i class="fa-solid fa-list-check text-primary me-2"></i>Posted Openings & Vacancies</h3>
+            <p class="text-muted small mb-0">Manage industry internship and placement listings</p>
+        </div>
+        <a href="{% url 'job_create' %}" class="btn btn-primary btn-sm shadow-sm">
+            <i class="fa-solid fa-plus-circle me-1"></i> Post New Opening
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4 bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Job Title</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Stipend / Package</th>
+                        <th>Min CGPA</th>
+                        <th>Applicants</th>
+                        <th>Deadline</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold text-dark">{{ job.title }}</div>
+                                <small class="text-muted">Eligible: {{ job.eligible_departments }}</small>
+                            </td>
+                            <td><span class="badge bg-secondary-subtle text-secondary">{{ job.get_job_type_display }}</span></td>
+                            <td>{{ job.location_city }} ({{ job.get_location_type_display }})</td>
+                            <td><strong>{{ job.stipend_salary }}</strong></td>
+                            <td>{{ job.min_cgpa }}</td>
+                            <td>
+                                <span class="badge bg-primary rounded-pill px-2 py-1">{{ job.applicant_count }}</span>
+                            </td>
+                            <td>{{ job.deadline|date:"d M Y" }}</td>
+                            <td>
+                                <a href="{% url 'job_applicants' job.id %}" class="btn btn-primary btn-sm py-1">
+                                    <i class="fa-solid fa-users me-1"></i> Applicants
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="8" class="text-center text-muted py-5">No openings posted yet. Post your first opportunity!</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

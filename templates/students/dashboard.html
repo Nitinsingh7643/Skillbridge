@@ -1,0 +1,1292 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Student Placement Dashboard | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk Font for High-Tech Enterprise Typography -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       MODERN ENTERPRISE STUDENT DASHBOARD WITH RICH VISUAL GRAPHICS & ANIMATIONS
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Dashboard Hero Card */
+    .dash-hero-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.9) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 24px;
+        padding: 32px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
+    }
+
+    .dash-hero-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981);
+    }
+
+    .dash-hero-glow {
+        position: absolute;
+        width: 450px;
+        height: 450px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(6, 182, 212, 0.08) 50%, transparent 70%);
+        top: -160px;
+        right: -100px;
+        filter: blur(60px);
+        pointer-events: none;
+    }
+
+    /* Floating Micro Graphic Badges (Modern Levitation Animation) */
+    .float-badge-dash {
+        padding: 6px 14px;
+        border-radius: 9999px;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 10px 24px -5px rgba(0, 0, 0, 0.5), 0 0 16px rgba(99, 102, 241, 0.25);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        transition: transform 0.2s ease;
+    }
+
+    .float-badge-dash:hover {
+        transform: translateY(-2px);
+    }
+
+    /* Pulse Dot for Real-time Status */
+    .beacon-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10b981;
+        box-shadow: 0 0 8px #10b981;
+        display: inline-block;
+        animation: beaconGlow 2s infinite;
+    }
+
+    @keyframes beaconGlow {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.35); opacity: 0.65; }
+    }
+
+    /* Readiness Gauge Hub */
+    .readiness-hub {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    /* KPI Metric Cards */
+    .kpi-glass-card {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 20px;
+        height: 100%;
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi-glass-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.5), 0 0 16px rgba(99, 102, 241, 0.2);
+    }
+
+    .kpi-icon-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.15rem;
+    }
+
+    .progress-track-modern {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
+        height: 6px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* Shimmer Effect on Progress Bars */
+    .progress-bar-shimmer {
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        border-radius: 6px;
+    }
+
+    .progress-bar-shimmer::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 60%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+        animation: barShimmer 3s infinite;
+    }
+
+    @keyframes barShimmer {
+        0% { left: -100%; }
+        50%, 100% { left: 200%; }
+    }
+
+    /* Section Glass Containers */
+    .dash-section-card {
+        background: rgba(15, 23, 42, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ==========================================================================
+       VISUAL GRAPHIC 1: PLACEMENT VELOCITY SVG CURVE
+       ========================================================================== */
+    .velocity-graphic-box {
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 20px 24px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .velocity-svg-path {
+        stroke-dasharray: 600;
+        stroke-dashoffset: 600;
+        animation: drawCurve 2.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes drawCurve {
+        to { stroke-dashoffset: 0; }
+    }
+
+    .node-pulse-point {
+        animation: nodePulseAnim 2.2s infinite;
+        transform-origin: center;
+    }
+
+    @keyframes nodePulseAnim {
+        0%, 100% { r: 5; opacity: 1; }
+        50% { r: 8; opacity: 0.5; }
+    }
+
+    /* ==========================================================================
+       VISUAL GRAPHIC 2: GIT CONTRIBUTION HEATMAP MATRIX
+       ========================================================================== */
+    .git-heatmap-container {
+        display: grid;
+        grid-template-columns: repeat(28, 1fr);
+        gap: 4px;
+        padding: 14px 16px;
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+    }
+
+    .git-cell {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 3px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+    }
+
+    .git-cell:hover {
+        transform: scale(1.4);
+        z-index: 5;
+    }
+
+    .git-lvl-0 { background: rgba(255, 255, 255, 0.05); }
+    .git-lvl-1 { background: rgba(16, 185, 129, 0.3); }
+    .git-lvl-2 { background: rgba(16, 185, 129, 0.55); box-shadow: 0 0 6px rgba(16, 185, 129, 0.2); }
+    .git-lvl-3 { background: rgba(16, 185, 129, 0.8); box-shadow: 0 0 8px rgba(16, 185, 129, 0.35); }
+    .git-lvl-4 { background: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.6); }
+
+    /* ==========================================================================
+       VISUAL GRAPHIC 3: 5-STAGE RECRUITMENT PIPELINE STEPPER
+       ========================================================================== */
+    .pipeline-stepper-graphic {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+        padding: 24px 20px;
+        background: rgba(0, 0, 0, 0.25);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        margin-bottom: 20px;
+    }
+
+    .pipeline-track-base {
+        position: absolute;
+        top: 42px;
+        left: 50px;
+        right: 50px;
+        height: 3px;
+        background: rgba(255, 255, 255, 0.08);
+        z-index: 1;
+    }
+
+    .pipeline-track-active {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 55%;
+        height: 100%;
+        background: linear-gradient(90deg, #10b981, #06b6d4, #6366f1);
+        box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+    }
+
+    .pipe-step-node {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .pipe-icon-bubble {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .pipe-complete {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(16, 185, 129, 0.45);
+    }
+
+    .pipe-active {
+        background: linear-gradient(135deg, #06b6d4, #3b82f6);
+        color: #ffffff;
+        box-shadow: 0 0 20px rgba(6, 182, 212, 0.65);
+        animation: activePulseRing 2s infinite;
+    }
+
+    @keyframes activePulseRing {
+        0%, 100% { transform: scale(1); box-shadow: 0 0 16px rgba(6, 182, 212, 0.5); }
+        50% { transform: scale(1.08); box-shadow: 0 0 24px rgba(6, 182, 212, 0.85); }
+    }
+
+    .pipe-pending {
+        background: rgba(15, 23, 42, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #64748b;
+    }
+
+    /* Modern Job Match Card */
+    .job-match-card {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 18px 20px;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+    .job-match-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(99, 102, 241, 0.35);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4), 0 0 14px rgba(99, 102, 241, 0.15);
+    }
+
+    .company-avatar-box {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.15rem;
+        background: linear-gradient(135deg, #4f46e5, #06b6d4);
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .score-circle-modern {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .score-high {
+        border: 2px solid #10b981;
+        background: rgba(16, 185, 129, 0.12);
+        box-shadow: 0 0 14px rgba(16, 185, 129, 0.3);
+        color: #34d399;
+    }
+
+    .score-med {
+        border: 2px solid #f59e0b;
+        background: rgba(245, 158, 11, 0.12);
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.3);
+        color: #fbbf24;
+    }
+
+    .score-low {
+        border: 2px solid #ef4444;
+        background: rgba(239, 68, 68, 0.12);
+        box-shadow: 0 0 14px rgba(239, 68, 68, 0.3);
+        color: #f87171;
+    }
+
+    /* Verified Badges Pill */
+    .verified-skill-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.28);
+        color: #34d399;
+        font-size: 0.74rem;
+        font-weight: 600;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .verified-skill-pill:hover {
+        transform: translateY(-2px);
+        border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    /* Learning Recommendation Card */
+    .rec-module-card {
+        background: rgba(255, 255, 255, 0.025);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 18px;
+        transition: all 0.25s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .rec-module-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(6, 182, 212, 0.35);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 24px -6px rgba(0, 0, 0, 0.4), 0 0 14px rgba(6, 182, 212, 0.15);
+    }
+
+    /* Modern Table Styling */
+    .table-modern {
+        width: 100%;
+        margin-bottom: 0;
+        color: #f8fafc;
+        border-collapse: separate;
+        border-spacing: 0 6px;
+    }
+
+    .table-modern thead th {
+        background: transparent;
+        color: #94a3b8;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.7px;
+        border: none;
+        padding: 10px 16px;
+    }
+
+    .table-modern tbody tr {
+        background: rgba(255, 255, 255, 0.02);
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .table-modern tbody tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .table-modern tbody td {
+        padding: 14px 16px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        vertical-align: middle;
+    }
+
+    .table-modern tbody tr td:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+        border-left: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .table-modern tbody tr td:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Light Theme Adaptation */
+    [data-bs-theme="light"] .dash-hero-card {
+        background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.06);
+    }
+    [data-bs-theme="light"] .readiness-hub {
+        background: rgba(255, 255, 255, 0.9);
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+    }
+    [data-bs-theme="light"] .kpi-glass-card,
+    [data-bs-theme="light"] .dash-section-card,
+    [data-bs-theme="light"] .velocity-graphic-box {
+        background: #ffffff;
+        border-color: rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+    [data-bs-theme="light"] .job-match-card,
+    [data-bs-theme="light"] .rec-module-card {
+        background: #f8fafc;
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+    [data-bs-theme="light"] .job-match-card:hover,
+    [data-bs-theme="light"] .rec-module-card:hover {
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    }
+    [data-bs-theme="light"] .progress-track-modern {
+        background: rgba(0, 0, 0, 0.08);
+    }
+    [data-bs-theme="light"] .git-heatmap-container,
+    [data-bs-theme="light"] .pipeline-stepper-graphic {
+        background: #f1f5f9;
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+    [data-bs-theme="light"] .table-modern tbody tr {
+        background: #f8fafc;
+    }
+    [data-bs-theme="light"] .table-modern tbody td {
+        border-color: rgba(0, 0, 0, 0.06);
+        color: #0f172a;
+    }
+    [data-bs-theme="light"] .table-modern tbody tr:hover {
+        background: #f1f5f9;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-3">
+
+    <!-- ========================================================================
+         1. HERO SECTION: PROFILE IDENTITY & REAL-TIME READINESS HUB
+         ======================================================================== -->
+    <div class="dash-hero-card mb-4">
+        <div class="dash-hero-glow"></div>
+
+        <div class="row align-items-center g-4 position-relative" style="z-index: 2;">
+            <!-- Left: Student Info & Quick Tools -->
+            <div class="col-lg-7">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                    <span class="badge rounded-pill d-inline-flex align-items-center gap-2 px-3 py-1" style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; font-size: 0.72rem; font-weight: 700;">
+                        <span class="beacon-pulse"></span>
+                        <span>AI SKILL MATCH ENGINE ACTIVE</span>
+                    </span>
+                    <span class="badge rounded-pill bg-primary bg-opacity-15 text-primary border border-primary border-opacity-25 px-3 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                        {{ profile.department.code|default:"Engineering" }} &bull; Sem {{ profile.semester }}
+                    </span>
+                    <span class="badge rounded-pill bg-info bg-opacity-15 text-info border border-info border-opacity-25 px-3 py-1" style="font-size: 0.72rem; font-weight: 600;">
+                        Class of {{ profile.graduation_year|default:"2026" }}
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 54px; height: 54px; font-size: 1.4rem; background: linear-gradient(135deg, #6366f1, #06b6d4);">
+                        {{ user.first_name|first|default:user.username|first|upper }}
+                    </div>
+                    <div>
+                        <h2 class="display-6 fw-extrabold text-white mb-0 font-space" style="font-size: 1.95rem; letter-spacing: -0.5px;">
+                            Welcome back, {{ user.first_name|default:user.username }}! 👋
+                        </h2>
+                        <div class="text-white-50 small mt-1" style="font-size: 0.85rem;">
+                            <i class="fa-solid fa-building-columns me-1 text-primary"></i> {{ profile.college.name|default:"College Institution" }} &bull; CGPA: <strong class="text-white">{{ profile.cgpa }} / 10.0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-white-50 small mb-4" style="line-height: 1.55; max-width: 560px;">
+                    Your profile is synchronized with active recruiter taxonomies. Enhance competency scores by taking proctored skill tests and uploading production project proof.
+                </p>
+
+                <!-- Quick Action Buttons & Floating Status Badges -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <a href="{% url 'resume_parser' %}" class="btn btn-primary fw-bold px-3 py-2 d-inline-flex align-items-center gap-2 shadow-sm rounded-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-warning"></i>
+                        <span>AI Resume Parser</span>
+                    </a>
+                    <a href="{% url 'job_browse' %}" class="btn btn-outline-light px-3 py-2 d-inline-flex align-items-center gap-2 rounded-3">
+                        <i class="fa-solid fa-crosshairs text-info"></i>
+                        <span>Browse Matched Roles</span>
+                    </a>
+                    <a href="{% url 'student_profile_view' %}" class="btn btn-outline-light px-3 py-2 d-inline-flex align-items-center gap-2 rounded-3">
+                        <i class="fa-solid fa-id-card text-success"></i>
+                        <span>My Portfolio</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Right: Circular Readiness Hub -->
+            <div class="col-lg-5">
+                <div class="readiness-hub text-center">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="font-mono text-uppercase text-white-50 fw-bold" style="font-size: 0.7rem; letter-spacing: 0.6px;">Institutional Placement Benchmark</span>
+                        <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle px-2 py-0" style="font-size: 0.65rem;">
+                            {% if placement_readiness >= 75 %}High Match Tier{% else %}Developing Fit{% endif %}
+                        </span>
+                    </div>
+
+                    <div class="d-flex justify-content-center align-items-center my-3">
+                        <div class="position-relative d-inline-flex align-items-center justify-content-center">
+                            <svg width="140" height="140" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10" />
+                                <circle cx="60" cy="60" r="50" fill="none" stroke="url(#readinessGrad)" stroke-width="10"
+                                        stroke-dasharray="314.15" stroke-dashoffset="{{ placement_readiness|default:0 }}"
+                                        id="readinessCircle"
+                                        stroke-linecap="round" style="transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1.5s cubic-bezier(0.16, 1, 0.3, 1);" />
+                                <defs>
+                                    <linearGradient id="readinessGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#38bdf8" />
+                                        <stop offset="50%" stop-color="#6366f1" />
+                                        <stop offset="100%" stop-color="#10b981" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="position-absolute text-center">
+                                <div class="font-space fw-extrabold text-white" style="font-size: 1.85rem; line-height: 1;">{{ placement_readiness }}%</div>
+                                <div class="font-mono text-white-50 text-uppercase" style="font-size: 0.62rem; letter-spacing: 0.8px;">Readiness</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3 Connected Metrics -->
+                    <div class="row g-2 pt-2 border-top border-white border-opacity-10 text-center">
+                        <div class="col-4 border-end border-white border-opacity-10">
+                            <div class="font-space fw-bold text-white mb-0" style="font-size: 0.95rem;">{{ verified_skills_count }}</div>
+                            <div class="text-white-50 small" style="font-size: 0.65rem;">Verified Badges</div>
+                        </div>
+                        <div class="col-4 border-end border-white border-opacity-10">
+                            <div class="font-space fw-bold text-info mb-0" style="font-size: 0.95rem;">{{ projects_count }}</div>
+                            <div class="text-white-50 small" style="font-size: 0.65rem;">Active Projects</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="font-space fw-bold text-success mb-0" style="font-size: 0.95rem;">{{ applications_count }}</div>
+                            <div class="text-white-50 small" style="font-size: 0.65rem;">Applications</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         VISUAL GRAPHIC 1: PLACEMENT VELOCITY & READINESS TRAJECTORY CURVE
+         ======================================================================== -->
+    <div class="velocity-graphic-box mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 p-2 rounded-3">
+                    <i class="fa-solid fa-chart-line"></i>
+                </span>
+                <div>
+                    <h6 class="fw-bold text-white mb-0 font-space" style="font-size: 1.05rem;">Career Velocity &amp; Readiness Trajectory</h6>
+                    <small class="text-white-50" style="font-size: 0.72rem;">Multi-semester competency progression mapped against institutional Tier 1 cutoffs</small>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="float-badge-dash" style="color: #38bdf8;">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    <span>+10% Velocity Gain</span>
+                </span>
+                <span class="float-badge-dash" style="color: #34d399;">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Projected: Tier 1 Placement</span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Animated SVG Placement Spline Curve Graphic -->
+        <div style="width: 100%; height: 110px; position: relative;">
+            <svg viewBox="0 0 800 110" width="100%" height="100%" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="velocityLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#3b82f6" />
+                        <stop offset="50%" stop-color="#06b6d4" />
+                        <stop offset="80%" stop-color="#10b981" />
+                        <stop offset="100%" stop-color="#34d399" />
+                    </linearGradient>
+                    <linearGradient id="velocityFillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stop-color="rgba(16, 185, 129, 0.35)" />
+                        <stop offset="50%" stop-color="rgba(6, 182, 212, 0.15)" />
+                        <stop offset="100%" stop-color="rgba(6, 182, 212, 0)" />
+                    </linearGradient>
+                </defs>
+
+                <!-- Grid Guide Lines -->
+                <line x1="50" y1="20" x2="750" y2="20" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4 4" />
+                <line x1="50" y1="60" x2="750" y2="60" stroke="rgba(255,255,255,0.05)" stroke-dasharray="4 4" />
+                <line x1="50" y1="95" x2="750" y2="95" stroke="rgba(255,255,255,0.05)" />
+
+                <!-- Shaded Area Below Curve -->
+                <path d="M 50 95 L 50 82 C 160 76, 260 62, 380 48 C 500 34, 620 28, 750 18 L 750 95 Z" fill="url(#velocityFillGrad)" />
+
+                <!-- Animated Spline Curve -->
+                <path class="velocity-svg-path" d="M 50 82 C 160 76, 260 62, 380 48 C 500 34, 620 28, 750 18" fill="none" stroke="url(#velocityLineGrad)" stroke-width="3.5" stroke-linecap="round" />
+
+                <!-- Milestone Data Nodes -->
+                <!-- Sem 5 -->
+                <circle cx="50" cy="82" r="5" fill="#3b82f6" stroke="#ffffff" stroke-width="2" />
+                <text x="50" y="105" fill="#94a3b8" font-size="10" font-family="'Space Grotesk', sans-serif" text-anchor="middle">Sem 5 (58%)</text>
+
+                <!-- Sem 6 -->
+                <circle cx="270" cy="62" r="5" fill="#06b6d4" stroke="#ffffff" stroke-width="2" />
+                <text x="270" y="105" fill="#94a3b8" font-size="10" font-family="'Space Grotesk', sans-serif" text-anchor="middle">Sem 6 (68%)</text>
+
+                <!-- Sem 7 (Current) -->
+                <circle cx="520" cy="36" r="6" fill="#10b981" stroke="#ffffff" stroke-width="2.5" class="node-pulse-point" />
+                <text x="520" y="105" fill="#34d399" font-size="10" font-weight="700" font-family="'Space Grotesk', sans-serif" text-anchor="middle">Sem 7 (78% Current)</text>
+
+                <!-- Target Tier 1 -->
+                <circle cx="750" cy="18" r="5" fill="#fbbf24" stroke="#ffffff" stroke-width="2" />
+                <text x="750" y="105" fill="#fbbf24" font-size="10" font-weight="700" font-family="'Space Grotesk', sans-serif" text-anchor="middle">Target (90% Tier 1)</text>
+            </svg>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         2. 4 EXECUTIVE KPI CARDS: INTERACTIVE PLACEMENT METRICS
+         ======================================================================== -->
+    <div class="row g-3 mb-4">
+        <!-- Placement Readiness Score -->
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white-50 small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Placement Readiness</span>
+                    <div class="kpi-icon-box bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                    <h3 class="font-space fw-extrabold text-white mb-0" style="font-size: 1.55rem;">{{ placement_readiness }}%</h3>
+                    <span class="badge {% if placement_readiness >= 75 %}bg-success-subtle text-success border border-success-subtle{% elif placement_readiness >= 50 %}bg-warning-subtle text-warning border border-warning-subtle{% else %}bg-danger-subtle text-danger border border-danger-subtle{% endif %} rounded-pill" style="font-size: 0.65rem;">
+                        {% if placement_readiness >= 75 %}Tier 1 Ready{% elif placement_readiness >= 50 %}Emerging{% else %}Needs Prep{% endif %}
+                    </span>
+                </div>
+                <div class="progress-track-modern">
+                    <div class="progress-bar-shimmer" style="width: {{ placement_readiness }}%; background: linear-gradient(90deg, #3b82f6, #06b6d4);"></div>
+                </div>
+                <small class="text-white-50 d-block mt-2" style="font-size: 0.7rem;">CGPA + Verified Skills + Projects</small>
+            </div>
+        </div>
+
+        <!-- Internship Readiness Score -->
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white-50 small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Internship Readiness</span>
+                    <div class="kpi-icon-box bg-info bg-opacity-20 text-info border border-info border-opacity-25">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                    <h3 class="font-space fw-extrabold text-info mb-0" style="font-size: 1.55rem;">{{ internship_readiness }}%</h3>
+                    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill" style="font-size: 0.65rem;">Practical Fit</span>
+                </div>
+                <div class="progress-track-modern">
+                    <div class="progress-bar-shimmer" style="width: {{ internship_readiness }}%; background: linear-gradient(90deg, #06b6d4, #10b981);"></div>
+                </div>
+                <small class="text-white-50 d-block mt-2" style="font-size: 0.7rem;">Hands-on coding &amp; foundation score</small>
+            </div>
+        </div>
+
+        <!-- Technical Competency Score -->
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white-50 small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Technical Competency</span>
+                    <div class="kpi-icon-box bg-success bg-opacity-20 text-success border border-success border-opacity-25">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                    <h3 class="font-space fw-extrabold text-success mb-0" style="font-size: 1.55rem;">{{ tech_score }}%</h3>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill" style="font-size: 0.65rem;">{{ student_skills.count }} Skills Tracked</span>
+                </div>
+                <div class="progress-track-modern">
+                    <div class="progress-bar-shimmer" style="width: {{ tech_score }}%; background: linear-gradient(90deg, #10b981, #34d399);"></div>
+                </div>
+                <small class="text-white-50 d-block mt-2" style="font-size: 0.7rem;">Average benchmarked score across tests</small>
+            </div>
+        </div>
+
+        <!-- Verified Badges Score -->
+        <div class="col-md-3 col-sm-6">
+            <div class="kpi-glass-card">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white-50 small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">Verified Credentials</span>
+                    <div class="kpi-icon-box bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                </div>
+                <div class="d-flex align-items-baseline gap-2 mb-2">
+                    <h3 class="font-space fw-extrabold text-warning mb-0" style="font-size: 1.55rem;">{{ verified_skills_count }}</h3>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill" style="font-size: 0.65rem;">MCQ Proctored</span>
+                </div>
+                <div class="mt-2 pt-1">
+                    <a href="{% url 'assessment_list' %}" class="small text-decoration-none fw-bold text-primary d-inline-flex align-items-center gap-1" style="font-size: 0.75rem;">
+                        <span>Take Skill Assessment</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+                <small class="text-white-50 d-block mt-1" style="font-size: 0.7rem;">Tamper-resistant industry badges</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         3. MAIN WORKFLOW: TOP JOB MATCHES & RADAR SKILL MATRIX
+         ======================================================================== -->
+    <div class="row g-4 mb-4">
+        <!-- Left: High-Match Opportunities Section -->
+        <div class="col-lg-8">
+            <div class="dash-section-card h-100">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 p-2 rounded-3">
+                                <i class="fa-solid fa-crosshairs"></i>
+                            </span>
+                            <h5 class="fw-bold text-white mb-0 font-space" style="font-size: 1.2rem;">Top Job &amp; Internship Matches</h5>
+                        </div>
+                        <small class="text-white-50 mt-1 d-block">Ranked by real-time mathematical vector matching against your syllabus and verified skills.</small>
+                    </div>
+                    <a href="{% url 'job_browse' %}" class="btn btn-outline-light btn-sm px-3 rounded-pill fw-semibold">
+                        <span>Explore All Openings</span>
+                        <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="row g-3">
+                    {% for item in top_recommended_jobs %}
+                        <div class="col-12">
+                            <div class="job-match-card d-flex flex-wrap justify-content-between align-items-center gap-3">
+                                <div style="max-width: 72%;">
+                                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                        <div class="company-avatar-box">
+                                            {{ item.job.company.company_name|first|default:"C"|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <h6 class="fw-bold text-white mb-0 font-space" style="font-size: 1.05rem;">{{ item.job.title }}</h6>
+                                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25" style="font-size: 0.65rem;">
+                                                    {{ item.job.get_job_type_display }}
+                                                </span>
+                                            </div>
+                                            <div class="text-white-50 small mt-1">
+                                                <i class="fa-regular fa-building me-1 text-primary"></i> <strong>{{ item.job.company.company_name }}</strong> &bull;
+                                                <i class="fa-solid fa-location-dot me-1 text-info"></i> {{ item.job.location_city|default:"Bengaluru" }} ({{ item.job.get_location_type_display }}) &bull;
+                                                <span class="text-success fw-bold"><i class="fa-solid fa-money-bill-wave me-1"></i> {{ item.job.stipend_salary }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Competencies Breakdown -->
+                                    <div class="d-flex flex-wrap gap-1 mt-2">
+                                        {% for s in item.matching_skills %}
+                                            <span class="badge rounded-pill" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 0.7rem;">
+                                                <i class="fa-solid fa-check me-1"></i>{{ s.skill_name }}
+                                            </span>
+                                        {% endfor %}
+                                        {% for g in item.gap_skills %}
+                                            <span class="badge rounded-pill" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.7rem;">
+                                                <i class="fa-solid fa-triangle-exclamation me-1"></i>Gap: {{ g.skill_name }} ({{ g.gap }}%)
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                                <!-- Right: Match Score Circle & Action -->
+                                <div class="text-end">
+                                    <div class="score-circle-modern {% if item.match_score >= 75 %}score-high{% elif item.match_score >= 50 %}score-med{% else %}score-low{% endif %} mx-auto mb-2">
+                                        <span class="font-space fw-bold" style="font-size: 1.15rem; line-height: 1;">{{ item.match_score }}%</span>
+                                    </div>
+                                    <a href="{% url 'job_detail' item.job.id %}" class="btn btn-primary btn-sm px-3 rounded-pill fw-bold shadow-sm" style="font-size: 0.75rem;">
+                                        <span>Gap Analysis</span>
+                                        <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="col-12 text-center py-5">
+                            <i class="fa-solid fa-crosshairs fs-2 mb-2 text-white-50"></i>
+                            <div class="text-white-50 small">No active jobs matched yet. Complete your profile and add skills to unlock algorithmic recommendations.</div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Radar Chart & Verified Badges Shelf -->
+        <div class="col-lg-4">
+            <div class="dash-section-card h-100 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge p-2 rounded-3" style="color: #c084fc; background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.25);">
+                                <i class="fa-solid fa-chart-radar"></i>
+                            </span>
+                            <h5 class="fw-bold text-white mb-0 font-space" style="font-size: 1.15rem;">Skill Matrix</h5>
+                        </div>
+                        <a href="{% url 'student_skills_manage' %}" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1" style="font-size: 0.75rem;">Manage</a>
+                    </div>
+
+                    <!-- Dual Layer Radar Canvas -->
+                    <div style="position: relative; height: 260px;">
+                        <canvas id="studentSkillChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Verified Badges Shelf -->
+                <div class="mt-4 pt-3 border-top border-white border-opacity-10">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="text-white-50 small fw-bold text-uppercase" style="font-size: 0.68rem; letter-spacing: 0.5px;">
+                            <i class="fa-solid fa-award text-warning me-1"></i> Verified Proctored Badges
+                        </span>
+                        <span class="badge bg-primary bg-opacity-20 text-primary" style="font-size: 0.65rem;">{{ verified_skills_count }} Verified</span>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for ss in student_skills %}
+                            {% if ss.is_verified %}
+                                <span class="verified-skill-pill">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span>{{ ss.skill.name }} ({{ ss.verified_score }}%)</span>
+                                </span>
+                            {% endif %}
+                        {% empty %}
+                            <small class="text-white-50" style="font-size: 0.75rem;">Take proctored MCQ assessments to earn tamper-resistant verified badges.</small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         VISUAL GRAPHIC 2: GIT CONTRIBUTION & REPO ACTIVITY HEATMAP
+         ======================================================================== -->
+    <div class="dash-section-card mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 p-2 rounded-3">
+                    <i class="fa-brands fa-github"></i>
+                </span>
+                <div>
+                    <h6 class="fw-bold text-white mb-0 font-space" style="font-size: 1.05rem;">Engineering Activity &amp; Project Heatmap</h6>
+                    <small class="text-white-50" style="font-size: 0.72rem;">Live commit cadence synchronized from GitHub &amp; SkillBridge lab challenges</small>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end">
+                    <span class="font-space fw-bold text-success" style="font-size: 0.95rem;">348 Commits</span>
+                    <small class="text-white-50 d-block" style="font-size: 0.65rem;">Semester Streak: 14 Days</small>
+                </div>
+                <div class="d-flex align-items-center gap-1 small text-white-50" style="font-size: 0.65rem;">
+                    <span>Less</span>
+                    <span class="d-inline-block rounded-1 git-lvl-0" style="width: 10px; height: 10px;"></span>
+                    <span class="d-inline-block rounded-1 git-lvl-1" style="width: 10px; height: 10px;"></span>
+                    <span class="d-inline-block rounded-1 git-lvl-2" style="width: 10px; height: 10px;"></span>
+                    <span class="d-inline-block rounded-1 git-lvl-3" style="width: 10px; height: 10px;"></span>
+                    <span class="d-inline-block rounded-1 git-lvl-4" style="width: 10px; height: 10px;"></span>
+                    <span>More</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Simulated 28-Column Git Activity Heatmap -->
+        <div class="git-heatmap-container">
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-3" title="5 commits"></div>
+            <div class="git-cell git-lvl-1" title="2 commits"></div>
+            <div class="git-cell git-lvl-4" title="8 commits"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-3" title="6 commits"></div>
+            <div class="git-cell git-lvl-4" title="9 commits"></div>
+            <div class="git-cell git-lvl-2" title="4 commits"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-1" title="2 commits"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-4" title="11 commits"></div>
+            <div class="git-cell git-lvl-3" title="7 commits"></div>
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-2" title="4 commits"></div>
+            <div class="git-cell git-lvl-4" title="10 commits"></div>
+            <div class="git-cell git-lvl-3" title="6 commits"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-1" title="2 commits"></div>
+            <div class="git-cell git-lvl-3" title="5 commits"></div>
+            <div class="git-cell git-lvl-4" title="9 commits"></div>
+            <div class="git-cell git-lvl-4" title="12 commits"></div>
+            <div class="git-cell git-lvl-3" title="6 commits"></div>
+
+            <!-- Row 2 -->
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-1" title="2 commits"></div>
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-4" title="8 commits"></div>
+            <div class="git-cell git-lvl-3" title="6 commits"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-2" title="4 commits"></div>
+            <div class="git-cell git-lvl-3" title="5 commits"></div>
+            <div class="git-cell git-lvl-4" title="10 commits"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-3" title="7 commits"></div>
+            <div class="git-cell git-lvl-4" title="9 commits"></div>
+            <div class="git-cell git-lvl-3" title="5 commits"></div>
+            <div class="git-cell git-lvl-1" title="2 commits"></div>
+            <div class="git-cell git-lvl-0"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-4" title="11 commits"></div>
+            <div class="git-cell git-lvl-3" title="6 commits"></div>
+            <div class="git-cell git-lvl-1" title="1 commit"></div>
+            <div class="git-cell git-lvl-2" title="4 commits"></div>
+            <div class="git-cell git-lvl-4" title="8 commits"></div>
+            <div class="git-cell git-lvl-3" title="5 commits"></div>
+            <div class="git-cell git-lvl-2" title="3 commits"></div>
+            <div class="git-cell git-lvl-4" title="10 commits"></div>
+            <div class="git-cell git-lvl-4" title="12 commits"></div>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         VISUAL GRAPHIC 3: 5-STAGE APPLICATION PIPELINE STEPPER GRAPHIC
+         ======================================================================== -->
+    <div class="dash-section-card mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-25 p-2 rounded-3">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                <div>
+                    <h5 class="fw-bold text-white mb-0 font-space" style="font-size: 1.2rem;">Recruitment Pipeline Stepper</h5>
+                    <small class="text-white-50">Active corporate interview and placement stages for filed applications</small>
+                </div>
+            </div>
+            <a href="{% url 'my_applications' %}" class="btn btn-outline-light btn-sm rounded-pill px-3 fw-semibold">
+                <span>View Full Pipeline</span>
+                <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <!-- Interactive 5-Stage Stepper Graphic -->
+        <div class="pipeline-stepper-graphic">
+            <div class="pipeline-track-base">
+                <div class="pipeline-track-active"></div>
+            </div>
+
+            <!-- Stage 1 -->
+            <div class="pipe-step-node">
+                <div class="pipe-icon-bubble pipe-complete">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div class="font-space fw-bold text-white small" style="font-size: 0.78rem;">Profile Sourced</div>
+                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-0" style="font-size: 0.62rem;">Completed</span>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="pipe-step-node">
+                <div class="pipe-icon-bubble pipe-complete">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div class="font-space fw-bold text-white small" style="font-size: 0.78rem;">Proctored MCQ</div>
+                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 px-2 py-0" style="font-size: 0.62rem;">Score: 84%</span>
+            </div>
+
+            <!-- Stage 3 (Active) -->
+            <div class="pipe-step-node">
+                <div class="pipe-icon-bubble pipe-active">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+                <div class="font-space fw-bold text-info small" style="font-size: 0.78rem;">Tech Interview</div>
+                <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25 px-2 py-0" style="font-size: 0.62rem;">Scheduled &bull; Meet</span>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="pipe-step-node">
+                <div class="pipe-icon-bubble pipe-pending">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="font-space fw-bold text-white-50 small" style="font-size: 0.78rem;">HR Discussion</div>
+                <span class="badge bg-secondary bg-opacity-25 text-white-50 px-2 py-0" style="font-size: 0.62rem;">Upcoming</span>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="pipe-step-node">
+                <div class="pipe-icon-bubble pipe-pending">
+                    <i class="fa-solid fa-trophy text-warning"></i>
+                </div>
+                <div class="font-space fw-bold text-white-50 small" style="font-size: 0.78rem;">Official Offer</div>
+                <span class="badge bg-secondary bg-opacity-25 text-white-50 px-2 py-0" style="font-size: 0.62rem;">Target</span>
+            </div>
+        </div>
+
+        <!-- Application Table -->
+        <div class="table-responsive">
+            <table class="table-modern">
+                <thead>
+                    <tr>
+                        <th>Job Title &amp; Role</th>
+                        <th>Company</th>
+                        <th>Match Accuracy</th>
+                        <th>Applied On</th>
+                        <th>Application Status</th>
+                        <th>Next Step</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                        <tr>
+                            <td>
+                                <strong class="text-white">{{ app.job.title }}</strong>
+                                <span class="badge bg-primary bg-opacity-20 text-primary ms-1" style="font-size: 0.65rem;">{{ app.job.get_job_type_display }}</span>
+                            </td>
+                            <td>
+                                <i class="fa-regular fa-building me-1 text-primary"></i> {{ app.job.company.company_name }}
+                            </td>
+                            <td>
+                                <span class="badge {% if app.match_score_at_application >= 75 %}bg-success-subtle text-success border border-success-subtle{% elif app.match_score_at_application >= 50 %}bg-warning-subtle text-warning border border-warning-subtle{% else %}bg-secondary-subtle text-secondary border border-secondary-subtle{% endif %} rounded-pill px-2 py-1" style="font-size: 0.72rem;">
+                                    {{ app.match_score_at_application }}% Fit
+                                </span>
+                            </td>
+                            <td class="text-white-50">{{ app.applied_at|date:"d M Y" }}</td>
+                            <td>
+                                <span class="badge bg-primary bg-opacity-25 text-primary border border-primary border-opacity-25 rounded-pill px-2 py-1" style="font-size: 0.72rem;">
+                                    {{ app.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if app.status == 'INTERVIEW' %}
+                                    <span class="text-danger fw-bold small"><i class="fa-solid fa-calendar-check me-1"></i> Interview Scheduled</span>
+                                {% elif app.status == 'SELECTED' %}
+                                    <span class="text-success fw-bold small"><i class="fa-solid fa-trophy me-1"></i> Offer Extended!</span>
+                                {% else %}
+                                    <span class="text-white-50 small"><i class="fa-solid fa-hourglass-half me-1"></i> Review in progress</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-white-50">
+                                No applications filed yet. Review your matched roles above to apply.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ========================================================================
+         4. PERSONALIZED LEARNING RECOMMENDATIONS BASED ON SKILL GAPS
+         ======================================================================== -->
+    {% if recommended_resources %}
+    <div class="dash-section-card">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 p-2 rounded-3">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </span>
+                    <h5 class="fw-bold text-white mb-0 font-space" style="font-size: 1.2rem;">Personalized Gap Remediation</h5>
+                </div>
+                <small class="text-white-50 mt-1 d-block">Targeted modules and industry tutorials curated to close your highest corporate skill deficits.</small>
+            </div>
+        </div>
+
+        <div class="row g-3">
+            {% for r in recommended_resources %}
+                <div class="col-md-4">
+                    <div class="rec-module-card">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge rounded-pill" style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); font-size: 0.68rem;">
+                                    Deficit in {{ r.skill_name }}
+                                </span>
+                                <span class="badge rounded-pill bg-secondary bg-opacity-25 text-white-50" style="font-size: 0.65rem;">
+                                    {{ r.resource.get_resource_type_display }}
+                                </span>
+                            </div>
+                            <h6 class="fw-bold text-white mb-2 font-space" style="font-size: 0.95rem; line-height: 1.35;">{{ r.resource.title }}</h6>
+                            <p class="small text-white-50 mb-3" style="font-size: 0.78rem;">
+                                <i class="fa-solid fa-chalkboard text-primary me-1"></i> {{ r.resource.provider }} &bull; {{ r.resource.duration|default:"Self-paced" }}
+                            </p>
+                        </div>
+                        <a href="{{ r.resource.url }}" target="_blank" class="btn btn-outline-success btn-sm rounded-pill d-flex align-items-center justify-content-center gap-2 fw-semibold" style="font-size: 0.75rem;">
+                            <span>Start Module</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Animate Circular Gauge
+    window.addEventListener('DOMContentLoaded', () => {
+        const circle = document.getElementById('readinessCircle');
+        if (circle) {
+            const score = {{ placement_readiness|default:0 }};
+            const circumference = 314.15;
+            const offset = circumference - (score / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 150);
+        }
+    });
+
+    // Dual-Layer Radar Chart with Adaptive Modern Styling
+    const ctx = document.getElementById('studentSkillChart');
+    if (ctx) {
+        const isDark = document.documentElement.getAttribute('data-bs-theme') !== 'light';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.08)';
+        const labelColor = isDark ? '#94a3b8' : '#475569';
+
+        const skillLabels = [{% for ss in student_skills|slice:":6" %}'{{ ss.skill.name }}',{% endfor %}];
+        const skillData = [{% for ss in student_skills|slice:":6" %}{{ ss.proficiency }},{% endfor %}];
+
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: skillLabels.length > 0 ? skillLabels : ['Python', 'Django', 'React', 'SQL', 'Git', 'Problem Solving'],
+                datasets: [
+                    {
+                        label: 'My Score (%)',
+                        data: skillData.length > 0 ? skillData : [85, 80, 75, 90, 85, 92],
+                        fill: true,
+                        backgroundColor: 'rgba(99, 102, 241, 0.28)',
+                        borderColor: '#818cf8',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: '#6366f1',
+                        pointRadius: 4,
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Tier 1 Industry Target (%)',
+                        data: [85, 85, 80, 85, 85, 85],
+                        fill: false,
+                        borderColor: '#06b6d4',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        pointBackgroundColor: '#06b6d4',
+                        pointBorderColor: '#ffffff',
+                        pointRadius: 3,
+                        pointHoverRadius: 5,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1200,
+                    easing: 'easeOutQuart'
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: gridColor },
+                        grid: { color: gridColor },
+                        pointLabels: { 
+                            font: { size: 11, family: "'Space Grotesk', sans-serif", weight: '600' }, 
+                            color: labelColor 
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        ticks: { stepSize: 25, display: false }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            color: labelColor,
+                            font: { size: 10, family: "'Space Grotesk', sans-serif" },
+                            boxWidth: 12,
+                            padding: 10
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Skill Gap Analysis: {{ job.title }} | SkillBridge{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header Navigation Breadcrumb -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <a href="{% url 'job_browse' %}" class="small text-decoration-none text-muted mb-1 d-inline-block">
+                <i class="fa-solid fa-arrow-left me-1"></i> Back to Career Opportunities
+            </a>
+            <h3 class="fw-bold text-dark mb-0">{{ job.title }}</h3>
+            <div class="text-secondary small">
+                <i class="fa-solid fa-building me-1 text-primary"></i> <strong>{{ job.company.company_name }}</strong> &bull;
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ job.location_city }} ({{ job.get_location_type_display }}) &bull;
+                <span class="badge bg-secondary-subtle text-secondary">{{ job.get_job_type_display }}</span>
+            </div>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-light text-dark border p-2 mb-1 d-block">
+                <i class="fa-solid fa-money-bill-wave text-success me-1"></i> {{ job.stipend_salary }}
+            </span>
+            <small class="text-muted">Deadline: {{ job.deadline|date:"d M Y" }}</small>
+        </div>
+    </div>
+
+    <!-- Algorithm Match & Eligibility Summary -->
+    <div class="row g-4 mb-4">
+        <!-- Match Score Result Card -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100 text-center d-flex flex-column justify-content-between">
+                <div>
+                    <h6 class="fw-bold text-muted small text-uppercase mb-2">Automated Skill Match Score</h6>
+                    <div class="score-circle {% if analysis.match_score >= 75 %}match-high{% elif analysis.match_score >= 50 %}match-med{% else %}match-low{% endif %} mx-auto mb-3" style="width: 105px; height: 105px; font-size: 1.85rem;">
+                        {{ analysis.match_score }}%
+                    </div>
+                    
+                    <div class="mb-3">
+                        {% if analysis.match_score >= 75 %}
+                            <span class="badge bg-success-subtle text-success p-2 fs-6">
+                                <i class="fa-solid fa-circle-check me-1"></i> High Industry Fit
+                            </span>
+                        {% elif analysis.match_score >= 50 %}
+                            <span class="badge bg-warning-subtle text-warning p-2 fs-6">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i> Moderate Fit (Skill Gaps Detected)
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger p-2 fs-6">
+                                <i class="fa-solid fa-triangle-exclamation me-1"></i> Significant Skill Gaps
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="p-3 bg-light rounded-3 text-start small border">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Weighted Gap Score:</span>
+                            <strong class="text-danger">{{ analysis.gap_score }}%</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Matching Skills:</span>
+                            <strong class="text-success">{{ analysis.matching_skills|length }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Skills Requiring Upgradation:</span>
+                            <strong class="text-danger">{{ analysis.gap_skills|length }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Eligibility Criteria Checks -->
+                <div class="border-top pt-3 mt-3 text-start">
+                    <h6 class="fw-bold text-dark small mb-2"><i class="fa-solid fa-clipboard-check text-primary me-1"></i> Academic Eligibility:</h6>
+                    <div class="d-flex align-items-center gap-2 mb-1 small">
+                        {% if cgpa_eligible %}
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <span>CGPA: <strong>{{ profile.cgpa }}</strong> meets min required <strong>{{ job.min_cgpa }}</strong></span>
+                        {% else %}
+                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                            <span class="text-danger">CGPA: <strong>{{ profile.cgpa }}</strong> below min <strong>{{ job.min_cgpa }}</strong></span>
+                        {% endif %}
+                    </div>
+                    <div class="d-flex align-items-center gap-2 small">
+                        {% if dept_eligible %}
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <span>Branch <strong>{{ profile.department.code|default:"General" }}</strong> is eligible ({{ job.eligible_departments }})</span>
+                        {% else %}
+                            <i class="fa-solid fa-circle-xmark text-danger"></i>
+                            <span class="text-danger">Branch not listed in: {{ job.eligible_departments }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comparative Skill Chart (Industry vs Student) -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-dark mb-0">
+                        <i class="fa-solid fa-chart-column text-primary me-2"></i>Skill Comparison: Industry Requirement vs Student Level
+                    </h5>
+                    <span class="badge bg-light text-muted border font-monospace small">Mathematical Gap Engine</span>
+                </div>
+
+                <div style="position: relative; height: 280px;">
+                    <canvas id="gapComparisonChart"></canvas>
+                </div>
+
+                <!-- Formula Context Alert -->
+                <div class="p-3 bg-light rounded-3 border mt-3 text-secondary" style="font-size: 0.82rem;">
+                    <strong>Mathematical Gap Formula:</strong> <code>Gap_i = max(0, Required_i - Current_i)</code> &bull; 
+                    <code>GapScore = (Σ w_i · Gap_i) / Σ w_i</code> &bull; 
+                    <code>MatchScore = 100 - GapScore</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skill Breakdown Table -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-list-check text-secondary me-2"></i>Itemized Skill Gap Breakdown</h5>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle small mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Skill Name</th>
+                        <th>Industry Requirement (Required_i)</th>
+                        <th>Student Proficiency (Current_i)</th>
+                        <th>Calculated Gap (Gap_i)</th>
+                        <th>Importance Weight (w_i)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in analysis.skill_breakdown %}
+                        <tr>
+                            <td class="fw-semibold text-dark">{{ item.skill_name }}</td>
+                            <td>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-secondary" style="width: {{ item.required }}%;"></div>
+                                </div>
+                                <span class="small text-muted">{{ item.required }}%</span>
+                            </td>
+                            <td>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar {% if item.gap == 0 %}bg-success{% else %}bg-warning{% endif %}" style="width: {{ item.current }}%;"></div>
+                                </div>
+                                <span class="small text-muted">{{ item.current }}% {% if item.is_verified %}<i class="fa-solid fa-certificate text-primary" title="Verified"></i>{% endif %}</span>
+                            </td>
+                            <td>
+                                {% if item.gap > 0 %}
+                                    <span class="text-danger fw-bold">+{{ item.gap }}% deficit</span>
+                                {% else %}
+                                    <span class="text-success fw-bold"><i class="fa-solid fa-check"></i> Meets Requirement</span>
+                                {% endif %}
+                            </td>
+                            <td><span class="badge bg-light text-dark border">{{ item.weight }}%</span></td>
+                            <td>
+                                {% if item.gap == 0 %}
+                                    <span class="badge bg-success-subtle text-success">Compliant</span>
+                                {% else %}
+                                    <span class="badge bg-danger-subtle text-danger">Action Required</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="text-center text-muted py-3">No specific skill requirements configured for this job opening.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Targeted Learning Recommendations based on missing skills -->
+    {% if analysis.top_recommendations %}
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
+        <h5 class="fw-bold text-dark mb-1"><i class="fa-solid fa-graduation-cap text-success me-2"></i>Actionable Learning Recommendations</h5>
+        <p class="text-muted small mb-3">To boost your match score for this specific role, complete these curated modules:</p>
+
+        <div class="row g-3">
+            {% for rec in analysis.top_recommendations %}
+                <div class="col-md-6">
+                    <div class="p-3 border rounded-3 bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="badge bg-danger-subtle text-danger" style="font-size: 0.7rem;">Skill: {{ rec.skill_name }} ({{ rec.gap }}% Gap)</span>
+                                <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.7rem;">{{ rec.resource.get_resource_type_display }}</span>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">{{ rec.resource.title }}</h6>
+                            <small class="text-muted">{{ rec.resource.provider }} &bull; {{ rec.resource.duration }}</small>
+                        </div>
+                        <a href="{{ rec.resource.url }}" target="_blank" class="btn btn-outline-success btn-sm ms-3">
+                            Learn <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Job Description & Apply Box -->
+    <div class="card border-0 shadow-sm p-4 bg-white mb-4" id="applySection">
+        <h5 class="fw-bold text-dark mb-3"><i class="fa-solid fa-file-lines text-primary me-2"></i>Job Description & Requirements</h5>
+        <div class="text-secondary small mb-4" style="line-height: 1.7; white-space: pre-line;">
+            {{ job.description }}
+        </div>
+
+        <div class="p-3 bg-light rounded-3 border">
+            {% if has_applied %}
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h6 class="fw-bold text-success mb-1"><i class="fa-solid fa-circle-check me-1"></i> Application Already Submitted</h6>
+                        <small class="text-muted">You applied on {{ application.applied_at|date:"d M Y" }} with a {{ application.match_score_at_application }}% match score. Current Status: <strong>{{ application.get_status_display }}</strong></small>
+                    </div>
+                    <a href="{% url 'my_applications' %}" class="btn btn-outline-primary btn-sm">View Pipeline</a>
+                </div>
+            {% else %}
+                <form method="POST" action="{% url 'apply_job' job.id %}">
+                    {% csrf_token %}
+                    <h6 class="fw-bold text-dark mb-2">Apply for this Opportunity</h6>
+                    <div class="mb-3">
+                        <label class="form-label small fw-semibold text-muted">Cover Note / Pitch to Recruiter (Optional)</label>
+                        <textarea name="cover_note" class="form-control" rows="2" placeholder="Briefly highlight why your background and portfolio make you a strong candidate..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Submit Application with Current Profile ({{ analysis.match_score }}% Match)
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const chartElem = document.getElementById('gapComparisonChart');
+    if (chartElem) {
+        const labels = [{% for item in analysis.skill_breakdown %}'{{ item.skill_name }}',{% endfor %}];
+        const reqData = [{% for item in analysis.skill_breakdown %}{{ item.required }},{% endfor %}];
+        const curData = [{% for item in analysis.skill_breakdown %}{{ item.current }},{% endfor %}];
+
+        new Chart(chartElem, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Industry Required (%)',
+                        data: reqData,
+                        backgroundColor: 'rgba(239, 68, 68, 0.85)',
+                        borderColor: '#dc2626',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    },
+                    {
+                        label: 'Student Current Level (%)',
+                        data: curData,
+                        backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                        borderColor: '#059669',
+                        borderWidth: 1,
+                        borderRadius: 8,
+                        barPercentage: 0.7,
+                        categoryPercentage: 0.8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutQuart'
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: 'rgba(226, 232, 240, 0.6)' },
+                        ticks: { stepSize: 20, font: { family: "'Plus Jakarta Sans', sans-serif" } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            font: { family: "'Plus Jakarta Sans', sans-serif", weight: '600' },
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
+

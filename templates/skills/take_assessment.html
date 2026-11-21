@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Taking Assessment: {{ assessment.skill.name }} | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       PROCTORED ASSESSMENT EXAMINATION ENGINE - 40 MCQs INTERFACE
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Cards */
+    .exam-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px;
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.08);
+        transition: border-color 0.25s ease;
+    }
+
+    [data-bs-theme="light"] .exam-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.92) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Sticky Control Header */
+    .exam-sticky-header {
+        background: rgba(15, 23, 42, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        position: sticky;
+        top: 70px;
+        z-index: 100;
+        padding: 14px 24px;
+        border-radius: 16px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    [data-bs-theme="light"] .exam-sticky-header {
+        background: rgba(255, 255, 255, 0.95);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Option Radio Cards */
+    .exam-option-card {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .exam-option-card:hover {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(99, 102, 241, 0.35);
+        transform: translateX(3px);
+    }
+
+    .exam-option-card.selected {
+        background: rgba(99, 102, 241, 0.16) !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+    }
+
+    [data-bs-theme="light"] .exam-option-card {
+        background: rgba(0, 0, 0, 0.02);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    [data-bs-theme="light"] .exam-option-card:hover {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-bs-theme="light"] .exam-option-card.selected {
+        background: rgba(59, 130, 246, 0.1) !important;
+        border-color: #3b82f6 !important;
+    }
+
+    /* Question Navigator Palette */
+    .palette-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+    }
+
+    .palette-btn {
+        height: 38px;
+        border-radius: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+
+    .palette-btn:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .palette-btn.answered {
+        background: rgba(16, 185, 129, 0.2) !important;
+        border-color: #10b981 !important;
+        color: #34d399 !important;
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+    }
+
+    [data-bs-theme="light"] .palette-btn {
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .palette-btn.answered {
+        background: #ecfdf5 !important;
+        border-color: #10b981 !important;
+        color: #059669 !important;
+    }
+
+    /* Timer Badge */
+    .timer-badge-box {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid rgba(239, 68, 68, 0.35);
+        color: #f87171;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Sticky Exam Control Header -->
+    <div class="exam-sticky-header">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="badge bg-primary-subtle text-primary font-mono small">
+                        {{ assessment.skill.name }} Competency
+                    </span>
+                    <span class="badge bg-secondary-subtle text-secondary small font-mono">
+                        {{ questions|length }} MCQs Total
+                    </span>
+                </div>
+                <h4 class="font-space fw-bold text-main mb-0">
+                    {{ assessment.title }}
+                </h4>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="text-end d-none d-md-block">
+                    <div class="text-secondary small">Progress</div>
+                    <strong class="text-main font-mono" id="progressSummary">0 / {{ questions|length }} Answered</strong>
+                </div>
+
+                <!-- Live Countdown Timer -->
+                <div class="timer-badge-box">
+                    <i class="fa-regular fa-clock"></i>
+                    <span id="timerDisplay">--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Real-time Exam Progress Bar -->
+        <div class="progress mt-3" style="height: 5px; background: rgba(255,255,255,0.06);">
+            <div class="progress-bar bg-primary" id="examProgressBar" style="width: 0%; transition: width 0.3s ease;"></div>
+        </div>
+    </div>
+
+    <!-- Questions Form -->
+    <form id="assessmentForm" method="POST" action="{% url 'submit_assessment' assessment.id %}">
+        {% csrf_token %}
+
+        <div class="row g-4">
+            
+            <!-- Left Column: The 40 Questions -->
+            <div class="col-lg-8">
+                {% for q in questions %}
+                    <div class="exam-glass-card p-4 mb-4 question-block" id="question_card_{{ q.id }}" data-qid="{{ q.id }}" data-index="{{ forloop.counter }}">
+                        
+                        <!-- Question Header -->
+                        <div class="d-flex align-items-baseline gap-3 mb-3">
+                            <span class="badge rounded-circle p-2 font-mono" style="background: linear-gradient(135deg, #3b82f6, #6366f1); color: #ffffff; width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.85rem; flex-shrink: 0;">
+                                {{ forloop.counter }}
+                            </span>
+                            <h5 class="fw-bold text-main mb-0 font-space" style="font-size: 1.02rem; line-height: 1.45;">
+                                {{ q.question_text }}
+                            </h5>
+                        </div>
+
+                        <!-- 4 Options -->
+                        <div class="options-container">
+                            <!-- Option A -->
+                            <label class="exam-option-card" for="q_{{ q.id }}_A" onclick="selectOption('{{ q.id }}', 'A', this)">
+                                <input class="form-check-input flex-shrink-0" type="radio" id="q_{{ q.id }}_A" name="question_{{ q.id }}" value="A">
+                                <span class="fw-bold text-secondary font-mono" style="min-width: 20px;">A.</span>
+                                <span class="text-main" style="font-size: 0.92rem;">{{ q.option_a }}</span>
+                            </label>
+
+                            <!-- Option B -->
+                            <label class="exam-option-card" for="q_{{ q.id }}_B" onclick="selectOption('{{ q.id }}', 'B', this)">
+                                <input class="form-check-input flex-shrink-0" type="radio" id="q_{{ q.id }}_B" name="question_{{ q.id }}" value="B">
+                                <span class="fw-bold text-secondary font-mono" style="min-width: 20px;">B.</span>
+                                <span class="text-main" style="font-size: 0.92rem;">{{ q.option_b }}</span>
+                            </label>
+
+                            <!-- Option C -->
+                            <label class="exam-option-card" for="q_{{ q.id }}_C" onclick="selectOption('{{ q.id }}', 'C', this)">
+                                <input class="form-check-input flex-shrink-0" type="radio" id="q_{{ q.id }}_C" name="question_{{ q.id }}" value="C">
+                                <span class="fw-bold text-secondary font-mono" style="min-width: 20px;">C.</span>
+                                <span class="text-main" style="font-size: 0.92rem;">{{ q.option_c }}</span>
+                            </label>
+
+                            <!-- Option D -->
+                            <label class="exam-option-card" for="q_{{ q.id }}_D" onclick="selectOption('{{ q.id }}', 'D', this)">
+                                <input class="form-check-input flex-shrink-0" type="radio" id="q_{{ q.id }}_D" name="question_{{ q.id }}" value="D">
+                                <span class="fw-bold text-secondary font-mono" style="min-width: 20px;">D.</span>
+                                <span class="text-main" style="font-size: 0.92rem;">{{ q.option_d }}</span>
+                            </label>
+                        </div>
+
+                    </div>
+                {% endfor %}
+
+                <!-- Mobile / Bottom Submit Card -->
+                <div class="exam-glass-card p-4 text-center">
+                    <h5 class="font-space fw-bold text-main mb-2">Ready to Finalize Assessment?</h5>
+                    <p class="text-secondary small mb-3">
+                        Ensure you have answered all questions. Your proctored score will be computed instantly against the 60% passing standard.
+                    </p>
+                    <button type="submit" class="btn btn-primary px-5 py-2 fw-bold font-space rounded-3 shadow-lg" id="submitBtnBottom">
+                        <i class="fa-solid fa-paper-plane me-1"></i> Submit Assessment
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Sticky Question Navigator Palette -->
+            <div class="col-lg-4">
+                <div class="exam-glass-card p-4 sticky-top" style="top: 175px;">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h6 class="font-space fw-bold text-main mb-0">
+                            <i class="fa-solid fa-grid text-primary me-2"></i>Question Palette (40)
+                        </h6>
+                        <span class="badge bg-secondary-subtle text-secondary font-mono small" id="paletteAnsweredCount">0/40</span>
+                    </div>
+
+                    <p class="text-secondary small mb-3" style="font-size: 0.78rem;">
+                        Click any number to jump directly to that question. Answered questions will turn green.
+                    </p>
+
+                    <!-- 40 Question Buttons Grid -->
+                    <div class="palette-grid mb-4">
+                        {% for q in questions %}
+                            <a href="#question_card_{{ q.id }}" class="palette-btn" id="palette_btn_{{ q.id }}" onclick="smoothScrollTo('question_card_{{ q.id }}', event)">
+                                {{ forloop.counter }}
+                            </a>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="d-flex align-items-center justify-content-between text-secondary small mb-4 pb-3 border-bottom" style="border-color: rgba(255,255,255,0.08) !important; font-size: 0.76rem;">
+                        <span class="d-inline-flex align-items-center gap-1">
+                            <span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(16, 185, 129, 0.6); display: inline-block;"></span>
+                            Answered
+                        </span>
+                        <span class="d-inline-flex align-items-center gap-1">
+                            <span style="width: 10px; height: 10px; border-radius: 3px; background: rgba(255, 255, 255, 0.1); display: inline-block;"></span>
+                            Unanswered
+                        </span>
+                    </div>
+
+                    <!-- Primary Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold font-space rounded-3 shadow-lg d-flex align-items-center justify-content-center gap-2" id="submitBtnSide">
+                        <i class="fa-solid fa-circle-check fs-5"></i>
+                        <span>Submit Assessment</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const totalQuestions = {{ questions|length|default:40 }};
+    const answeredMap = {};
+
+    function selectOption(qId, optionVal, labelElem) {
+        // Clear selected class from siblings
+        const parent = labelElem.closest('.options-container');
+        parent.querySelectorAll('.exam-option-card').forEach(card => card.classList.remove('selected'));
+        labelElem.classList.add('selected');
+
+        // Check the radio input
+        const radio = labelElem.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+
+        // Update answered state
+        answeredMap[qId] = optionVal;
+        updatePaletteState(qId);
+    }
+
+    function updatePaletteState(qId) {
+        const paletteBtn = document.getElementById('palette_btn_' + qId);
+        if (paletteBtn) {
+            paletteBtn.classList.add('answered');
+        }
+
+        const count = Object.keys(answeredMap).length;
+        const progressPct = Math.round((count / totalQuestions) * 100);
+
+        document.getElementById('examProgressBar').style.width = progressPct + '%';
+        document.getElementById('progressSummary').innerText = `${count} / ${totalQuestions} Answered`;
+        document.getElementById('paletteAnsweredCount').innerText = `${count}/${totalQuestions}`;
+    }
+
+    function smoothScrollTo(elementId, event) {
+        event.preventDefault();
+        const elem = document.getElementById(elementId);
+        if (elem) {
+            const yOffset = -180;
+            const y = elem.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+    }
+
+    // 40-Minute Countdown Timer
+    let timeLeft = {{ time_limit_seconds|default:2400 }};
+    const timerElem = document.getElementById('timerDisplay');
+    const formElem = document.getElementById('assessmentForm');
+
+    function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElem.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert('Time is up! Submitting your assessment automatically.');
+            formElem.submit();
+        }
+        timeLeft--;
+    }
+
+    updateTimer();
+    const timerInterval = setInterval(updateTimer, 1000);
+</script>
+{% endblock %}

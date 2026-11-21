@@ -1,0 +1,1120 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Skills Portfolio & Competency Matrix | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       MODERN ENTERPRISE SKILLS PORTFOLIO & COMPETENCY MATRIX
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Cards */
+    .skills-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    [data-bs-theme="light"] .skills-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06), 0 0 15px rgba(99, 102, 241, 0.06);
+    }
+
+    /* Beacon & Pulsing Indicators */
+    .skills-beacon-badge {
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34d399;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .beacon-pulse {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: #10b981;
+        box-shadow: 0 0 8px #10b981;
+        display: inline-block;
+        animation: beaconPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes beaconPulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+    }
+
+    .skills-verified-pill {
+        padding: 5px 12px;
+        border-radius: 9999px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: #a5b4fc;
+        font-size: 0.72rem;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Buttons */
+    .btn-hero-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff !important;
+        font-weight: 700;
+        font-size: 0.84rem;
+        padding: 9px 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(251, 191, 36, 0.5);
+        box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+    }
+
+    .btn-hero-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5);
+        border-color: #fde047;
+    }
+
+    .btn-glass-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--bs-body-color) !important;
+        font-weight: 600;
+        font-size: 0.84rem;
+        padding: 9px 16px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.25s ease;
+        text-decoration: none;
+    }
+
+    .btn-glass-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(99, 102, 241, 0.4);
+        transform: translateY(-2px);
+    }
+
+    /* KPI Cards */
+    .kpi-metric-box {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 18px 20px;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.25s ease;
+    }
+
+    .kpi-metric-box:hover {
+        transform: translateY(-3px);
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.4), 0 0 15px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-bs-theme="light"] .kpi-metric-box {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .kpi-metric-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+    }
+
+    /* Category Domain Visualizer Bar */
+    .domain-dist-track {
+        height: 10px;
+        border-radius: 9999px;
+        display: flex;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .domain-dist-seg {
+        height: 100%;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    /* Filter Pills */
+    .category-filter-btn {
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .category-filter-btn:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #f8fafc;
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    .category-filter-btn.active {
+        background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+        color: #ffffff;
+        border-color: transparent;
+        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.35);
+    }
+
+    [data-bs-theme="light"] .category-filter-btn {
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .category-filter-btn.active {
+        background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+        color: #ffffff;
+    }
+
+    /* Studio Form Controls */
+    .studio-input-wrap label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-transform: uppercase;
+        color: #94a3b8;
+        margin-bottom: 6px;
+    }
+
+    .studio-select {
+        background: rgba(15, 23, 42, 0.75);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #f8fafc;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+    }
+
+    .studio-select:focus {
+        background: #0f172a;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+        color: #ffffff;
+    }
+
+    [data-bs-theme="light"] .studio-select {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        color: #0f172a;
+    }
+
+    /* Custom Slider */
+    .studio-range {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 6px;
+        background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%);
+        outline: none;
+        transition: opacity 0.2s;
+    }
+
+    .studio-range::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #ffffff;
+        border: 3px solid #3b82f6;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.7);
+        transition: transform 0.15s ease;
+    }
+
+    .studio-range::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+    }
+
+    .preset-pill {
+        padding: 3px 9px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.15s ease;
+    }
+
+    .preset-pill:hover {
+        background: rgba(99, 102, 241, 0.2);
+        color: #a5b4fc;
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    /* Skill Item Row / Card */
+    .skill-matrix-row {
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin-bottom: 10px;
+        transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .skill-matrix-row:hover {
+        background: rgba(30, 41, 59, 0.7);
+        border-color: rgba(99, 102, 241, 0.35);
+        transform: translateX(4px);
+        box-shadow: 0 8px 22px -4px rgba(0, 0, 0, 0.4), 0 0 14px rgba(99, 102, 241, 0.12);
+    }
+
+    [data-bs-theme="light"] .skill-matrix-row {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(0, 0, 0, 0.07);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    [data-bs-theme="light"] .skill-matrix-row:hover {
+        background: #ffffff;
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Tech Brand Icon Avatar */
+    .tech-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Competency Shimmer Progress Bar */
+    .competency-track {
+        height: 7px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    [data-bs-theme="light"] .competency-track {
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .competency-bar-fill {
+        height: 100%;
+        border-radius: 9999px;
+        position: relative;
+        transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .competency-bar-fill::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: barShimmer 3s infinite ease-in-out;
+    }
+
+    @keyframes barShimmer {
+        0% { left: -100%; }
+        50%, 100% { left: 100%; }
+    }
+
+    /* Verification Badge */
+    .badge-verified-emerald {
+        background: rgba(16, 185, 129, 0.14);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        color: #34d399;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 5px 11px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 0 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .btn-verify-cta {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        color: #fbbf24 !important;
+        font-size: 0.75rem;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .btn-verify-cta:hover {
+        background: rgba(245, 158, 11, 0.25);
+        border-color: #f59e0b;
+        transform: translateY(-1px);
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.35);
+    }
+
+    /* Action Buttons */
+    .btn-action-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: #94a3b8;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-action-icon:hover {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.4);
+        color: #ef4444;
+        transform: scale(1.08);
+    }
+
+    .btn-calibrate-icon:hover {
+        background: rgba(99, 102, 241, 0.15) !important;
+        border-color: rgba(99, 102, 241, 0.4) !important;
+        color: #818cf8 !important;
+    }
+
+    /* Verification Value Card */
+    .verify-advantage-card {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 16px;
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    [data-bs-theme="light"] .verify-advantage-card {
+        background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+    }
+
+    .verify-advantage-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, #06b6d4, #10b981);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Hero Header Bar -->
+    <div class="skills-glass-card p-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="skills-beacon-badge">
+                        <span class="beacon-pulse"></span> Vector Skill Matrix Active
+                    </span>
+                    <span class="skills-verified-pill">
+                        <i class="fa-solid fa-shield-check text-emerald"></i> Proctored MCQ Assessment Sync
+                    </span>
+                    <span class="badge bg-secondary-subtle text-secondary small">
+                        Student: {{ profile.user.get_full_name|default:profile.user.username }}
+                    </span>
+                </div>
+                <h2 class="font-space fw-bold text-main mb-1">
+                    <i class="fa-solid fa-layer-group text-primary me-2"></i>My Skills Portfolio & Competency Matrix
+                </h2>
+                <p class="text-secondary small mb-0">
+                    Calibrate technical proficiencies, analyze domain distributions against Tier 1 enterprise requirements, and earn proctored verified credentials.
+                </p>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{% url 'resume_parser' %}" class="btn-glass-secondary">
+                    <i class="fa-solid fa-file-invoice text-info me-1"></i> AI Resume Auto-Extract
+                </a>
+                <a href="{% url 'assessment_list' %}" class="btn-hero-warning">
+                    <i class="fa-solid fa-bolt text-warning me-1"></i> Take Skill Assessment
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Telemetry KPI Intelligence Grid (4 Visual Cards) -->
+    <div class="row g-3 mb-4">
+        <!-- KPI 1: Active Skills Tracked -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa;">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <span class="badge bg-primary-subtle text-primary font-mono small">
+                        {{ category_breakdown|length }} Domains
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-main fs-3 mb-0">{{ total_skills_count }}</div>
+                <div class="text-secondary small fw-semibold">Active Tracked Skills</div>
+                <div class="d-flex align-items-center gap-1 mt-2">
+                    <span class="badge rounded-pill bg-light text-dark small" style="font-size: 0.68rem;">Portfolio Size: Strong</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 2: Proctored Verified Badges -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <span class="badge bg-success-subtle text-success font-mono small">
+                        {{ verification_rate }}% Rate
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-emerald fs-3 mb-0">{{ verified_skills_count }}</div>
+                <div class="text-secondary small fw-semibold">Proctored Verified Badges</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-success small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-circle-check"></i> 3.2x Recruiter Visibility
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 3: Mean Proficiency Index -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <span class="badge bg-indigo-subtle text-indigo font-mono small" style="background: rgba(99, 102, 241, 0.1); color: #a5b4fc;">
+                        Index Score
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-main fs-3 mb-0">{{ avg_proficiency }}%</div>
+                <div class="text-secondary small fw-semibold">Average Competency Level</div>
+                <div class="competency-track mt-2">
+                    <div class="competency-bar-fill" style="width: {{ avg_proficiency }}%; background: linear-gradient(90deg, #6366f1, #38bdf8);"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI 4: Enterprise Placement Tier -->
+        <div class="col-6 col-lg-3">
+            <div class="kpi-metric-box">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="kpi-metric-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">
+                        <i class="fa-solid fa-ranking-star"></i>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning font-mono small">
+                        Benchmark
+                    </span>
+                </div>
+                <div class="font-space fw-bold text-warning fs-3 mb-0">
+                    {% if avg_proficiency >= 80 %}Tier 1 Elite{% elif avg_proficiency >= 65 %}Production Ready{% else %}Developing{% endif %}
+                </div>
+                <div class="text-secondary small fw-semibold">Recruitment Tier Status</div>
+                <div class="d-flex align-items-center gap-1 mt-2 text-secondary small" style="font-size: 0.68rem;">
+                    <i class="fa-solid fa-shield-halved text-warning"></i> Algorithmic Match Ready
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Visual Graphic: Competency Domain Breakdown & Interactive Radar -->
+    <div class="skills-glass-card p-4 mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+            <div>
+                <h5 class="font-space fw-bold text-main mb-1">
+                    <i class="fa-solid fa-diagram-project text-primary me-2"></i>Competency Domain Distribution & Radar
+                </h5>
+                <p class="text-secondary small mb-0">
+                    Multi-disciplinary breakdown of active technical and foundational capabilities.
+                </p>
+            </div>
+            <button class="btn btn-sm btn-glass-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#radarCollapse" aria-expanded="false" aria-controls="radarCollapse" id="toggleRadarBtn">
+                <i class="fa-solid fa-chart-pie me-1"></i> <span id="radarBtnText">View Competency Radar Chart</span>
+            </button>
+        </div>
+
+        <!-- Domain Distribution Bar Graphic -->
+        <div class="domain-dist-track mb-3">
+            {% for cat_name, cat in category_breakdown.items %}
+                <div class="domain-dist-seg" style="width: calc({{ cat.count }} / {{ total_skills_count }} * 100%); 
+                    {% if forloop.counter == 1 %}background: #3b82f6;
+                    {% elif forloop.counter == 2 %}background: #10b981;
+                    {% elif forloop.counter == 3 %}background: #06b6d4;
+                    {% elif forloop.counter == 4 %}background: #8b5cf6;
+                    {% elif forloop.counter == 5 %}background: #f59e0b;
+                    {% else %}background: #ec4899;{% endif %}"
+                    title="{{ cat_name }}: {{ cat.count }} skills (Avg: {{ cat.avg_prof }}%)">
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Category Metric Badges -->
+        <div class="d-flex flex-wrap gap-2">
+            {% for cat_name, cat in category_breakdown.items %}
+                <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); font-size: 0.78rem;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; display: inline-block;
+                        {% if forloop.counter == 1 %}background: #3b82f6;
+                        {% elif forloop.counter == 2 %}background: #10b981;
+                        {% elif forloop.counter == 3 %}background: #06b6d4;
+                        {% elif forloop.counter == 4 %}background: #8b5cf6;
+                        {% elif forloop.counter == 5 %}background: #f59e0b;
+                        {% else %}background: #ec4899;{% endif %}">
+                    </span>
+                    <span class="text-main fw-semibold">{{ cat_name }}</span>
+                    <span class="text-secondary font-mono">({{ cat.count }})</span>
+                    <span class="badge rounded-pill bg-dark-subtle text-secondary font-mono" style="font-size: 0.7rem;">{{ cat.avg_prof }}% avg</span>
+                </div>
+            {% empty %}
+                <span class="text-secondary small">No category telemetry available. Add skills below to visualize.</span>
+            {% endfor %}
+        </div>
+
+        <!-- Collapsible Interactive Chart.js Radar Chart Graphic -->
+        <div class="collapse mt-4" id="radarCollapse">
+            <div class="p-3 rounded-4" style="background: rgba(15, 23, 42, 0.4); border: 1px solid rgba(255,255,255,0.08);">
+                <div class="row align-items-center">
+                    <div class="col-md-7 text-center">
+                        <div style="max-height: 280px; position: relative;">
+                            <canvas id="skillsPortfolioRadar"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="p-3">
+                            <h6 class="font-space fw-bold text-main mb-2">
+                                <i class="fa-solid fa-bullseye text-primary me-2"></i>Multi-Axis Competency Audit
+                            </h6>
+                            <p class="text-secondary small mb-3">
+                                This mathematical radar chart computes your domain capabilities against Tier 1 enterprise expectations (80% benchmark target).
+                            </p>
+                            <div class="d-flex align-items-center gap-3 small mb-2">
+                                <span class="d-inline-flex align-items-center gap-1">
+                                    <span style="width: 12px; height: 3px; background: #6366f1; border-radius: 2px;"></span>
+                                    <span class="text-main fw-semibold">Your Scores</span>
+                                </span>
+                                <span class="d-inline-flex align-items-center gap-1">
+                                    <span style="width: 12px; height: 3px; background: rgba(16, 185, 129, 0.8); border-radius: 2px;"></span>
+                                    <span class="text-secondary">Tier 1 Target</span>
+                                </span>
+                            </div>
+                            <div class="text-muted small">
+                                Verified skills automatically elevate your placement matching score on recruiter candidate discovery boards.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Layout: Left Form + Right Matrix -->
+    <div class="row g-4">
+
+        <!-- Left Column: Add / Calibrate Skill Studio -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="skills-glass-card p-4 sticky-top" style="top: 90px; z-index: 10;">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <h5 class="font-space fw-bold text-main mb-0">
+                        <i class="fa-solid fa-sliders text-primary me-2"></i>Calibrate Skill
+                    </h5>
+                    <span class="badge bg-primary-subtle text-primary small">Interactive</span>
+                </div>
+                <p class="text-secondary small mb-3">
+                    Select a skill from catalog or calibrate an existing one. Self-reported proficiency updates in real-time.
+                </p>
+
+                <form method="POST" id="skillCalibrationForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" id="formAction" value="add">
+                    
+                    <!-- Skill Select Dropdown -->
+                    <div class="studio-input-wrap mb-3">
+                        <label for="skillSelect"><i class="fa-solid fa-book-bookmark text-primary me-1"></i> Choose Technical Skill</label>
+                        <select name="skill_id" id="skillSelect" class="form-select studio-select" required onchange="handleSkillSelectChange(this)">
+                            <option value="">Select skill from catalog...</option>
+                            {% regroup all_skills by category.name as skills_by_cat %}
+                            {% for cat in skills_by_cat %}
+                                <optgroup label="{{ cat.grouper }}">
+                                    {% for s in cat.list %}
+                                        <option value="{{ s.id }}" {% if s.id in existing_skill_ids %}data-added="true"{% endif %}>
+                                            {{ s.name }} {% if s.id in existing_skill_ids %}★ (In Profile){% endif %}
+                                        </option>
+                                    {% endfor %}
+                                </optgroup>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Interactive Proficiency Slider -->
+                    <div class="studio-input-wrap mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="mb-0"><i class="fa-solid fa-gauge-high text-info me-1"></i> Proficiency Level</label>
+                            <span class="badge font-mono fw-bold" id="profVal" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.88rem;">75%</span>
+                        </div>
+                        
+                        <!-- Dynamic Level Readout -->
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="badge bg-dark-subtle text-secondary small" id="profLevel">Advanced / Production Ready</span>
+                            <span class="text-secondary small font-mono" style="font-size: 0.7rem;">Scale: 10 - 100</span>
+                        </div>
+
+                        <input type="range" class="studio-range" name="proficiency" min="10" max="100" step="5" value="75" id="profRange" oninput="updateProficiencyDisplay(this.value)">
+
+                        <!-- Quick Preset Calibration Chips -->
+                        <div class="d-flex justify-content-between align-items-center gap-1 mt-2">
+                            <span class="preset-pill" onclick="setProficiency(40)">40% Jr</span>
+                            <span class="preset-pill" onclick="setProficiency(65)">65% Mid</span>
+                            <span class="preset-pill" onclick="setProficiency(80)">80% Sr</span>
+                            <span class="preset-pill" onclick="setProficiency(95)">95% Lead</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm rounded-3 d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <i class="fa-solid fa-floppy-disk"></i>
+                        <span id="submitBtnText">Save Competency to Profile</span>
+                    </button>
+                </form>
+
+                <!-- Informational Verification Advantage Graphic Box -->
+                <div class="verify-advantage-card mt-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge bg-success text-white fw-bold small" style="font-size: 0.7rem;">
+                            <i class="fa-solid fa-bolt me-1"></i> 3.2x Recruiter Reach
+                        </span>
+                        <span class="text-secondary font-mono small" style="font-size: 0.72rem;">Proctored MCQ</span>
+                    </div>
+                    <h6 class="font-space fw-bold text-main mb-1" style="font-size: 0.88rem;">
+                        <i class="fa-solid fa-shield-halved text-success me-1"></i> Why Get Verified?
+                    </h6>
+                    <p class="text-secondary small mb-2" style="font-size: 0.78rem; line-height: 1.4;">
+                        Verified skills carry 3x weight in recruiter algorithmic gap calculus, priority candidate indexing, and direct interview shortlists.
+                    </p>
+                    <a href="{% url 'assessment_list' %}" class="btn-verify-cta w-100 justify-content-center py-2" style="border-radius: 8px;">
+                        <i class="fa-solid fa-certificate"></i> Explore Timed MCQ Tests &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Active Profile Skills Matrix -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="skills-glass-card p-4">
+                
+                <!-- Toolbar: Title + Search & Category Filters -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <div>
+                        <h5 class="font-space fw-bold text-main mb-0">
+                            <i class="fa-solid fa-list-check text-primary me-2"></i>Active Profile Competencies
+                            <span class="badge bg-primary-subtle text-primary font-mono ms-1" id="visibleCountBadge">{{ existing_skills|length }}</span>
+                        </h5>
+                    </div>
+                    
+                    <!-- Search Input Filter -->
+                    <div style="min-width: 220px;">
+                        <div class="input-group input-group-sm">
+                            <span class="input-group-text bg-transparent border-end-0 text-secondary" style="border-color: rgba(255,255,255,0.1);">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </span>
+                            <input type="text" id="skillSearchInput" class="form-control bg-transparent border-start-0 text-main" placeholder="Search skills..." oninput="filterSkills()" style="border-color: rgba(255,255,255,0.1);">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Category Filter Pills -->
+                <div class="d-flex flex-wrap gap-2 mb-4 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                    <button type="button" class="category-filter-btn active" data-category="ALL" onclick="setCategoryFilter('ALL', this)">
+                        All ({{ existing_skills|length }})
+                    </button>
+                    {% for cat_name, cat in category_breakdown.items %}
+                        <button type="button" class="category-filter-btn" data-category="{{ cat_name }}" onclick="setCategoryFilter('{{ cat_name }}', this)">
+                            {{ cat_name }} ({{ cat.count }})
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <!-- Skills List Container -->
+                <div id="skillsListContainer">
+                    {% for ss in existing_skills %}
+                        <div class="skill-matrix-row" data-skill-id="{{ ss.skill.id }}" data-skill-name="{{ ss.skill.name|lower }}" data-category="{{ ss.skill.category.name }}" data-proficiency="{{ ss.proficiency }}" data-verified="{{ ss.is_verified|yesno:'true,false' }}">
+                            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+                                
+                                <!-- Left: Avatar Icon + Name & Category -->
+                                <div class="d-flex align-items-center gap-3" style="min-width: 200px;">
+                                    <div class="tech-avatar" 
+                                        {% if 'python' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fbbf24;"
+                                        {% elif 'react' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #0e7490, #06b6d4); color: #67e8f9;"
+                                        {% elif 'javascript' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #78350f, #d97706); color: #fde047;"
+                                        {% elif 'django' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #064e3b, #059669); color: #a7f3d0;"
+                                        {% elif 'git' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #7c2d12, #ea580c); color: #fed7aa;"
+                                        {% elif 'sql' in ss.skill.name|lower or 'database' in ss.skill.name|lower or 'mongo' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #4c1d95, #7c3aed); color: #ddd6fe;"
+                                        {% elif 'docker' in ss.skill.name|lower or 'cloud' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #0284c7, #38bdf8); color: #e0f2fe;"
+                                        {% elif 'problem' in ss.skill.name|lower or 'soft' in ss.skill.name|lower %}style="background: linear-gradient(135deg, #831843, #db2777); color: #fbcfe8;"
+                                        {% else %}style="background: linear-gradient(135deg, #1e293b, #334155); color: #94a3b8;"{% endif %}>
+                                        
+                                        {% if 'python' in ss.skill.name|lower %}<i class="fa-brands fa-python"></i>
+                                        {% elif 'react' in ss.skill.name|lower %}<i class="fa-brands fa-react"></i>
+                                        {% elif 'javascript' in ss.skill.name|lower %}<i class="fa-brands fa-js"></i>
+                                        {% elif 'git' in ss.skill.name|lower %}<i class="fa-brands fa-github"></i>
+                                        {% elif 'sql' in ss.skill.name|lower or 'mongo' in ss.skill.name|lower %}<i class="fa-solid fa-database"></i>
+                                        {% elif 'docker' in ss.skill.name|lower %}<i class="fa-brands fa-docker"></i>
+                                        {% elif 'problem' in ss.skill.name|lower %}<i class="fa-solid fa-brain"></i>
+                                        {% else %}<i class="fa-solid fa-code"></i>{% endif %}
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-main mb-0 font-space" style="font-size: 0.95rem;">
+                                            {{ ss.skill.name }}
+                                        </div>
+                                        <span class="badge bg-secondary-subtle text-secondary small" style="font-size: 0.68rem;">
+                                            {{ ss.skill.category.name }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Middle: Animated Progress Gauge -->
+                                <div class="flex-grow-1" style="min-width: 170px; max-width: 280px;">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-secondary small" style="font-size: 0.72rem;">
+                                            {% if ss.proficiency >= 85 %}Mastery
+                                            {% elif ss.proficiency >= 70 %}Advanced
+                                            {% elif ss.proficiency >= 50 %}Intermediate
+                                            {% else %}Foundational{% endif %}
+                                        </span>
+                                        <span class="font-mono fw-bold text-main small">{{ ss.proficiency }}%</span>
+                                    </div>
+                                    <div class="competency-track">
+                                        <div class="competency-bar-fill" style="width: {{ ss.proficiency }}%; 
+                                            {% if ss.is_verified %}background: linear-gradient(90deg, #10b981, #06b6d4);
+                                            {% elif ss.proficiency >= 75 %}background: linear-gradient(90deg, #3b82f6, #6366f1);
+                                            {% else %}background: linear-gradient(90deg, #6366f1, #a855f7);{% endif %}">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right: Verification Badge / Test CTA + Actions -->
+                                <div class="d-flex align-items-center gap-2">
+                                    {% if ss.is_verified %}
+                                        <span class="badge-verified-emerald" title="Proctored MCQ Score: {{ ss.verified_score }}%">
+                                            <i class="fa-solid fa-circle-check"></i> Proctored {{ ss.verified_score }}%
+                                        </span>
+                                    {% else %}
+                                        <a href="{% url 'assessment_list' %}" class="btn-verify-cta" title="Take proctored assessment to verify this skill">
+                                            <i class="fa-solid fa-bolt"></i> Verify via MCQ &rarr;
+                                        </a>
+                                    {% endif %}
+
+                                    <!-- Quick Calibrate Preset Trigger -->
+                                    <button type="button" class="btn-action-icon btn-calibrate-icon" title="Calibrate proficiency in studio" onclick="quickEditSkill('{{ ss.skill.id }}', '{{ ss.proficiency }}')">
+                                        <i class="fa-solid fa-sliders"></i>
+                                    </button>
+
+                                    <!-- Delete Skill Form -->
+                                    <form method="POST" onsubmit="return confirm('Remove {{ ss.skill.name }} from your active profile?');" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="skill_id" value="{{ ss.skill.id }}">
+                                        <button type="submit" class="btn-action-icon" title="Remove skill">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-5">
+                            <div class="mb-3">
+                                <i class="fa-solid fa-layer-group text-secondary display-4 opacity-50"></i>
+                            </div>
+                            <h5 class="fw-bold text-main mb-1">No Technical Skills Tracked Yet</h5>
+                            <p class="text-secondary small mb-3">
+                                Add skills from the studio catalog on the left, or upload your resume for automatic parsing.
+                            </p>
+                            <a href="{% url 'resume_parser' %}" class="btn btn-primary btn-sm px-3 py-2 rounded-pill">
+                                <i class="fa-solid fa-file-invoice me-1"></i> Auto-Extract Skills from Resume
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Empty Filter Results Message (Hidden by default) -->
+                <div id="noFilterResults" class="text-center py-5 d-none">
+                    <div class="mb-2">
+                        <i class="fa-solid fa-filter text-secondary fs-3 opacity-50"></i>
+                    </div>
+                    <h6 class="fw-bold text-main mb-1">No matching skills found</h6>
+                    <p class="text-secondary small mb-0">Try clearing the search term or switching the category filter.</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Interactive Client-side Scripts -->
+<script>
+    // State management for instant category filter & search
+    let currentCategoryFilter = 'ALL';
+
+    function updateProficiencyDisplay(val) {
+        document.getElementById('profVal').innerText = val + '%';
+        const levelBadge = document.getElementById('profLevel');
+        const num = parseInt(val);
+        if (num >= 85) {
+            levelBadge.innerText = 'Mastery / System Architect';
+            levelBadge.className = 'badge bg-success-subtle text-success small';
+        } else if (num >= 70) {
+            levelBadge.innerText = 'Advanced / Production Ready';
+            levelBadge.className = 'badge bg-primary-subtle text-primary small';
+        } else if (num >= 45) {
+            levelBadge.innerText = 'Intermediate / Applied Practical';
+            levelBadge.className = 'badge bg-info-subtle text-info small';
+        } else {
+            levelBadge.innerText = 'Beginner / Foundation';
+            levelBadge.className = 'badge bg-warning-subtle text-warning small';
+        }
+    }
+
+    function setProficiency(val) {
+        const slider = document.getElementById('profRange');
+        slider.value = val;
+        updateProficiencyDisplay(val);
+    }
+
+    function handleSkillSelectChange(selectElem) {
+        const selectedOption = selectElem.options[selectElem.selectedIndex];
+        const isAdded = selectedOption.getAttribute('data-added') === 'true';
+        const formAction = document.getElementById('formAction');
+        const submitBtnText = document.getElementById('submitBtnText');
+        
+        if (isAdded) {
+            formAction.value = 'update';
+            submitBtnText.innerText = 'Update Existing Proficiency';
+            // Find existing proficiency from DOM if present
+            const row = document.querySelector(`.skill-matrix-row[data-skill-id="${selectElem.value}"]`);
+            if (row) {
+                const prof = row.getAttribute('data-proficiency');
+                if (prof) setProficiency(prof);
+            }
+        } else {
+            formAction.value = 'add';
+            submitBtnText.innerText = 'Save Competency to Profile';
+        }
+    }
+
+    function quickEditSkill(skillId, proficiency) {
+        const select = document.getElementById('skillSelect');
+        select.value = skillId;
+        handleSkillSelectChange(select);
+        setProficiency(proficiency);
+        // Smooth scroll to studio form on mobile
+        document.getElementById('skillCalibrationForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function setCategoryFilter(category, buttonElem) {
+        currentCategoryFilter = category;
+        document.querySelectorAll('.category-filter-btn').forEach(btn => btn.classList.remove('active'));
+        buttonElem.classList.add('active');
+        filterSkills();
+    }
+
+    function filterSkills() {
+        const searchTerm = document.getElementById('skillSearchInput').value.trim().toLowerCase();
+        const rows = document.querySelectorAll('.skill-matrix-row');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const skillName = row.getAttribute('data-skill-name') || '';
+            const category = row.getAttribute('data-category') || '';
+            
+            const matchesCat = (currentCategoryFilter === 'ALL' || category === currentCategoryFilter);
+            const matchesSearch = (!searchTerm || skillName.includes(searchTerm) || category.toLowerCase().includes(searchTerm));
+
+            if (matchesCat && matchesSearch) {
+                row.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                row.classList.add('d-none');
+            }
+        });
+
+        const badge = document.getElementById('visibleCountBadge');
+        if (badge) badge.innerText = visibleCount;
+
+        const emptyMessage = document.getElementById('noFilterResults');
+        if (emptyMessage) {
+            if (visibleCount === 0 && rows.length > 0) {
+                emptyMessage.classList.remove('d-none');
+            } else {
+                emptyMessage.classList.add('d-none');
+            }
+        }
+    }
+
+    // Toggle radar button text
+    const radarCollapse = document.getElementById('radarCollapse');
+    const toggleRadarBtn = document.getElementById('toggleRadarBtn');
+    const radarBtnText = document.getElementById('radarBtnText');
+    if (radarCollapse && toggleRadarBtn) {
+        radarCollapse.addEventListener('show.bs.collapse', function () {
+            radarBtnText.innerText = 'Hide Radar Chart';
+            renderSkillsRadar();
+        });
+        radarCollapse.addEventListener('hide.bs.collapse', function () {
+            radarBtnText.innerText = 'View Competency Radar Chart';
+        });
+    }
+
+    // Render Skills Radar via Chart.js
+    let radarChartInstance = null;
+    function renderSkillsRadar() {
+        if (radarChartInstance) return; // Already rendered
+
+        const canvas = document.getElementById('skillsPortfolioRadar');
+        if (!canvas) return;
+
+        const labels = {{ radar_labels_json|safe|default:"[]" }};
+        const studentScores = {{ radar_scores_json|safe|default:"[]" }};
+        const targetScores = labels.map(() => 80);
+
+        if (labels.length === 0) return;
+
+        const isDark = document.documentElement.getAttribute('data-bs-theme') !== 'light';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+        const textColor = isDark ? '#94a3b8' : '#475569';
+
+        radarChartInstance = new Chart(canvas, {
+            type: 'radar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Your Average Score (%)',
+                        data: studentScores,
+                        backgroundColor: 'rgba(99, 102, 241, 0.35)',
+                        borderColor: '#6366f1',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#818cf8',
+                        pointBorderColor: '#ffffff',
+                        pointHoverRadius: 6,
+                    },
+                    {
+                        label: 'Tier 1 Industry Target (80%)',
+                        data: targetScores,
+                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                        borderColor: 'rgba(16, 185, 129, 0.8)',
+                        borderWidth: 1.5,
+                        borderDash: [4, 4],
+                        pointBackgroundColor: '#10b981',
+                        pointRadius: 3,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        ticks: {
+                            stepSize: 20,
+                            display: false
+                        },
+                        grid: {
+                            color: gridColor
+                        },
+                        angleLines: {
+                            color: gridColor
+                        },
+                        pointLabels: {
+                            color: textColor,
+                            font: {
+                                size: 11,
+                                family: "'Space Grotesk', sans-serif",
+                                weight: '600'
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Auto-initialize radar if open or on document load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateProficiencyDisplay(document.getElementById('profRange').value);
+    });
+</script>
+{% endblock %}

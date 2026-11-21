@@ -1,0 +1,1070 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Applications | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       MODERN ENTERPRISE APPLICATION TRACKER & 5-STAGE PIPELINE
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Cards */
+    .app-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.08);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .app-glass-card:hover {
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-bs-theme="light"] .app-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.94) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06), 0 0 20px rgba(99, 102, 241, 0.05);
+    }
+
+    [data-bs-theme="light"] .app-glass-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.1), 0 0 25px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Telemetry KPI Cards */
+    .telemetry-stat-card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 18px 20px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .telemetry-stat-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    [data-bs-theme="light"] .telemetry-stat-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Beacon & Pulsing Indicators */
+    .beacon-pulse-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10b981;
+        position: relative;
+        margin-right: 6px;
+    }
+    .beacon-pulse-dot::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: rgba(16, 185, 129, 0.4);
+        animation: beaconPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .beacon-pulse-amber {
+        background-color: #f59e0b;
+    }
+    .beacon-pulse-amber::after {
+        background-color: rgba(245, 158, 11, 0.4);
+    }
+    @keyframes beaconPing {
+        75%, 100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+    }
+
+    /* 5-Stage Stepper Styles */
+    .pipeline-stepper-wrap {
+        position: relative;
+        padding: 16px 10px 10px;
+    }
+
+    .pipeline-track-bg {
+        position: absolute;
+        top: 36px;
+        left: 5%;
+        right: 5%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        z-index: 1;
+    }
+
+    [data-bs-theme="light"] .pipeline-track-bg {
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    .pipeline-track-fill {
+        position: absolute;
+        top: 36px;
+        left: 5%;
+        height: 6px;
+        border-radius: 9999px;
+        background: linear-gradient(90deg, #6366f1, #3b82f6, #10b981);
+        z-index: 2;
+        transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+    }
+
+    .pipeline-nodes-row {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        z-index: 3;
+    }
+
+    .pipeline-node-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 18%;
+    }
+
+    .pipeline-node-bubble {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        transition: all 0.25s ease;
+        position: relative;
+    }
+
+    /* Node States */
+    .bubble-completed {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: #ffffff;
+        box-shadow: 0 0 16px rgba(16, 185, 129, 0.5);
+        border: 2px solid #ffffff;
+    }
+
+    .bubble-active {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: #ffffff;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.7);
+        border: 3px solid #ffffff;
+        animation: activePulse 2s infinite;
+    }
+
+    .bubble-interview-active {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #ffffff;
+        box-shadow: 0 0 22px rgba(245, 158, 11, 0.75);
+        border: 3px solid #ffffff;
+        animation: interviewPulse 1.8s infinite;
+    }
+
+    .bubble-selected-active {
+        background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        color: #ffffff;
+        box-shadow: 0 0 24px rgba(16, 185, 129, 0.85);
+        border: 3px solid #fbbf24;
+    }
+
+    .bubble-pending {
+        background: rgba(255, 255, 255, 0.05);
+        color: #64748b;
+        border: 2px dashed rgba(255, 255, 255, 0.15);
+    }
+
+    [data-bs-theme="light"] .bubble-pending {
+        background: #f1f5f9;
+        color: #94a3b8;
+        border: 2px dashed rgba(0, 0, 0, 0.15);
+    }
+
+    @keyframes activePulse {
+        0%, 100% { box-shadow: 0 0 16px rgba(99, 102, 241, 0.6); }
+        50% { box-shadow: 0 0 28px rgba(99, 102, 241, 0.9), 0 0 8px #ffffff; }
+    }
+
+    @keyframes interviewPulse {
+        0%, 100% { box-shadow: 0 0 16px rgba(245, 158, 11, 0.6); }
+        50% { box-shadow: 0 0 30px rgba(245, 158, 11, 0.95), 0 0 10px #ffffff; }
+    }
+
+    /* Company Brand Tiles */
+    .company-avatar-box {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Action Callout Docks */
+    .interview-dock {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.35);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px -6px rgba(245, 158, 11, 0.15);
+    }
+
+    [data-bs-theme="light"] .interview-dock {
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.8) 0%, rgba(253, 230, 138, 0.4) 100%);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+    }
+
+    .selected-dock {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.05) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+        border-radius: 16px;
+        box-shadow: 0 8px 24px -6px rgba(16, 185, 129, 0.18);
+    }
+
+    [data-bs-theme="light"] .selected-dock {
+        background: linear-gradient(135deg, rgba(209, 250, 229, 0.8) 0%, rgba(167, 243, 208, 0.4) 100%);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .shortlisted-dock {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        border-radius: 16px;
+    }
+
+    [data-bs-theme="light"] .shortlisted-dock {
+        background: linear-gradient(135deg, rgba(238, 242, 255, 0.8) 0%, rgba(224, 231, 255, 0.4) 100%);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+    }
+
+    .under-review-dock {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(2, 132, 199, 0.05) 100%);
+        border: 1px solid rgba(14, 165, 233, 0.35);
+        border-radius: 16px;
+    }
+
+    [data-bs-theme="light"] .under-review-dock {
+        background: linear-gradient(135deg, rgba(224, 242, 254, 0.8) 0%, rgba(186, 230, 253, 0.4) 100%);
+        border: 1px solid rgba(14, 165, 233, 0.35);
+    }
+
+    /* Filter Pills */
+    .filter-tab-pill {
+        padding: 8px 18px;
+        border-radius: 9999px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #94a3b8;
+    }
+
+    .filter-tab-pill:hover {
+        background: rgba(99, 102, 241, 0.12);
+        border-color: rgba(99, 102, 241, 0.3);
+        color: #ffffff;
+    }
+
+    .filter-tab-pill.active {
+        background: #4f46e5;
+        border-color: #6366f1;
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+    }
+
+    [data-bs-theme="light"] .filter-tab-pill {
+        background: #f1f5f9;
+        border-color: rgba(0, 0, 0, 0.06);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .filter-tab-pill:hover {
+        background: rgba(79, 70, 229, 0.1);
+        color: #1e293b;
+    }
+
+    [data-bs-theme="light"] .filter-tab-pill.active {
+        background: #4f46e5;
+        color: #ffffff;
+    }
+
+    /* Match Score Badges */
+    .match-badge-emerald {
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34d399;
+    }
+    .match-badge-blue {
+        background: rgba(59, 130, 246, 0.12);
+        border: 1px solid rgba(59, 130, 246, 0.3);
+        color: #60a5fa;
+    }
+    .match-badge-amber {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+        color: #fbbf24;
+    }
+
+    /* Glowing Join Meeting Button */
+    .btn-meet-glow {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: #111827;
+        font-weight: 700;
+        border: none;
+        border-radius: 12px;
+        padding: 9px 20px;
+        box-shadow: 0 6px 18px rgba(245, 158, 11, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-meet-glow:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
+        color: #000000;
+    }
+
+    /* Table fallback inside glass container */
+    .table-glass-tracker {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 10px;
+    }
+
+    .table-glass-tracker thead th {
+        border: none;
+        color: #94a3b8;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 10px 16px;
+    }
+
+    .table-glass-tracker tbody tr {
+        background: rgba(255, 255, 255, 0.02);
+        transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .table-glass-tracker tbody tr:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    [data-bs-theme="light"] .table-glass-tracker tbody tr {
+        background: #ffffff;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .table-glass-tracker tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .table-glass-tracker tbody tr td:first-child {
+        border-top-left-radius: 14px;
+        border-bottom-left-radius: 14px;
+        border-left: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .table-glass-tracker tbody tr td:last-child {
+        border-top-right-radius: 14px;
+        border-bottom-right-radius: 14px;
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    [data-bs-theme="light"] .table-glass-tracker tbody td {
+        border-color: rgba(0, 0, 0, 0.06);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-lg-5 py-4">
+
+    <!-- =========================================================================
+         HERO SECTION WITH RECRUITMENT TELEMETRY BEACON
+         ========================================================================= -->
+    <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-1 font-space">
+                    <span class="beacon-pulse-dot"></span> Pipeline Telemetry Active
+                </span>
+                <span class="badge rounded-pill bg-info bg-opacity-10 text-info border border-info border-opacity-25 px-2 py-1 small">
+                    5-Stage Enterprise Tracking
+                </span>
+            </div>
+            <h2 class="fw-bold text-white mb-1 font-space" style="letter-spacing: -0.02em;">
+                <i class="fa-solid fa-paper-plane text-primary me-2"></i>My Job & Internship Applications
+            </h2>
+            <p class="text-secondary small mb-0">
+                Track candidate progression in real-time across enterprise hiring stages, technical interviews, and offer letters.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'job_browse' %}" class="btn btn-primary fw-semibold px-3 py-2 shadow-sm rounded-3">
+                <i class="fa-solid fa-briefcase me-2"></i>Browse More Openings
+            </a>
+            <a href="{% url 'my_applications' %}" class="btn btn-outline-secondary px-3 py-2 rounded-3" title="Refresh Applications">
+                <i class="fa-solid fa-rotate"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         TOP TELEMETRY KPI METRICS STRIP (4 METRICS)
+         ========================================================================= -->
+    <div class="row g-3 mb-4">
+        <!-- Metric 1: Total Applications -->
+        <div class="col-6 col-lg-3">
+            <div class="telemetry-stat-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Total Applications</span>
+                    <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-white mb-1 font-space">{{ total_applications_count }}</div>
+                <div class="d-flex align-items-center justify-content-between small text-secondary">
+                    <span>Active in ATS pipeline</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary">100% Tracked</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 2: Live Interviews Scheduled -->
+        <div class="col-6 col-lg-3">
+            <div class="telemetry-stat-card h-100" style="border-color: rgba(245, 158, 11, 0.3);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Interviews Scheduled</span>
+                    <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-video"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-warning mb-1 font-space d-flex align-items-center">
+                    {{ interview_count }}
+                    {% if interview_count > 0 %}
+                        <span class="beacon-pulse-dot beacon-pulse-amber ms-2"></span>
+                    {% endif %}
+                </div>
+                <div class="d-flex align-items-center justify-content-between small text-secondary">
+                    <span>
+                        {% if next_interview %}
+                            Next: {{ next_interview.interview_date|date:"d M, H:i" }} IST
+                        {% else %}
+                            No upcoming rounds
+                        {% endif %}
+                    </span>
+                    <span class="badge bg-warning bg-opacity-15 text-warning fw-semibold">Virtual Rounds</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 3: Shortlisted & Review -->
+        <div class="col-6 col-lg-3">
+            <div class="telemetry-stat-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Shortlisted & Review</span>
+                    <div class="rounded-circle p-2 bg-info bg-opacity-10 text-info" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-user-check"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-info mb-1 font-space">{{ shortlisted_count|add:under_review_count }}</div>
+                <div class="d-flex align-items-center justify-content-between small text-secondary">
+                    <span>{{ shortlisted_count }} Shortlisted • {{ under_review_count }} in Audit</span>
+                    <span class="badge bg-info bg-opacity-10 text-info">Top 5% Fit</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metric 4: Selection & Offer -->
+        <div class="col-6 col-lg-3">
+            <div class="telemetry-stat-card h-100" style="border-color: rgba(16, 185, 129, 0.3);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Offers & Selections</span>
+                    <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-success mb-1 font-space">{{ selected_count }} 🎉</div>
+                <div class="d-flex align-items-center justify-content-between small text-secondary">
+                    <span>Avg Match: {{ avg_match_score }}%</span>
+                    <span class="badge bg-success bg-opacity-15 text-success fw-semibold">Verified Fit</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         INTERACTIVE FILTER PILLS & SEARCH BAR
+         ========================================================================= -->
+    <div class="app-glass-card p-3 mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+            <!-- Filter Pills -->
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+                <a href="?status=ALL{% if search %}&search={{ search }}{% endif %}" class="filter-tab-pill {% if not selected_status or selected_status == 'ALL' %}active{% endif %}">
+                    <i class="fa-solid fa-layer-group"></i> All Applications ({{ total_applications_count }})
+                </a>
+                <a href="?status=INTERVIEW{% if search %}&search={{ search }}{% endif %}" class="filter-tab-pill {% if selected_status == 'INTERVIEW' %}active{% endif %}">
+                    <i class="fa-solid fa-video text-warning"></i> Interviews ({{ interview_count }})
+                </a>
+                <a href="?status=SHORTLISTED{% if search %}&search={{ search }}{% endif %}" class="filter-tab-pill {% if selected_status == 'SHORTLISTED' %}active{% endif %}">
+                    <i class="fa-solid fa-star text-primary"></i> Shortlisted ({{ shortlisted_count }})
+                </a>
+                <a href="?status=UNDER_REVIEW{% if search %}&search={{ search }}{% endif %}" class="filter-tab-pill {% if selected_status == 'UNDER_REVIEW' %}active{% endif %}">
+                    <i class="fa-solid fa-clock text-info"></i> In Review ({{ under_review_count }})
+                </a>
+                <a href="?status=SELECTED{% if search %}&search={{ search }}{% endif %}" class="filter-tab-pill {% if selected_status == 'SELECTED' %}active{% endif %}">
+                    <i class="fa-solid fa-trophy text-success"></i> Offers ({{ selected_count }})
+                </a>
+            </div>
+
+            <!-- Search Box & View Mode Toggle -->
+            <div class="d-flex align-items-center gap-2">
+                <form method="GET" action="{% url 'my_applications' %}" class="d-flex align-items-center">
+                    {% if selected_status %}
+                        <input type="hidden" name="status" value="{{ selected_status }}">
+                    {% endif %}
+                    <div class="input-group input-group-sm" style="min-width: 220px;">
+                        <span class="input-group-text bg-dark border-secondary border-opacity-25 text-secondary">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control bg-dark text-white border-secondary border-opacity-25" placeholder="Filter company or role..." value="{{ search|default:'' }}">
+                        {% if search %}
+                            <a href="?status={{ selected_status|default:'ALL' }}" class="btn btn-outline-secondary btn-sm" title="Clear search">
+                                <i class="fa-solid fa-xmark"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
+
+                <!-- Toggle View Mode: Cards vs Compact Table -->
+                <div class="btn-group btn-group-sm" role="group">
+                    <button type="button" class="btn btn-outline-secondary active" id="viewCardsBtn" onclick="toggleView('cards')">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary" id="viewTableBtn" onclick="toggleView('table')">
+                        <i class="fa-solid fa-table-list"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================
+         VIEW 1: DETAILED 5-STAGE PIPELINE CARDS (DEFAULT)
+         ========================================================================= -->
+    <div id="pipelineCardsContainer" class="d-flex flex-column gap-4">
+        {% for app in applications %}
+            <div class="app-glass-card p-4">
+                <!-- Card Header -->
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-start gap-3 pb-3 border-bottom border-secondary border-opacity-10">
+                    <div class="d-flex align-items-start gap-3">
+                        <!-- Company Avatar Tile -->
+                        <div class="company-avatar-box" style="background: {{ app.brand_bg }}; color: {{ app.brand_color }}; border: 1px solid {{ app.brand_color }}40;">
+                            <i class="{{ app.brand_icon }}"></i>
+                        </div>
+
+                        <div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                                <h4 class="fw-bold text-white mb-0 font-space">{{ app.job.title }}</h4>
+                                <span class="badge bg-secondary bg-opacity-20 text-secondary border border-secondary border-opacity-25 small">
+                                    {{ app.job.get_job_type_display }}
+                                </span>
+                                {% if app.status == 'INTERVIEW' %}
+                                    <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-30 fw-semibold">
+                                        <i class="fa-solid fa-video me-1"></i> Interview Active
+                                    </span>
+                                {% elif app.status == 'SELECTED' %}
+                                    <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 fw-semibold">
+                                        <i class="fa-solid fa-trophy me-1"></i> Offer Extended 🎉
+                                    </span>
+                                {% elif app.status == 'SHORTLISTED' %}
+                                    <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 fw-semibold">
+                                        <i class="fa-solid fa-star me-1"></i> Shortlisted
+                                    </span>
+                                {% elif app.status == 'UNDER_REVIEW' %}
+                                    <span class="badge bg-info bg-opacity-20 text-info border border-info border-opacity-30 fw-semibold">
+                                        <i class="fa-solid fa-clock me-1"></i> In Review
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-flex align-items-center gap-3 text-secondary small flex-wrap">
+                                <span class="text-white fw-semibold">
+                                    <i class="fa-solid fa-building me-1 opacity-75"></i> {{ app.job.company.company_name }}
+                                </span>
+                                <span>
+                                    <i class="fa-solid fa-location-dot me-1 text-danger opacity-75"></i> {{ app.job.location_city }} ({{ app.job.get_location_type_display }})
+                                </span>
+                                <span>
+                                    <i class="fa-solid fa-money-bill-wave me-1 text-success opacity-75"></i> {{ app.job.stipend_salary }}
+                                </span>
+                                <span>
+                                    <i class="fa-regular fa-calendar me-1 opacity-75"></i> Applied: <strong class="text-secondary">{{ app.applied_at|date:"d M Y" }}</strong>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Match Score & Gap Analysis Link -->
+                    <div class="d-flex flex-column align-items-md-end text-md-end gap-1 flex-shrink-0">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge rounded-pill px-3 py-2 font-mono fw-bold fs-6 {% if app.match_score_at_application >= 80 %}match-badge-emerald{% elif app.match_score_at_application >= 60 %}match-badge-blue{% else %}match-badge-amber{% endif %}">
+                                <i class="fa-solid fa-bolt me-1"></i>{{ app.match_score_at_application }}% Skill Match
+                            </span>
+                        </div>
+                        <span class="small text-secondary">
+                            {% if app.match_score_at_application >= 80 %}
+                                High Competency Alignment
+                            {% elif app.match_score_at_application >= 60 %}
+                                Strong Core Match
+                            {% else %}
+                                Developing Fit
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 5-Stage Interactive Recruitment Stepper Graphic -->
+                <div class="py-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2 px-1">
+                        <span class="text-secondary small fw-bold text-uppercase" style="letter-spacing: 0.05em;">
+                            Recruitment Pipeline Telemetry
+                        </span>
+                        <span class="badge bg-dark border border-secondary border-opacity-25 text-white small px-2 py-1 font-mono">
+                            Stage {{ app.stage_info.num }} of 5: {{ app.stage_info.label }}
+                        </span>
+                    </div>
+
+                    <div class="pipeline-stepper-wrap">
+                        <!-- Background Line -->
+                        <div class="pipeline-track-bg"></div>
+
+                        <!-- Dynamic Progress Line -->
+                        <div class="pipeline-track-fill" style="width: {{ app.stage_info.percent }}%;"></div>
+
+                        <!-- Step Nodes (5 Steps) -->
+                        <div class="pipeline-nodes-row">
+                            <!-- Step 1: Applied -->
+                            <div class="pipeline-node-col">
+                                <div class="pipeline-node-bubble {% if app.stage_info.num > 1 %}bubble-completed{% elif app.stage_info.num == 1 %}bubble-active{% else %}bubble-pending{% endif %}">
+                                    {% if app.stage_info.num > 1 %}
+                                        <i class="fa-solid fa-check"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-file-lines"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-2 fw-semibold small {% if app.stage_info.num >= 1 %}text-white{% else %}text-secondary{% endif %}">
+                                    1. Applied
+                                </div>
+                                <small class="text-secondary" style="font-size: 0.7rem;">Application Logged</small>
+                            </div>
+
+                            <!-- Step 2: Under Review -->
+                            <div class="pipeline-node-col">
+                                <div class="pipeline-node-bubble {% if app.stage_info.num > 2 %}bubble-completed{% elif app.stage_info.num == 2 %}bubble-active{% else %}bubble-pending{% endif %}">
+                                    {% if app.stage_info.num > 2 %}
+                                        <i class="fa-solid fa-check"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-2 fw-semibold small {% if app.stage_info.num >= 2 %}text-white{% else %}text-secondary{% endif %}">
+                                    2. Under Review
+                                </div>
+                                <small class="text-secondary" style="font-size: 0.7rem;">Skill & ATS Audit</small>
+                            </div>
+
+                            <!-- Step 3: Shortlisted -->
+                            <div class="pipeline-node-col">
+                                <div class="pipeline-node-bubble {% if app.stage_info.num > 3 %}bubble-completed{% elif app.stage_info.num == 3 %}bubble-active{% else %}bubble-pending{% endif %}">
+                                    {% if app.stage_info.num > 3 %}
+                                        <i class="fa-solid fa-check"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-user-check"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-2 fw-semibold small {% if app.stage_info.num >= 3 %}text-white{% else %}text-secondary{% endif %}">
+                                    3. Shortlisted
+                                </div>
+                                <small class="text-secondary" style="font-size: 0.7rem;">Qualified for Rounds</small>
+                            </div>
+
+                            <!-- Step 4: Technical Interview -->
+                            <div class="pipeline-node-col">
+                                <div class="pipeline-node-bubble {% if app.stage_info.num > 4 %}bubble-completed{% elif app.stage_info.num == 4 %}bubble-interview-active{% else %}bubble-pending{% endif %}">
+                                    {% if app.stage_info.num > 4 %}
+                                        <i class="fa-solid fa-check"></i>
+                                    {% else %}
+                                        <i class="fa-solid fa-video"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="mt-2 fw-semibold small {% if app.stage_info.num >= 4 %}text-warning fw-bold{% else %}text-secondary{% endif %}">
+                                    4. Interview
+                                </div>
+                                <small class="text-secondary" style="font-size: 0.7rem;">Technical Evaluation</small>
+                            </div>
+
+                            <!-- Step 5: Selection & Offer -->
+                            <div class="pipeline-node-col">
+                                <div class="pipeline-node-bubble {% if app.stage_info.num == 5 %}bubble-selected-active{% else %}bubble-pending{% endif %}">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <div class="mt-2 fw-semibold small {% if app.stage_info.num == 5 %}text-success fw-bold{% else %}text-secondary{% endif %}">
+                                    5. Offered
+                                </div>
+                                <small class="text-secondary" style="font-size: 0.7rem;">Offer Letter Extended</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dedicated Next-Action Command Dock / Recruiter Notification -->
+                {% if app.status == 'INTERVIEW' %}
+                    <div class="interview-dock p-3 p-md-4 mt-2">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <span class="beacon-pulse-dot beacon-pulse-amber"></span>
+                                    <span class="text-warning fw-bold small text-uppercase" style="letter-spacing: 0.05em;">
+                                        Virtual Technical Interview Round Scheduled
+                                    </span>
+                                    <span class="badge bg-warning bg-opacity-25 text-warning px-2 py-0 small fw-bold">Action Required</span>
+                                </div>
+
+                                <div class="d-flex flex-wrap align-items-center gap-3 text-white small mb-2">
+                                    <div>
+                                        <i class="fa-regular fa-calendar-check text-warning me-1"></i>
+                                        Date & Time: <strong>{{ app.interview_date|date:"l, d M Y • h:i A"|default:"To Be Announced" }} IST</strong>
+                                    </div>
+                                    <div class="text-secondary">•</div>
+                                    <div>
+                                        <i class="fa-solid fa-video text-warning me-1"></i>
+                                        Platform: <strong>{{ app.interview_mode|default:"Google Meet Virtual Video Conference" }}</strong>
+                                    </div>
+                                </div>
+
+                                {% if app.recruiter_notes %}
+                                    <div class="p-2 rounded bg-dark bg-opacity-40 text-secondary small border border-warning border-opacity-25 mt-1">
+                                        <i class="fa-solid fa-circle-info text-warning me-1"></i>
+                                        <strong>Recruiter Brief:</strong> {{ app.recruiter_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="flex-shrink-0 d-flex flex-column gap-2">
+                                {% if app.interview_link %}
+                                    <a href="{{ app.interview_link }}" target="_blank" class="btn-meet-glow text-center text-decoration-none">
+                                        <i class="fa-solid fa-video me-2"></i> Join Google Meet Room
+                                    </a>
+                                {% else %}
+                                    <button class="btn btn-warning btn-sm fw-bold" disabled>
+                                        <i class="fa-solid fa-clock me-1"></i> Meeting Link Being Generated
+                                    </button>
+                                {% endif %}
+                                <small class="text-secondary text-center">Please join 5 mins before start</small>
+                            </div>
+                        </div>
+                    </div>
+
+                {% elif app.status == 'SELECTED' %}
+                    <div class="selected-dock p-3 p-md-4 mt-2">
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <i class="fa-solid fa-trophy text-success fs-5"></i>
+                                    <span class="text-success fw-bold text-uppercase" style="letter-spacing: 0.05em;">
+                                        Congratulations! Offer Extended by {{ app.job.company.company_name }} 🎉
+                                    </span>
+                                </div>
+                                <p class="text-white small mb-1">
+                                    You have cleared all interview rounds and your formal offer letter is being processed. 
+                                    Agreed Compensation: <strong class="text-success">{{ app.job.stipend_salary }}</strong>.
+                                </p>
+                                {% if app.recruiter_notes %}
+                                    <div class="p-2 rounded bg-dark bg-opacity-40 text-secondary small border border-success border-opacity-25">
+                                        <strong>Talent Partner Note:</strong> {{ app.recruiter_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="badge bg-success px-3 py-2 fw-bold fs-6">
+                                    <i class="fa-solid fa-award me-1"></i> Offer Accepted & Active
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                {% elif app.status == 'SHORTLISTED' %}
+                    <div class="shortlisted-dock p-3 mt-2">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle p-2 bg-primary bg-opacity-20 text-primary mt-1">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold text-primary small text-uppercase mb-1">Candidate Profile Shortlisted</div>
+                                <p class="text-white small mb-1">
+                                    Your verified competencies and resume placed you in the top 5% candidate tier for this opening. The recruiting team is coordinating technical interviewer availability.
+                                </p>
+                                {% if app.recruiter_notes %}
+                                    <div class="small text-secondary">
+                                        <strong>Recruiter Note:</strong> {{ app.recruiter_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                {% elif app.status == 'UNDER_REVIEW' %}
+                    <div class="under-review-dock p-3 mt-2">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle p-2 bg-info bg-opacity-20 text-info mt-1">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold text-info small text-uppercase mb-1">Competency & Portfolio Audit</div>
+                                <p class="text-white small mb-1">
+                                    Your profile, verified skill test scores, and GitHub project repositories are currently being reviewed by hiring managers at {{ app.job.company.company_name }}.
+                                </p>
+                                {% if app.recruiter_notes %}
+                                    <div class="small text-secondary">
+                                        <strong>Status Update:</strong> {{ app.recruiter_notes }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                {% elif app.status == 'APPLIED' %}
+                    <div class="p-3 mt-2 rounded-3 bg-secondary bg-opacity-10 border border-secondary border-opacity-20">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="rounded-circle p-2 bg-secondary bg-opacity-20 text-secondary mt-1">
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="fw-bold text-white small text-uppercase mb-1">Application Transmitted & Queued</div>
+                                <p class="text-secondary small mb-0">
+                                    Your application has been received and indexed into {{ app.job.company.company_name }}'s talent pool with an initial skill match score of {{ app.match_score_at_application }}%.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <!-- Card Footer Actions -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-3 mt-3 border-top border-secondary border-opacity-10">
+                    <div class="d-flex align-items-center gap-2">
+                        <a href="{% url 'job_detail' app.job.id %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-chart-pie me-1"></i> View Skill Gap Analysis
+                        </a>
+                        {% if app.cover_note %}
+                            <button class="btn btn-outline-secondary btn-sm rounded-pill px-3" type="button" data-bs-toggle="collapse" data-bs-target="#coverNote{{ app.id }}">
+                                <i class="fa-solid fa-envelope-open-text me-1"></i> Cover Note
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2 text-secondary small">
+                        <span>Min CGPA: <strong class="text-white">{{ app.job.min_cgpa }}</strong></span>
+                        <span>•</span>
+                        <span>Vacancies: <strong class="text-white">{{ app.job.vacancies }}</strong></span>
+                        <span>•</span>
+                        <span>Deadline: <strong class="text-white">{{ app.job.deadline|date:"d M Y" }}</strong></span>
+                    </div>
+                </div>
+
+                {% if app.cover_note %}
+                    <div class="collapse mt-3" id="coverNote{{ app.id }}">
+                        <div class="p-3 rounded bg-dark bg-opacity-60 border border-secondary border-opacity-20 text-secondary small">
+                            <div class="fw-bold text-white mb-1"><i class="fa-solid fa-quote-left text-primary me-2"></i>Cover Note Submitted:</div>
+                            {{ app.cover_note }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            <!-- Empty State -->
+            <div class="app-glass-card p-5 text-center">
+                <div class="rounded-circle p-4 bg-primary bg-opacity-10 text-primary mx-auto mb-3" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+                <h4 class="fw-bold text-white mb-2 font-space">No Applications Found in This View</h4>
+                <p class="text-secondary small mx-auto mb-4" style="max-width: 480px;">
+                    {% if selected_status or search %}
+                        No applications matched your active filter or search query. Try switching filter tabs or clearing your search.
+                    {% else %}
+                        You haven't submitted any job or internship applications yet. Explore top career opportunities matching your verified skills and apply in 1-click!
+                    {% endif %}
+                </p>
+                <div class="d-flex justify-content-center gap-2">
+                    {% if selected_status or search %}
+                        <a href="{% url 'my_applications' %}" class="btn btn-outline-secondary px-4 py-2">
+                            <i class="fa-solid fa-rotate-left me-1"></i> Reset Filters
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'job_browse' %}" class="btn btn-primary px-4 py-2 fw-semibold">
+                        <i class="fa-solid fa-briefcase me-1"></i> Explore Recommended Jobs
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- =========================================================================
+         VIEW 2: STREAMLINED MATRIX TABLE VIEW (HIDDEN BY DEFAULT, TOGGLEABLE)
+         ========================================================================= -->
+    <div id="pipelineTableContainer" class="d-none">
+        <div class="app-glass-card p-4">
+            <div class="table-responsive">
+                <table class="table-glass-tracker">
+                    <thead>
+                        <tr>
+                            <th>Job Title & Role</th>
+                            <th>Hiring Company</th>
+                            <th>Match Score</th>
+                            <th>Applied On</th>
+                            <th>Current Stage</th>
+                            <th>Next Action / Interview</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in applications %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold text-white">{{ app.job.title }}</div>
+                                    <span class="badge bg-secondary bg-opacity-20 text-secondary" style="font-size: 0.7rem;">
+                                        {{ app.job.get_job_type_display }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="company-avatar-box" style="width: 32px; height: 32px; font-size: 0.9rem; background: {{ app.brand_bg }}; color: {{ app.brand_color }};">
+                                            <i class="{{ app.brand_icon }}"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-semibold text-white small">{{ app.job.company.company_name }}</div>
+                                            <small class="text-secondary">{{ app.job.location_city }} ({{ app.job.get_location_type_display }})</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge font-mono {% if app.match_score_at_application >= 80 %}bg-success{% elif app.match_score_at_application >= 60 %}bg-primary{% else %}bg-warning text-dark{% endif %}">
+                                        {{ app.match_score_at_application }}% Match
+                                    </span>
+                                </td>
+                                <td class="text-secondary small">{{ app.applied_at|date:"d M Y" }}</td>
+                                <td>
+                                    <span class="badge bg-{{ app.stage_info.badge }} text-white py-1 px-2">
+                                        {{ app.stage_info.label }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if app.status == 'INTERVIEW' %}
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="beacon-pulse-dot beacon-pulse-amber"></span>
+                                            <div>
+                                                <div class="text-warning small fw-bold">{{ app.interview_date|date:"d M, H:i" }} IST</div>
+                                                {% if app.interview_link %}
+                                                    <a href="{{ app.interview_link }}" target="_blank" class="btn btn-warning btn-sm py-0 px-2 fw-bold" style="font-size: 0.72rem;">
+                                                        Join Meet <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% elif app.status == 'SELECTED' %}
+                                        <span class="text-success small fw-bold"><i class="fa-solid fa-check-double me-1"></i>Offer Extended 🎉</span>
+                                    {% elif app.status == 'SHORTLISTED' %}
+                                        <span class="text-primary small fw-semibold">Round Slot Pending</span>
+                                    {% else %}
+                                        <span class="text-secondary small">Profile Under Audit</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'job_detail' app.job.id %}" class="btn btn-outline-primary btn-sm py-1 px-2" title="View Gap Analysis">
+                                        <i class="fa-solid fa-chart-pie"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center text-secondary py-5">
+                                    <i class="fa-solid fa-folder-open fs-2 mb-2"></i>
+                                    <div>No applications match your filter.</div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- View Switcher Script -->
+<script>
+    function toggleView(mode) {
+        const cardsCont = document.getElementById('pipelineCardsContainer');
+        const tableCont = document.getElementById('pipelineTableContainer');
+        const cardsBtn = document.getElementById('viewCardsBtn');
+        const tableBtn = document.getElementById('viewTableBtn');
+
+        if (mode === 'table') {
+            cardsCont.classList.add('d-none');
+            tableCont.classList.remove('d-none');
+            cardsBtn.classList.remove('active');
+            tableBtn.classList.add('active');
+            localStorage.setItem('sb_app_view_mode', 'table');
+        } else {
+            cardsCont.classList.remove('d-none');
+            tableCont.classList.add('d-none');
+            cardsBtn.classList.add('active');
+            tableBtn.classList.remove('active');
+            localStorage.setItem('sb_app_view_mode', 'cards');
+        }
+    }
+
+    // Restore saved view preference
+    document.addEventListener('DOMContentLoaded', function() {
+        const savedView = localStorage.getItem('sb_app_view_mode');
+        if (savedView === 'table') {
+            toggleView('table');
+        }
+    });
+</script>
+{% endblock %}
