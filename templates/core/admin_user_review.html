@@ -1,0 +1,285 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Review User: {{ target_user.username }} | Admin Command Center{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .review-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.06);
+    }
+
+    [data-bs-theme="light"] .review-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.94) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06);
+    }
+
+    .meta-tile {
+        background: rgba(15, 23, 42, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        padding: 14px 16px;
+        height: 100%;
+    }
+
+    [data-bs-theme="light"] .meta-tile {
+        background: #f8fafc;
+        border: 1px solid rgba(0, 0, 0, 0.07);
+    }
+
+    .user-avatar-lg {
+        width: 68px;
+        height: 68px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-weight: 800;
+        font-size: 1.7rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 1050px;">
+
+    <!-- Top Navigation & Action Bar -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <a href="{% url 'admin_dashboard' %}" class="btn btn-outline-secondary btn-sm font-space px-3 py-2 rounded-3">
+            <i class="fa-solid fa-arrow-left me-1"></i> Back to Admin Command Center
+        </a>
+
+        <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'admin_user_edit' target_user.id %}" class="btn btn-primary btn-sm font-space fw-bold px-3 py-2 rounded-3">
+                <i class="fa-solid fa-pen-to-square me-1"></i> Edit User
+            </a>
+            {% if target_user.id != request.user.id %}
+                <a href="{% url 'admin_user_toggle_active' target_user.id %}" class="btn btn-outline-warning btn-sm font-space fw-bold px-3 py-2 rounded-3">
+                    <i class="fa-solid fa-power-off me-1"></i> {% if target_user.is_active %}Suspend Account{% else %}Reactivate Account{% endif %}
+                </a>
+                <button type="button" class="btn btn-outline-danger btn-sm font-space fw-bold px-3 py-2 rounded-3" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                    <i class="fa-solid fa-trash-can me-1"></i> Delete User
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- User Identity & Account Audit Card -->
+    <div class="review-glass-card p-4 p-md-5 mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-4 pb-4 mb-4 border-bottom" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+            <div class="d-flex align-items-center gap-3">
+                <div class="user-avatar-lg">
+                    {{ target_user.first_name|default:target_user.username|slice:":1"|upper }}
+                </div>
+                <div>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                        <span class="badge bg-primary-subtle text-primary font-mono small">
+                            {{ target_user.get_role_display }}
+                        </span>
+                        {% if target_user.is_active %}
+                            <span class="badge bg-success-subtle text-success font-mono small">
+                                <i class="fa-solid fa-circle-check me-1"></i> Active
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger-subtle text-danger font-mono small">
+                                <i class="fa-solid fa-ban me-1"></i> Suspended
+                            </span>
+                        {% endif %}
+                        {% if target_user.is_approved %}
+                            <span class="badge bg-info-subtle text-info font-mono small">Approved</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning font-mono small">Pending Approval</span>
+                        {% endif %}
+                    </div>
+                    <h3 class="font-space fw-bold text-main mb-0">
+                        {{ target_user.get_full_name|default:target_user.username }}
+                    </h3>
+                    <div class="text-secondary small font-mono">@{{ target_user.username }} &bull; ID #{{ target_user.id }}</div>
+                </div>
+            </div>
+
+            <div class="text-md-end font-mono small text-secondary">
+                <div>Joined: <strong class="text-main">{{ target_user.date_joined|date:"d M Y, H:i" }}</strong></div>
+                <div>Last Login: <strong class="text-main">{{ target_user.last_login|date:"d M Y, H:i"|default:"Never" }}</strong></div>
+            </div>
+        </div>
+
+        <!-- Account Metadata Grid -->
+        <div class="row g-3">
+            <div class="col-md-4 col-6">
+                <div class="meta-tile">
+                    <span class="text-secondary font-mono small d-block mb-1">Email Address</span>
+                    <strong class="text-main font-mono small">{{ target_user.email|default:"Not provided" }}</strong>
+                </div>
+            </div>
+            <div class="col-md-4 col-6">
+                <div class="meta-tile">
+                    <span class="text-secondary font-mono small d-block mb-1">Phone Number</span>
+                    <strong class="text-main font-mono small">{{ target_user.phone|default:"Not provided" }}</strong>
+                </div>
+            </div>
+            <div class="col-md-4 col-12">
+                <div class="meta-tile">
+                    <span class="text-secondary font-mono small d-block mb-1">Privilege Flags</span>
+                    <strong class="text-main font-mono small">
+                        Superuser: {{ target_user.is_superuser|yesno:"Yes,No" }} &bull; Staff: {{ target_user.is_staff|yesno:"Yes,No" }}
+                    </strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role-Specific Profile Audit -->
+    {% if profile_data.type == 'STUDENT' %}
+        <div class="review-glass-card p-4 p-md-5">
+            <h5 class="font-space fw-bold text-main mb-3">
+                <i class="fa-solid fa-user-graduate text-primary me-2"></i>Student Academic & Skill Portfolio Audit
+            </h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3 col-6">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Roll Number</span>
+                        <strong class="text-main font-mono">{{ profile_data.profile.roll_number|default:"N/A" }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">CGPA / Semester</span>
+                        <strong class="text-main font-mono">{{ profile_data.profile.cgpa }} / Sem {{ profile_data.profile.semester }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Readiness Score</span>
+                        <strong class="text-success font-mono">{{ profile_data.readiness }}%</strong>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Verified Skills / Projects</span>
+                        <strong class="text-info font-mono">{{ profile_data.verified_skills_count }} Skills &bull; {{ profile_data.projects_count }} Projects</strong>
+                    </div>
+                </div>
+            </div>
+
+            {% if profile_data.skills %}
+                <div class="mb-2 text-secondary font-mono small">Recorded Skills:</div>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for ss in profile_data.skills %}
+                        <span class="badge {% if ss.is_verified %}bg-success-subtle text-success border border-success-subtle{% else %}bg-secondary-subtle text-secondary{% endif %} font-mono">
+                            {{ ss.skill.name }} ({{ ss.proficiency }}%){% if ss.is_verified %} ✓{% endif %}
+                        </span>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+    {% elif profile_data.type == 'COLLEGE' %}
+        <div class="review-glass-card p-4 p-md-5">
+            <h5 class="font-space fw-bold text-main mb-3">
+                <i class="fa-solid fa-building-columns text-info me-2"></i>Institutional College Profile Audit
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Institution Name</span>
+                        <strong class="text-main font-space">{{ profile_data.profile.name }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Registered Students / Depts</span>
+                        <strong class="text-info font-mono">{{ profile_data.students_count }} Students &bull; {{ profile_data.departments_count }} Depts</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Verification Status</span>
+                        <strong class="{% if profile_data.profile.is_verified %}text-success{% else %}text-warning{% endif %} font-mono">
+                            {{ profile_data.profile.is_verified|yesno:"Verified Campus,Pending Verification" }}
+                        </strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% elif profile_data.type == 'INDUSTRY' %}
+        <div class="review-glass-card p-4 p-md-5">
+            <h5 class="font-space fw-bold text-main mb-3">
+                <i class="fa-solid fa-briefcase text-emerald me-2"></i>Industry Partner Profile Audit
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Company Name</span>
+                        <strong class="text-main font-space">{{ profile_data.profile.company_name }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Industry & Location</span>
+                        <strong class="text-main font-space">{{ profile_data.profile.industry_type }} &bull; {{ profile_data.profile.location }}</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="meta-tile">
+                        <span class="text-secondary font-mono small d-block">Posted Openings</span>
+                        <strong class="text-success font-mono">{{ profile_data.active_jobs_count }} Active / {{ profile_data.jobs_count }} Total</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+
+<!-- Delete Confirmation Modal -->
+{% if target_user.id != request.user.id %}
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content review-glass-card border-danger">
+            <div class="modal-header border-bottom" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                <h5 class="modal-title font-space fw-bold text-danger">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Permanent Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-main small mb-2">
+                    Are you sure you want to permanently delete user <strong>{{ target_user.username }}</strong> ({{ target_user.get_role_display }})?
+                </p>
+                <p class="text-secondary small font-mono mb-0">
+                    This action will remove the user account and all associated profile records and cannot be undone.
+                </p>
+            </div>
+            <div class="modal-footer border-top" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{% url 'admin_user_delete' target_user.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm fw-bold font-space px-3 rounded-3">
+                        <i class="fa-solid fa-trash-can me-1"></i> Delete Permanently
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

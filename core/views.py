@@ -253,6 +253,7 @@ def admin_dashboard(request):
     total_jobs = JobPosting.objects.count()
     total_applications = Application.objects.count()
 
+    all_users = CustomUser.objects.all().order_by('-date_joined')
     colleges = College.objects.select_related('user').all()
     companies = Company.objects.select_related('user').all()
     recent_jobs = JobPosting.objects.select_related('company').order_by('-created_at')[:6]
@@ -265,12 +266,164 @@ def admin_dashboard(request):
         'total_companies': total_companies,
         'total_jobs': total_jobs,
         'total_applications': total_applications,
+        'all_users': all_users,
         'colleges': colleges,
         'companies': companies,
         'recent_jobs': recent_jobs,
         'recent_applications': recent_applications,
     }
     return render(request, 'core/admin_dashboard.html', context)
+
+
+@login_required
+@admin_required
+def admin_user_review(request, user_id):
+    """Detailed admin inspection & audit view for any platform user."""
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    profile_data = {}
+
+    if hasattr(target_user, 'student_profile'):
+        sp = target_user.student_profile
+        profile_data['type'] = 'STUDENT'
+        profile_data['profile'] = sp
+        profile_data['skills'] = sp.skills.select_related('skill').all()
+        profile_data['verified_skills_count'] = sp.skills.filter(is_verified=True).count()
+        profile_data['projects_count'] = sp.projects.count()
+        profile_data['applications'] = sp.applications.select_related('job__company').order_by('-applied_at')[:5]
+        profile_data['readiness'] = sp.placement_readiness()
+    elif hasattr(target_user, 'college_profile'):
+        cp = target_user.college_profile
+        profile_data['type'] = 'COLLEGE'
+        profile_data['profile'] = cp
+        profile_data['students_count'] = cp.students.count()
+        profile_data['departments_count'] = cp.departments.count()
+    elif hasattr(target_user, 'company_profile'):
+        comp = target_user.company_profile
+        profile_data['type'] = 'INDUSTRY'
+        profile_data['profile'] = comp
+        profile_data['jobs_count'] = comp.jobs.count()
+        profile_data['active_jobs_count'] = comp.jobs.filter(is_active=True).count()
+
+    return render(request, 'core/admin_user_review.html', {
+        'target_user': target_user,
+        'profile_data': profile_data,
+    })
+
+
+@login_required
+@admin_required
+def admin_user_edit(request, user_id):
+    """Allow platform admin to edit any user's account, role, approval, and profile fields."""
+    target_user = get_object_or_404(CustomUser, id=user_id)
+
+    if request.method == 'POST':
+        new_username = request.POST.get('username', '').strip()
+        if new_username and new_username != target_user.username:
+            if CustomUser.objects.filter(username=new_username).exclude(id=target_user.id).exists():
+                messages.error(request, f"Username '{new_username}' is already taken.")
+                return redirect('admin_user_edit', user_id=target_user.id)
+            target_user.username = new_username
+
+        target_user.first_name = request.POST.get('first_name', '').strip()
+        target_user.last_name = request.POST.get('last_name', '').strip()
+        target_user.email = request.POST.get('email', '').strip()
+        target_user.phone = request.POST.get('phone', '').strip()
+
+        new_role = request.POST.get('role', target_user.role)
+        if new_role in dict(CustomUser.ROLE_CHOICES):
+            # Prevent admin from demoting themselves accidentally
+            if target_user.id == request.user.id and new_role != 'ADMIN' and not target_user.is_superuser:
+                messages.warning(request, "You cannot demote your own active admin role.")
+            else:
+                target_user.role = new_role
+
+        is_active = request.POST.get('is_active') == 'on'
+        if target_user.id == request.user.id and not is_active:
+            messages.warning(request, "You cannot deactivate your own currently logged-in account.")
+        else:
+            target_user.is_active = is_active
+
+        target_user.is_approved = request.POST.get('is_approved') == 'on'
+
+        new_password = request.POST.get('new_password', '').strip()
+        if new_password:
+            target_user.set_password(new_password)
+
+        target_user.save()
+
+        # Update role-specific profile fields if present
+        if hasattr(target_user, 'student_profile'):
+            sp = target_user.student_profile
+            roll = request.POST.get('roll_number', '').strip()
+            cgpa_val = request.POST.get('cgpa', '').strip()
+            sem_val = request.POST.get('semester', '').strip()
+            if roll:
+                sp.roll_number = roll
+            if cgpa_val:
+                try:
+                    sp.cgpa = float(cgpa_val)
+                except ValueError:
+                    pass
+            if sem_val:
+                try:
+                    sp.semester = int(sem_val)
+                except ValueError:
+                    pass
+            sp.save()
+        elif hasattr(target_user, 'college_profile'):
+            cp = target_user.college_profile
+            cname = request.POST.get('college_name', '').strip()
+            if cname:
+                cp.name = cname
+            cp.is_verified = request.POST.get('profile_verified') == 'on'
+            cp.save()
+        elif hasattr(target_user, 'company_profile'):
+            comp = target_user.company_profile
+            comp_name = request.POST.get('company_name', '').strip()
+            if comp_name:
+                comp.company_name = comp_name
+            comp.is_verified = request.POST.get('profile_verified') == 'on'
+            comp.save()
+
+        messages.success(request, f"User '{target_user.username}' updated successfully.")
+        return redirect('admin_user_review', user_id=target_user.id)
+
+    return render(request, 'core/admin_user_edit.html', {
+        'target_user': target_user,
+        'role_choices': CustomUser.ROLE_CHOICES,
+    })
+
+
+@login_required
+@admin_required
+def admin_user_toggle_active(request, user_id):
+    """Quick toggle for user active/suspended state."""
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    if target_user.id == request.user.id:
+        messages.error(request, "You cannot suspend your own logged-in administrator account.")
+        return redirect('admin_dashboard')
+
+    target_user.is_active = not target_user.is_active
+    target_user.save()
+    status_word = "activated" if target_user.is_active else "suspended"
+    messages.success(request, f"User '{target_user.username}' has been {status_word}.")
+    return redirect('admin_dashboard')
+
+
+@login_required
+@admin_required
+def admin_user_delete(request, user_id):
+    """Permanently delete a user account (POST only, prevents self-deletion)."""
+    target_user = get_object_or_404(CustomUser, id=user_id)
+    if target_user.id == request.user.id:
+        messages.error(request, "You cannot delete your own currently logged-in administrator account.")
+        return redirect('admin_dashboard')
+
+    if request.method == 'POST':
+        username = target_user.username
+        target_user.delete()
+        messages.success(request, f"User '{username}' and associated records have been permanently deleted.")
+    return redirect('admin_dashboard')
 
 
 @login_required

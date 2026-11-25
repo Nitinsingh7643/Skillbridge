@@ -443,6 +443,112 @@
 
     </div>
 
+    <!-- All Platform Users Directory & Governance (Review, Edit, Suspend, Delete) -->
+    <div class="admin-glass-card p-4 mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+            <div>
+                <h5 class="font-space fw-bold text-main mb-0">
+                    <i class="fa-solid fa-users-gear text-primary me-2"></i>Platform Users Governance Directory
+                </h5>
+                <small class="text-secondary font-space">Review profiles, modify roles/credentials, suspend, or delete any user account</small>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <!-- Role Filter Pills -->
+                <div class="btn-group btn-group-sm" role="group" id="userRoleFilter">
+                    <button type="button" class="btn btn-primary font-mono active" data-role="ALL">All ({{ all_users|length }})</button>
+                    <button type="button" class="btn btn-outline-secondary font-mono" data-role="STUDENT">Students</button>
+                    <button type="button" class="btn btn-outline-secondary font-mono" data-role="COLLEGE">Colleges</button>
+                    <button type="button" class="btn btn-outline-secondary font-mono" data-role="INDUSTRY">Companies</button>
+                    <button type="button" class="btn btn-outline-secondary font-mono" data-role="ADMIN">Admins</button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="input-group input-group-sm" style="width: 220px;">
+                    <span class="input-group-text bg-transparent border-secondary-subtle text-secondary">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="adminUserSearch" class="form-control font-mono" placeholder="Search name/email...">
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-table-wrap">
+            <div class="table-responsive" style="max-height: 440px; overflow-y: auto;">
+                <table class="table table-hover admin-table" id="adminUsersTable">
+                    <thead class="sticky-top">
+                        <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Account Status</th>
+                            <th>Joined</th>
+                            <th class="text-end">Admin Rights (Actions)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in all_users %}
+                            <tr class="user-row" data-role="{{ u.role }}" data-search="{{ u.username|lower }} {{ u.get_full_name|lower }} {{ u.email|lower }}">
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge rounded-circle d-inline-flex align-items-center justify-content-center font-space" style="width: 32px; height: 32px; background: linear-gradient(135deg, #3b82f6, #6366f1); color: #fff;">
+                                            {{ u.first_name|default:u.username|slice:":1"|upper }}
+                                        </span>
+                                        <div>
+                                            <div class="font-space fw-semibold text-main">{{ u.get_full_name|default:u.username }}</div>
+                                            <div class="font-mono text-secondary" style="font-size: 0.72rem;">@{{ u.username }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge font-mono {% if u.role == 'ADMIN' or u.is_superuser %}bg-warning-subtle text-warning border border-warning-subtle{% elif u.role == 'INDUSTRY' %}bg-success-subtle text-success border border-success-subtle{% elif u.role == 'COLLEGE' %}bg-info-subtle text-info border border-info-subtle{% else %}bg-primary-subtle text-primary border border-primary-subtle{% endif %}">
+                                        {{ u.get_role_display }}
+                                    </span>
+                                </td>
+                                <td class="font-mono text-secondary" style="font-size: 0.78rem;">{{ u.email|default:"-" }}</td>
+                                <td>
+                                    {% if u.is_active %}
+                                        <span class="badge bg-success-subtle text-success font-mono" style="font-size: 0.72rem;">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-danger-subtle text-danger font-mono" style="font-size: 0.72rem;">Suspended</span>
+                                    {% endif %}
+                                    {% if not u.is_approved %}
+                                        <span class="badge bg-warning-subtle text-warning font-mono" style="font-size: 0.72rem;">Unapproved</span>
+                                    {% endif %}
+                                </td>
+                                <td class="font-mono text-secondary" style="font-size: 0.76rem;">
+                                    {{ u.date_joined|date:"d M Y" }}
+                                </td>
+                                <td class="text-end">
+                                    <div class="d-inline-flex align-items-center gap-1">
+                                        <a href="{% url 'admin_user_review' u.id %}" class="btn btn-sm btn-outline-info py-1 px-2 font-mono" title="Review User" style="font-size: 0.72rem;">
+                                            <i class="fa-solid fa-eye me-1"></i>Review
+                                        </a>
+                                        <a href="{% url 'admin_user_edit' u.id %}" class="btn btn-sm btn-outline-primary py-1 px-2 font-mono" title="Edit User" style="font-size: 0.72rem;">
+                                            <i class="fa-solid fa-pen me-1"></i>Edit
+                                        </a>
+                                        {% if u.id != request.user.id %}
+                                            <button type="button" class="btn btn-sm btn-outline-danger py-1 px-2 font-mono" title="Delete User" style="font-size: 0.72rem;"
+                                                onclick="openDeleteUserModal('{{ u.id }}', '{{ u.username|escapejs }}', '{% url 'admin_user_delete' u.id %}')">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
+                                        {% else %}
+                                            <span class="badge bg-secondary-subtle text-secondary font-mono" style="font-size: 0.68rem;">You</span>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary py-4 font-space">No users found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Cross-Platform Applications Activity Feed -->
     <div class="admin-glass-card p-4">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
@@ -513,4 +619,80 @@
     </div>
 
 </div>
+
+<!-- Shared Delete User Confirmation Modal -->
+<div class="modal fade" id="adminDeleteUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content admin-glass-card border-danger">
+            <div class="modal-header border-bottom" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                <h5 class="modal-title font-space fw-bold text-danger">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Delete User Account
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-main small mb-2">
+                    Are you sure you want to permanently delete user <strong id="deleteModalUsername" class="text-danger"></strong>?
+                </p>
+                <p class="text-secondary small font-mono mb-0">
+                    All linked profile data, submissions, and history will be removed permanently.
+                </p>
+            </div>
+            <div class="modal-footer border-top" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-3" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteModalForm" method="POST" action="">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm fw-bold font-space px-3 rounded-3">
+                        <i class="fa-solid fa-trash-can me-1"></i> Confirm Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function openDeleteUserModal(userId, username, actionUrl) {
+        document.getElementById('deleteModalUsername').innerText = '@' + username;
+        document.getElementById('deleteModalForm').action = actionUrl;
+        const modal = new bootstrap.Modal(document.getElementById('adminDeleteUserModal'));
+        modal.show();
+    }
+
+    // Live Role Filter + Search
+    let activeRoleFilter = 'ALL';
+    const roleBtns = document.querySelectorAll('#userRoleFilter button');
+    const searchInput = document.getElementById('adminUserSearch');
+    const userRows = document.querySelectorAll('#adminUsersTable tbody tr.user-row');
+
+    function filterUserRows() {
+        const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+        userRows.forEach(row => {
+            const role = row.getAttribute('data-role');
+            const haystack = row.getAttribute('data-search') || '';
+            const matchesRole = (activeRoleFilter === 'ALL') || (role === activeRoleFilter);
+            const matchesSearch = !query || haystack.includes(query);
+            row.style.display = (matchesRole && matchesSearch) ? '' : 'none';
+        });
+    }
+
+    roleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            roleBtns.forEach(b => {
+                b.classList.remove('btn-primary', 'active');
+                b.classList.add('btn-outline-secondary');
+            });
+            btn.classList.remove('btn-outline-secondary');
+            btn.classList.add('btn-primary', 'active');
+            activeRoleFilter = btn.getAttribute('data-role');
+            filterUserRows();
+        });
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterUserRows);
+    }
+</script>
 {% endblock %}
