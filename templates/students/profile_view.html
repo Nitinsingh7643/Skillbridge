@@ -1,165 +1,643 @@
 {% extends "base.html" %}
+{% load static %}
 
-{% block title %}{{ profile.user.get_full_name|default:profile.user.username }} | Academic Portfolio{% endblock %}
+{% block title %}{{ profile.user.get_full_name|default:profile.user.username }} | Academic Portfolio | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<!-- Space Grotesk & JetBrains Mono Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* ==========================================================================
+       ENTERPRISE DIGITAL STUDENT PORTFOLIO - GLASSMORPHISM
+       ========================================================================== */
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Glass Panels */
+    .profile-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.08);
+        transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .profile-glass-card:hover {
+        border-color: rgba(99, 102, 241, 0.35);
+        box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.6), 0 0 30px rgba(99, 102, 241, 0.15);
+    }
+
+    [data-bs-theme="light"] .profile-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.94) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06), 0 0 20px rgba(99, 102, 241, 0.05);
+    }
+
+    [data-bs-theme="light"] .profile-glass-card:hover {
+        border-color: rgba(99, 102, 241, 0.4);
+        box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.1), 0 0 25px rgba(99, 102, 241, 0.1);
+    }
+
+    /* Inner Wells */
+    .profile-inner-well {
+        background: rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    [data-bs-theme="light"] .profile-inner-well {
+        background: #f8fafc;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Telemetry KPI Cards */
+    .prof-kpi-card {
+        background: rgba(15, 23, 42, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 20px;
+        transition: transform 0.2s ease, border-color 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .prof-kpi-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    [data-bs-theme="light"] .prof-kpi-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Beacon & Pulsing Indicators */
+    .beacon-pulse-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10b981;
+        position: relative;
+        margin-right: 6px;
+    }
+    .beacon-pulse-dot::after {
+        content: '';
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: rgba(16, 185, 129, 0.4);
+        animation: beaconPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes beaconPing {
+        75%, 100% { transform: scale(2); opacity: 0; }
+    }
+
+    /* Candidate Avatar Tile */
+    .profile-avatar-tile {
+        width: 110px;
+        height: 110px;
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        font-weight: 800;
+        flex-shrink: 0;
+        background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%);
+        color: #ffffff;
+        border: 3px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+        position: relative;
+    }
+
+    .profile-avatar-tile img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    /* Readiness SVG Radial Gauge */
+    .readiness-radial-wrap {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+    }
+
+    .readiness-svg {
+        transform: rotate(-90deg);
+        width: 120px;
+        height: 120px;
+    }
+
+    .readiness-circle-bg {
+        fill: none;
+        stroke: rgba(255, 255, 255, 0.08);
+        stroke-width: 9;
+    }
+
+    [data-bs-theme="light"] .readiness-circle-bg {
+        stroke: rgba(0, 0, 0, 0.08);
+    }
+
+    .readiness-circle-bar {
+        fill: none;
+        stroke-width: 9;
+        stroke-linecap: round;
+        stroke-dasharray: 326;
+        stroke-dashoffset: 326;
+        transition: stroke-dashoffset 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .readiness-center-val {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    /* Skill Item Card */
+    .skill-glass-row {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 14px 16px;
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .skill-glass-row:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    [data-bs-theme="light"] .skill-glass-row {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+    }
+
+    /* Project Glass Card */
+    .project-glass-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        padding: 18px;
+        transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .project-glass-card:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(16, 185, 129, 0.35);
+        box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.3);
+    }
+
+    [data-bs-theme="light"] .project-glass-card {
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Progress Track Modern */
+    .progress-track-glow {
+        height: 6px;
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+        overflow: hidden;
+        margin-top: 6px;
+    }
+
+    [data-bs-theme="light"] .progress-track-glow {
+        background: rgba(0, 0, 0, 0.08);
+    }
+
+    /* Filter Pills */
+    .filter-cat-pill {
+        padding: 6px 14px;
+        border-radius: 9999px;
+        font-size: 0.78rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #94a3b8;
+    }
+
+    .filter-cat-pill:hover, .filter-cat-pill.active {
+        background: #4f46e5;
+        border-color: #6366f1;
+        color: #ffffff;
+    }
+
+    [data-bs-theme="light"] .filter-cat-pill {
+        background: #f1f5f9;
+        border-color: rgba(0, 0, 0, 0.06);
+        color: #475569;
+    }
+
+    [data-bs-theme="light"] .filter-cat-pill.active {
+        background: #4f46e5;
+        color: #ffffff;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <!-- Profile Header Card -->
-    <div class="card border-0 shadow-sm p-4 bg-white mb-4">
-        <div class="row align-items-center">
-            <div class="col-md-2 text-center mb-3 mb-md-0">
-                {% if profile.user.profile_image %}
-                    <img src="{{ profile.user.profile_image.url }}" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;" alt="Avatar">
-                {% else %}
-                    <div class="rounded-circle bg-primary-subtle text-primary d-inline-flex align-items-center justify-content-center" style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold;">
-                        {{ profile.user.first_name|first|default:profile.user.username|first|upper }}
+<div class="container-fluid px-lg-5 py-4">
+
+    <!-- =========================================================================
+         EXECUTIVE CANDIDATE PROFILE HERO HEADER
+         ========================================================================= -->
+    <div class="profile-glass-card p-4 p-lg-5 mb-4">
+        <div class="row align-items-center g-4">
+            <!-- Left: Avatar Tile & Identity -->
+            <div class="col-lg-8">
+                <div class="d-flex flex-column flex-md-row align-items-md-start gap-4">
+                    <!-- Avatar Box with Online Beacon -->
+                    <div class="profile-avatar-tile">
+                        {% if profile.user.profile_image %}
+                            <img src="{{ profile.user.profile_image.url }}" alt="{{ profile.user.get_full_name|default:profile.user.username }}">
+                        {% else %}
+                            {{ profile.user.first_name|first|default:profile.user.username|first|upper }}
+                        {% endif %}
+                    </div>
+
+                    <!-- Details & Badges -->
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
+                            <span class="badge rounded-pill bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-1 font-space">
+                                <span class="beacon-pulse-dot"></span> Active Candidate Profile
+                            </span>
+                            <span class="badge rounded-pill bg-primary bg-opacity-15 text-primary border border-primary border-opacity-30 px-2 py-1 small">
+                                {{ profile.degree }}
+                            </span>
+                            <span class="badge rounded-pill bg-info bg-opacity-15 text-info border border-info border-opacity-25 px-2 py-1 small">
+                                {{ profile.department.code|default:"CSE" }}
+                            </span>
+                        </div>
+
+                        <h2 class="display-6 fw-bold text-white mb-1 font-space" style="letter-spacing: -0.02em;">
+                            {{ profile.user.get_full_name|default:profile.user.username }}
+                        </h2>
+
+                        <div class="text-secondary small mb-2 d-flex align-items-center gap-2 flex-wrap">
+                            <span class="text-white fw-semibold">
+                                <i class="fa-solid fa-graduation-cap text-primary me-1"></i>
+                                {{ profile.college.name|default:"RV College of Engineering" }}
+                            </span>
+                            <span>•</span>
+                            <span>
+                                <i class="fa-solid fa-building text-info me-1"></i>
+                                {{ profile.department.name|default:"Computer Science & Engineering" }}
+                            </span>
+                        </div>
+
+                        <!-- Academic Telemetry Strip -->
+                        <div class="d-flex align-items-center gap-3 text-secondary small flex-wrap mb-3">
+                            <span><i class="fa-solid fa-id-badge text-primary me-1"></i> Roll: <strong class="text-white">{{ profile.roll_number|default:"1RV22CS104" }}</strong></span>
+                            <span>•</span>
+                            <span><i class="fa-regular fa-calendar-check text-info me-1"></i> Semester: <strong class="text-white">{{ profile.semester }}</strong></span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-star text-warning me-1"></i> CGPA: <strong class="text-warning">{{ profile.cgpa }} / 10.0</strong></span>
+                            <span>•</span>
+                            <span><i class="fa-solid fa-clock-rotate-left text-secondary me-1"></i> Class: <strong class="text-white">{{ profile.graduation_year }}</strong></span>
+                        </div>
+
+                        <!-- Social & External Credentials Row -->
+                        <div class="d-flex flex-wrap gap-2">
+                            {% if profile.github_url %}
+                                <a href="{{ profile.github_url }}" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                                    <i class="fa-brands fa-github me-1"></i> GitHub <i class="fa-solid fa-arrow-up-right-from-square ms-1" style="font-size: 0.65rem;"></i>
+                                </a>
+                            {% endif %}
+                            {% if profile.linkedin_url %}
+                                <a href="{{ profile.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                    <i class="fa-brands fa-linkedin me-1 text-primary"></i> LinkedIn <i class="fa-solid fa-arrow-up-right-from-square ms-1" style="font-size: 0.65rem;"></i>
+                                </a>
+                            {% endif %}
+                            {% if profile.portfolio_url %}
+                                <a href="{{ profile.portfolio_url }}" target="_blank" class="btn btn-outline-info btn-sm rounded-pill px-3">
+                                    <i class="fa-solid fa-globe me-1 text-info"></i> Portfolio <i class="fa-solid fa-arrow-up-right-from-square ms-1" style="font-size: 0.65rem;"></i>
+                                </a>
+                            {% endif %}
+                            {% if profile.resume %}
+                                <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    <i class="fa-solid fa-file-pdf me-1 text-danger"></i> Resume PDF <i class="fa-solid fa-download ms-1" style="font-size: 0.65rem;"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Pitch / About Me -->
+                {% if profile.bio %}
+                    <div class="profile-inner-well mt-4">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="fa-solid fa-quote-left text-primary small"></i>
+                            <span class="text-uppercase small fw-bold text-secondary" style="font-size: 0.72rem; letter-spacing: 0.05em;">Professional Bio & Summary</span>
+                        </div>
+                        <p class="text-white small mb-0" style="line-height: 1.7;">
+                            {{ profile.bio }}
+                        </p>
                     </div>
                 {% endif %}
             </div>
-            <div class="col-md-7">
-                <div class="d-flex align-items-center gap-2 mb-1">
-                    <h3 class="fw-bold text-dark mb-0">{{ profile.user.get_full_name|default:profile.user.username }}</h3>
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle">{{ profile.degree }}</span>
-                </div>
-                <div class="text-muted small mb-2">
-                    <i class="fa-solid fa-graduation-cap me-1 text-primary"></i> {{ profile.college.name|default:"College Institution" }} &bull;
-                    <i class="fa-solid fa-building me-1 text-info"></i> {{ profile.department.name|default:"Department of Engineering" }}
-                </div>
-                <div class="text-secondary small mb-3">
-                    <span class="me-3"><i class="fa-solid fa-id-badge me-1"></i> Roll: <strong>{{ profile.roll_number|default:"N/A" }}</strong></span>
-                    <span class="me-3"><i class="fa-solid fa-calendar me-1"></i> Sem: <strong>{{ profile.semester }}</strong></span>
-                    <span class="me-3"><i class="fa-solid fa-star text-warning me-1"></i> CGPA: <strong>{{ profile.cgpa }} / 10.0</strong></span>
-                    <span><i class="fa-solid fa-clock me-1"></i> Batch: <strong>{{ profile.graduation_year }}</strong></span>
-                </div>
 
-                <div class="d-flex flex-wrap gap-2">
-                    {% if profile.github_url %}
-                        <a href="{{ profile.github_url }}" target="_blank" class="btn btn-outline-dark btn-sm rounded-pill">
-                            <i class="fa-brands fa-github me-1"></i> GitHub
-                        </a>
-                    {% endif %}
-                    {% if profile.linkedin_url %}
-                        <a href="{{ profile.linkedin_url }}" target="_blank" class="btn btn-outline-primary btn-sm rounded-pill">
-                            <i class="fa-brands fa-linkedin me-1"></i> LinkedIn
-                        </a>
-                    {% endif %}
-                    {% if profile.portfolio_url %}
-                        <a href="{{ profile.portfolio_url }}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill">
-                            <i class="fa-solid fa-globe me-1"></i> Portfolio
-                        </a>
-                    {% endif %}
-                    {% if profile.resume %}
-                        <a href="{{ profile.resume.url }}" target="_blank" class="btn btn-outline-danger btn-sm rounded-pill">
-                            <i class="fa-solid fa-file-pdf me-1"></i> Resume PDF
-                        </a>
+            <!-- Right: Placement Readiness Radial Gauge & Action Box -->
+            <div class="col-lg-4 text-center">
+                <div class="profile-inner-well p-4 h-100 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-uppercase small fw-bold text-secondary" style="font-size: 0.72rem; letter-spacing: 0.06em;">
+                                Readiness Calculus
+                            </span>
+                            <span class="badge bg-success bg-opacity-15 text-success font-mono small">
+                                Verified
+                            </span>
+                        </div>
+
+                        <!-- SVG Circular Progress Ring -->
+                        <div class="readiness-radial-wrap mb-3">
+                            <svg class="readiness-svg" viewBox="0 0 120 120">
+                                <circle class="readiness-circle-bg" cx="60" cy="60" r="52"></circle>
+                                <circle class="readiness-circle-bar" id="readinessCircleBar" cx="60" cy="60" r="52" stroke="#10b981"></circle>
+                            </svg>
+                            <div class="readiness-center-val">
+                                <div class="h3 fw-bold text-white mb-0 font-space font-mono">{{ placement_readiness }}%</div>
+                                <small class="text-secondary" style="font-size: 0.68rem;">Ready</small>
+                            </div>
+                        </div>
+
+                        <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 px-3 py-1 rounded-pill fw-semibold small mb-3">
+                            <i class="fa-solid fa-circle-check me-1"></i> Tier 1 Placement Ready
+                        </span>
+
+                        <div class="row g-2 text-center small mb-3 pt-2 border-top border-secondary border-opacity-15">
+                            <div class="col-4">
+                                <div class="fw-bold text-white font-mono">{{ verified_skills_count }}</div>
+                                <small class="text-secondary" style="font-size: 0.68rem;">Verified</small>
+                            </div>
+                            <div class="col-4 border-start border-secondary border-opacity-15">
+                                <div class="fw-bold text-white font-mono">{{ projects_count }}</div>
+                                <small class="text-secondary" style="font-size: 0.68rem;">Projects</small>
+                            </div>
+                            <div class="col-4 border-start border-secondary border-opacity-15">
+                                <div class="fw-bold text-white font-mono">{{ applications_count }}</div>
+                                <small class="text-secondary" style="font-size: 0.68rem;">Filed</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if is_owner %}
+                        <div>
+                            <a href="{% url 'student_profile_edit' %}" class="btn btn-primary fw-semibold w-100 py-2 rounded-pill shadow-sm">
+                                <i class="fa-solid fa-pen-to-square me-2"></i>Edit Portfolio
+                            </a>
+                        </div>
                     {% endif %}
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="col-md-3 text-md-end mt-3 mt-md-0">
-                <div class="p-3 bg-light rounded-3 border text-center mb-2">
-                    <div class="text-muted small fw-semibold">Placement Readiness</div>
-                    <div class="display-6 fw-bold text-primary">{{ placement_readiness }}%</div>
-                    <small class="text-muted">Calculated Skill Score</small>
+    <!-- =========================================================================
+         TOP TELEMETRY KPI METRICS STRIP (4 METRICS)
+         ========================================================================= -->
+    <div class="row g-3 mb-4">
+        <!-- Metric 1: Placement Readiness -->
+        <div class="col-6 col-lg-3">
+            <div class="prof-kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Placement Readiness</span>
+                    <div class="rounded-circle p-2 bg-primary bg-opacity-10 text-primary" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-briefcase"></i>
+                    </div>
                 </div>
-                {% if is_owner %}
-                    <a href="{% url 'student_profile_edit' %}" class="btn btn-primary btn-sm w-100">
-                        <i class="fa-solid fa-pen me-1"></i> Edit Portfolio
-                    </a>
-                {% endif %}
+                <div class="h3 fw-bold text-white mb-1 font-space">{{ placement_readiness }}%</div>
+                <div class="progress-track-glow">
+                    <div style="height: 100%; width: {{ placement_readiness }}%; background: #4f46e5; border-radius: 9999px;"></div>
+                </div>
+                <small class="text-secondary mt-2 d-block" style="font-size: 0.72rem;">CGPA + Verified Skills + Projects</small>
             </div>
         </div>
 
-        {% if profile.bio %}
-            <div class="border-top pt-3 mt-3">
-                <h6 class="fw-bold text-dark mb-1">About Me</h6>
-                <p class="text-secondary small mb-0">{{ profile.bio }}</p>
+        <!-- Metric 2: Internship Readiness -->
+        <div class="col-6 col-lg-3">
+            <div class="prof-kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Internship Readiness</span>
+                    <div class="rounded-circle p-2 bg-info bg-opacity-10 text-info" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-info mb-1 font-space">{{ internship_readiness }}%</div>
+                <div class="progress-track-glow">
+                    <div style="height: 100%; width: {{ internship_readiness }}%; background: #0ea5e9; border-radius: 9999px;"></div>
+                </div>
+                <small class="text-secondary mt-2 d-block" style="font-size: 0.72rem;">Hands-on Coding & Foundation</small>
             </div>
-        {% endif %}
+        </div>
+
+        <!-- Metric 3: Technical Competency -->
+        <div class="col-6 col-lg-3">
+            <div class="prof-kpi-card h-100">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Technical Score</span>
+                    <div class="rounded-circle p-2 bg-success bg-opacity-10 text-success" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-code"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-success mb-1 font-space">{{ technical_score }}%</div>
+                <div class="progress-track-glow">
+                    <div style="height: 100%; width: {{ technical_score }}%; background: #10b981; border-radius: 9999px;"></div>
+                </div>
+                <small class="text-secondary mt-2 d-block" style="font-size: 0.72rem;">Mean of Technical Proficiencies</small>
+            </div>
+        </div>
+
+        <!-- Metric 4: Verified Badges -->
+        <div class="col-6 col-lg-3">
+            <div class="prof-kpi-card h-100" style="border-color: rgba(245, 158, 11, 0.3);">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-secondary small fw-medium">Verified Credentials</span>
+                    <div class="rounded-circle p-2 bg-warning bg-opacity-10 text-warning" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                </div>
+                <div class="h3 fw-bold text-warning mb-1 font-space">{{ verified_skills_count }} Badges</div>
+                <div class="progress-track-glow">
+                    <div style="height: 100%; width: {{ verification_rate }}%; background: #f59e0b; border-radius: 9999px;"></div>
+                </div>
+                <small class="text-secondary mt-2 d-block" style="font-size: 0.72rem;">{{ verification_rate }}% Verification Rate</small>
+            </div>
+        </div>
     </div>
 
-    <div class="row g-4">
-        <!-- Verified Skills and Proficiencies -->
+    <!-- =========================================================================
+         SPLIT SECTION: SKILLS MATRIX & REAL-WORLD PROJECTS
+         ========================================================================= -->
+    <div class="row g-4 mb-4">
+        <!-- Verified Skills and Proficiencies (col-lg-6) -->
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+            <div class="profile-glass-card p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-certificate text-primary me-2"></i>Skills & Proficiency Matrix</h5>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0 font-space d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-certificate text-primary"></i>
+                            Skills & Proficiency Matrix
+                        </h5>
+                        <p class="text-secondary small mb-0">Verified technical and soft skill competencies</p>
+                    </div>
                     {% if is_owner %}
-                        <a href="{% url 'student_skills_manage' %}" class="btn btn-outline-primary btn-sm">Update Skills</a>
+                        <a href="{% url 'student_skills_manage' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-sliders me-1"></i> Update Skills
+                        </a>
                     {% endif %}
                 </div>
 
-                <div class="list-group list-group-flush">
+                <!-- Skill Rows List -->
+                <div class="d-flex flex-column gap-3">
                     {% for ss in student_skills %}
-                        <div class="list-group-item px-0 py-3">
+                        <div class="skill-glass-row">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-semibold text-dark">
-                                    {{ ss.skill.name }}
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="fw-bold text-white small">{{ ss.skill.name }}</span>
                                     {% if ss.is_verified %}
-                                        <span class="verified-badge ms-1"><i class="fa-solid fa-check"></i> Verified</span>
+                                        <span class="badge bg-success bg-opacity-15 text-success border border-success border-opacity-30 rounded-pill small" style="font-size: 0.68rem;">
+                                            <i class="fa-solid fa-certificate me-1"></i> Verified {{ ss.verified_score }}%
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-secondary bg-opacity-20 text-secondary border border-secondary border-opacity-25 rounded-pill small" style="font-size: 0.68rem;">
+                                            Self-Reported
+                                        </span>
                                     {% endif %}
+                                </div>
+                                <span class="fw-bold font-mono small {% if ss.is_verified %}text-success{% else %}text-primary{% endif %}">
+                                    {{ ss.proficiency }}%
                                 </span>
-                                <span class="fw-bold text-primary small">{{ ss.proficiency }}%</span>
                             </div>
-                            <div class="progress" style="height: 6px;">
-                                <div class="progress-bar {% if ss.is_verified %}bg-success{% else %}bg-primary{% endif %}" role="progressbar" style="width: {{ ss.proficiency }}%"></div>
+
+                            <!-- Progress Track -->
+                            <div class="progress-track-glow">
+                                <div style="height: 100%; width: {{ ss.proficiency }}%; background: {% if ss.is_verified %}linear-gradient(90deg, #10b981, #059669){% else %}linear-gradient(90deg, #6366f1, #3b82f6){% endif %}; border-radius: 9999px;"></div>
                             </div>
-                            <div class="d-flex justify-content-between text-muted mt-1" style="font-size: 0.75rem;">
-                                <span>{{ ss.skill.category.name }}</span>
+
+                            <div class="d-flex justify-content-between align-items-center text-secondary small mt-2" style="font-size: 0.72rem;">
+                                <span>{{ ss.skill.category.name|default:"General" }}</span>
                                 {% if ss.is_verified %}
-                                    <span class="text-success">Assessment Score: {{ ss.verified_score }}%</span>
+                                    <span class="text-success"><i class="fa-solid fa-shield-halved me-1"></i>Assessment Verified</span>
                                 {% else %}
-                                    <span class="text-muted">Self-Reported</span>
+                                    <a href="{% url 'assessment_list' %}" class="text-decoration-none text-primary fw-semibold">
+                                        Verify Skill <i class="fa-solid fa-arrow-right ms-1"></i>
+                                    </a>
                                 {% endif %}
                             </div>
                         </div>
                     {% empty %}
-                        <div class="text-center text-muted py-4">
-                            No skills added yet. Add skills to compute your match score!
+                        <div class="text-center text-secondary py-5">
+                            <i class="fa-solid fa-certificate fs-1 mb-2 opacity-50"></i>
+                            <div>No skills added to portfolio yet.</div>
+                            <a href="{% url 'student_skills_manage' %}" class="btn btn-primary btn-sm mt-2 rounded-pill px-3">Add Skills Now</a>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
 
-        <!-- Academic & Real-World Projects -->
+        <!-- Academic & Real-World Projects (col-lg-6) -->
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm p-4 bg-white h-100">
+            <div class="profile-glass-card p-4 h-100">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold text-dark mb-0"><i class="fa-solid fa-laptop-code text-success me-2"></i>Projects & Portfolios</h5>
+                    <div>
+                        <h5 class="fw-bold text-white mb-0 font-space d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-laptop-code text-success"></i>
+                            Projects & Portfolios
+                        </h5>
+                        <p class="text-secondary small mb-0">Production repositories, open-source software, and demos</p>
+                    </div>
                     {% if is_owner %}
-                        <a href="{% url 'student_projects_manage' %}" class="btn btn-outline-success btn-sm">Add Project</a>
+                        <a href="{% url 'student_projects_manage' %}" class="btn btn-outline-success btn-sm rounded-pill px-3">
+                            <i class="fa-solid fa-plus me-1"></i> Add Project
+                        </a>
                     {% endif %}
                 </div>
 
-                <div class="list-group list-group-flush">
+                <div class="d-flex flex-column gap-3">
                     {% for p in projects %}
-                        <div class="list-group-item px-0 py-3">
-                            <div class="d-flex justify-content-between align-items-baseline mb-1">
-                                <h6 class="fw-bold text-dark mb-0">{{ p.title }}</h6>
+                        <div class="project-glass-card">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h6 class="fw-bold text-white mb-0 font-space">{{ p.title }}</h6>
                                 <div class="d-flex gap-2">
                                     {% if p.github_link %}
-                                        <a href="{{ p.github_link }}" target="_blank" class="text-dark small"><i class="fa-brands fa-github"></i> Code</a>
+                                        <a href="{{ p.github_link }}" target="_blank" class="btn btn-outline-light btn-sm py-0 px-2 rounded-pill" style="font-size: 0.72rem;">
+                                            <i class="fa-brands fa-github me-1"></i> Code
+                                        </a>
                                     {% endif %}
                                     {% if p.live_link %}
-                                        <a href="{{ p.live_link }}" target="_blank" class="text-primary small"><i class="fa-solid fa-arrow-up-right-from-square"></i> Demo</a>
+                                        <a href="{{ p.live_link }}" target="_blank" class="btn btn-outline-primary btn-sm py-0 px-2 rounded-pill" style="font-size: 0.72rem;">
+                                            <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Live
+                                        </a>
                                     {% endif %}
                                 </div>
                             </div>
-                            <p class="small text-secondary mb-2">{{ p.description }}</p>
-                            <div>
-                                <span class="badge bg-secondary-subtle text-secondary small">{{ p.technologies }}</span>
-                            </div>
+
+                            <p class="small text-secondary mb-3" style="line-height: 1.6;">{{ p.description }}</p>
+
+                            {% if p.technologies %}
+                                <div class="d-flex flex-wrap gap-1 pt-2 border-top border-secondary border-opacity-10">
+                                    <span class="badge bg-dark border border-secondary border-opacity-25 text-secondary" style="font-size: 0.68rem;">
+                                        <i class="fa-solid fa-microchip me-1 text-primary"></i> {{ p.technologies }}
+                                    </span>
+                                </div>
+                            {% endif %}
                         </div>
                     {% empty %}
-                        <div class="text-center text-muted py-4">
-                            No projects added yet. Hands-on projects substantially boost your placement readiness score!
+                        <div class="text-center text-secondary py-5">
+                            <i class="fa-solid fa-laptop-code fs-1 mb-2 opacity-50"></i>
+                            <div>No projects showcased yet.</div>
+                            <a href="{% url 'student_projects_manage' %}" class="btn btn-success btn-sm mt-2 rounded-pill px-3">Add Your First Project</a>
                         </div>
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
 
+</div>
+
+<!-- Interactive Radial SVG Gauge Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const circle = document.getElementById('readinessCircleBar');
+        if (circle) {
+            const readiness = {{ placement_readiness }};
+            const circumference = 2 * Math.PI * 52; // ~326
+            const offset = circumference - (readiness / 100) * circumference;
+            setTimeout(() => {
+                circle.style.strokeDashoffset = offset;
+            }, 150);
+        }
+    });
+</script>
+{% endblock %}

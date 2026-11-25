@@ -98,15 +98,40 @@ def student_profile_view(request, student_id=None):
     certifications = profile.certifications.all()
     experiences = profile.experiences.all()
 
+    total_skills = student_skills.count()
+    verified_skills_count = student_skills.filter(is_verified=True).count()
+    verification_rate = round((verified_skills_count / total_skills) * 100) if total_skills > 0 else 0
+    technical_score = profile.technical_score()
+    soft_score = profile.soft_score()
+    placement_readiness = profile.placement_readiness()
+    internship_readiness = profile.internship_readiness()
+    applications_count = profile.applications.count()
+
+    # Categorize skills for grouping tabs
+    category_map = {}
+    for ss in student_skills:
+        cname = ss.skill.category.name if ss.skill.category else 'General'
+        if cname not in category_map:
+            category_map[cname] = []
+        category_map[cname].append(ss)
+
     context = {
         'profile': profile,
         'student_skills': student_skills,
+        'total_skills': total_skills,
+        'verified_skills_count': verified_skills_count,
+        'verification_rate': verification_rate,
+        'technical_score': technical_score,
+        'soft_score': soft_score,
         'projects': projects,
+        'projects_count': projects.count(),
         'certifications': certifications,
         'experiences': experiences,
+        'applications_count': applications_count,
+        'category_map': category_map,
         'is_owner': request.user == profile.user,
-        'placement_readiness': profile.placement_readiness(),
-        'internship_readiness': profile.internship_readiness(),
+        'placement_readiness': placement_readiness,
+        'internship_readiness': internship_readiness,
     }
     return render(request, 'students/profile_view.html', context)
 
