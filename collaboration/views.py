@@ -22,11 +22,24 @@ def collaboration_hub(request):
 
     sorted_demands = sorted(skill_demand_counts.items(), key=lambda x: x[1], reverse=True)[:8]
 
+    total_projected_hires = sum(d.expected_hires for d in demands)
+    total_demands_count = demands.count()
+    workshops_count = workshops.count()
+    live_projects_count = live_projects.count()
+    active_companies_count = demands.values('company').distinct().count()
+    top_demanded_skill = sorted_demands[0][0] if sorted_demands else 'Full Stack'
+
     context = {
         'demands': demands,
         'workshops': workshops,
         'live_projects': live_projects,
         'sorted_demands': sorted_demands,
+        'total_projected_hires': total_projected_hires,
+        'total_demands_count': total_demands_count,
+        'workshops_count': workshops_count,
+        'live_projects_count': live_projects_count,
+        'active_companies_count': active_companies_count,
+        'top_demanded_skill': top_demanded_skill,
         'is_recruiter': request.user.is_authenticated and hasattr(request.user, 'company_profile'),
         'is_college': request.user.is_authenticated and hasattr(request.user, 'college_profile'),
     }

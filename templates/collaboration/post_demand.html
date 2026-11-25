@@ -1,59 +1,90 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Post Skill Demand Forecast | SkillBridge{% endblock %}
+
+{% block extra_css %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .font-space { font-family: 'Space Grotesk', -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+    .form-glass-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.96) 100%);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.06);
+    }
+
+    [data-bs-theme="light"] .form-glass-card {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.94) 100%);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 15px 35px -8px rgba(0, 0, 0, 0.06);
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm p-4 bg-white">
-                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+            <div class="form-glass-card p-4 p-md-5">
+                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3" style="border-color: rgba(255, 255, 255, 0.08) !important;">
                     <div>
-                        <h4 class="fw-bold text-dark mb-0"><i class="fa-solid fa-chart-line text-primary me-2"></i>Publish Industry Skill Demand Forecast</h4>
-                        <small class="text-muted">Broadcast future hiring requirements to partnering colleges so TPOs can align curriculum and training</small>
+                        <h4 class="font-space fw-bold text-main mb-1">
+                            <i class="fa-solid fa-chart-line text-primary me-2"></i>Publish Industry Skill Demand Forecast
+                        </h4>
+                        <p class="text-secondary small mb-0 font-space">
+                            Broadcast future hiring requirements to partnering colleges so TPOs can align curriculum and training.
+                        </p>
                     </div>
-                    <a href="{% url 'collaboration_hub' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                    <a href="{% url 'collaboration_hub' %}" class="btn btn-outline-secondary btn-sm rounded-3">Cancel</a>
                 </div>
 
                 <form method="POST">
                     {% csrf_token %}
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Report Title <span class="text-danger">*</span></label>
+                        <label class="form-label small fw-semibold text-main font-space">Report Title <span class="text-danger">*</span></label>
                         <input type="text" name="title" class="form-control" placeholder="e.g. Demand for 40 Cloud & DevOps Engineers for Q3 2026" required>
                     </div>
 
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
-                            <label class="form-label small fw-semibold">Target Job Role <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-main font-space">Target Job Role <span class="text-danger">*</span></label>
                             <input type="text" name="target_role" class="form-control" placeholder="e.g. Cloud Security Analyst / Backend Developer" required>
                         </div>
                         <div class="col-md-3 col-6">
-                            <label class="form-label small fw-semibold">Projected Hires <span class="text-danger">*</span></label>
+                            <label class="form-label small fw-semibold text-main font-space">Projected Hires <span class="text-danger">*</span></label>
                             <input type="number" name="expected_hires" class="form-control" value="25" min="1" required>
                         </div>
                         <div class="col-md-3 col-6">
-                            <label class="form-label small fw-semibold">Target Timeline</label>
+                            <label class="form-label small fw-semibold text-main font-space">Target Timeline</label>
                             <input type="text" name="target_timeline" class="form-control" value="Next 3-6 Months" required>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold">Select Demanded Skills <span class="text-danger">*</span></label>
-                        <select name="demanded_skills" class="form-select" multiple size="6" required>
+                        <label class="form-label small fw-semibold text-main font-space">Select Demanded Skills <span class="text-danger">*</span></label>
+                        <select name="demanded_skills" class="form-select font-mono small" multiple size="6" required>
                             {% for s in skills %}
                                 <option value="{{ s.id }}">{{ s.name }} ({{ s.category.name }})</option>
                             {% endfor %}
                         </select>
-                        <small class="text-muted">Hold Ctrl (or Cmd on Mac) to select multiple skills</small>
+                        <small class="text-secondary font-mono" style="font-size: 0.75rem;">Hold Ctrl (or Cmd on Mac) to select multiple skills</small>
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label small fw-semibold">Description & Advice to Colleges</label>
+                        <label class="form-label small fw-semibold text-main font-space">Description & Curriculum Guidance to Colleges</label>
                         <textarea name="description" class="form-control" rows="4" placeholder="Advise colleges on the specific frameworks, architectures, or practical certifications that students should focus on..." required></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary px-4 py-2 shadow-sm">
+                    <button type="submit" class="btn btn-primary px-4 py-2 fw-bold font-space rounded-3 shadow-lg">
                         <i class="fa-solid fa-bullhorn me-1"></i> Broadcast Demand to Colleges
                     </button>
                 </form>
@@ -62,4 +93,3 @@
     </div>
 </div>
 {% endblock %}
-

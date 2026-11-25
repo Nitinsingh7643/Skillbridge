@@ -21,8 +21,7 @@ def skill_catalog(request):
         'skills': skills,
         'search': search,
     })
-
-
+    
 @login_required
 def assessment_list(request):
     assessments = SkillAssessment.objects.select_related('skill', 'skill__category').prefetch_related('questions').all()
@@ -138,6 +137,7 @@ def submit_assessment(request, assessment_id):
         st_skill, _ = StudentSkill.objects.get_or_create(
             student=profile,
             skill=assessment.skill,
+
             defaults={'proficiency': score_pct}
         )
         st_skill.is_verified = True
