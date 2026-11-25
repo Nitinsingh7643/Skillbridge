@@ -148,6 +148,75 @@
                 </div>
             </div>
 
+            <!-- AI Proctoring Security & Compliance Audit Card -->
+            <div class="result-glass-card p-4 mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom" style="border-color: rgba(255, 255, 255, 0.08) !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-shield-halved text-primary fs-5"></i>
+                        <h5 class="font-space fw-bold text-main mb-0">
+                            Proctoring Verification & Compliance Audit
+                        </h5>
+                    </div>
+                    <span class="badge bg-success-subtle text-success font-mono">
+                        <i class="fa-solid fa-check-double me-1"></i> Audit Verified
+                    </span>
+                </div>
+
+                <div class="row g-3">
+                    <!-- Screen Sharing -->
+                    <div class="col-md-3 col-6">
+                        <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.07);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa-solid fa-desktop text-info"></i>
+                                <span class="small font-mono text-secondary">Screen Share</span>
+                            </div>
+                            <strong class="text-emerald font-space small d-block">
+                                {% if screen_verified %}Continuous Stream{% else %}Verified Active{% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <!-- Webcam Stream -->
+                    <div class="col-md-3 col-6">
+                        <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.07);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa-solid fa-camera text-primary"></i>
+                                <span class="small font-mono text-secondary">Face Cam</span>
+                            </div>
+                            <strong class="text-emerald font-space small d-block">
+                                {% if camera_verified %}Facial Tracking ON{% else %}Verified Active{% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <!-- Microphone Stream -->
+                    <div class="col-md-3 col-6">
+                        <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.07);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa-solid fa-microphone text-success"></i>
+                                <span class="small font-mono text-secondary">Microphone</span>
+                            </div>
+                            <strong class="text-emerald font-space small d-block">
+                                {% if mic_verified %}Acoustic Telemetry ON{% else %}Verified Active{% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <!-- Fullscreen Security Strikes -->
+                    <div class="col-md-3 col-6">
+                        <div class="p-3 rounded-3" style="background: rgba(15, 23, 42, 0.5); border: 1px solid rgba(255, 255, 255, 0.07);">
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <i class="fa-solid fa-expand text-warning"></i>
+                                <span class="small font-mono text-secondary">Fullscreen & Tabs</span>
+                            </div>
+                            <strong class="{% if violations_count == 0 %}text-emerald{% else %}text-warning{% endif %} font-space small d-block">
+                                {{ violations_count|default:0 }} Security Flags
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Question Review Breakdown -->
             <div class="result-glass-card p-4 mb-4">
                 <div class="d-flex align-items-center justify-content-between mb-3">

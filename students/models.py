@@ -94,6 +94,8 @@ class AssessmentAttempt(models.Model):
     assessment = models.ForeignKey(SkillAssessment, on_delete=models.CASCADE, related_name='attempts')
     score = models.IntegerField()  # percentage
     passed = models.BooleanField(default=False)
+    proctored = models.BooleanField(default=True)
+    violations_count = models.IntegerField(default=0)
     completed_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

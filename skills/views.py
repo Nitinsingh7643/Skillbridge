@@ -116,11 +116,21 @@ def submit_assessment(request, assessment_id):
     score_pct = round((correct_count / total_questions) * 100)
     passed = score_pct >= assessment.passing_score
 
+    # Proctoring security telemetry
+    violations_count = int(request.POST.get('proctor_violations', 0) or 0)
+    camera_verified = request.POST.get('camera_verified', 'true') == 'true'
+    mic_verified = request.POST.get('mic_verified', 'true') == 'true'
+    screen_verified = request.POST.get('screen_verified', 'true') == 'true'
+    fullscreen_verified = request.POST.get('fullscreen_verified', 'true') == 'true'
+    proctored = request.POST.get('proctor_verified', 'true') == 'true'
+
     attempt = AssessmentAttempt.objects.create(
         student=profile,
         assessment=assessment,
         score=score_pct,
-        passed=passed
+        passed=passed,
+        proctored=proctored,
+        violations_count=violations_count,
     )
 
     if passed:
@@ -153,4 +163,10 @@ def submit_assessment(request, assessment_id):
         'passed': passed,
         'results_breakdown': results_breakdown,
         'learning_resources': assessment.skill.learning_resources.all()[:4],
+        'proctored': proctored,
+        'violations_count': violations_count,
+        'camera_verified': camera_verified,
+        'mic_verified': mic_verified,
+        'screen_verified': screen_verified,
+        'fullscreen_verified': fullscreen_verified,
     })
