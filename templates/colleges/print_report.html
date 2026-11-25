@@ -1,128 +1,500 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Institutional Placement & Skill Readiness Report - {{ college.name }}</title>
-    <!-- Bootstrap 5.3 CSS -->
+    <title>Institutional Placement & Skill Readiness Audit Report - {{ college.name }}</title>
+
+    <!-- Google Fonts: Space Grotesk, Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.3 CSS & FontAwesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
     <style>
-        body { font-family: 'Times New Roman', Times, serif; color: #111; }
+        /* ======================================================================
+           ENTERPRISE INSTITUTIONAL AUDIT REPORT - DARK GLASSMORPHISM + PRINT PDF
+           ====================================================================== */
+        :root {
+            --bg-canvas: #020617;
+            --glass-surface: rgba(15, 23, 42, 0.88);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: radial-gradient(circle at top center, #0f172a 0%, #020617 70%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 28px 16px 60px;
+        }
+
+        .font-space { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Floating Print Action Toolbar */
+        .print-toolbar {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(99, 102, 241, 0.28);
+            border-radius: 16px;
+            padding: 14px 22px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+            margin-bottom: 24px;
+        }
+
+        .btn-gradient-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+            color: #ffffff !important;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 18px;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-gradient-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Main Report Sheet */
+        .report-glass-sheet {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.98) 100%);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 22px;
+            padding: 40px 44px;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(99, 102, 241, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-glass-sheet::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #6366f1, #10b981);
+        }
+
+        /* Seal Icon Box */
+        .institution-seal {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.18), rgba(99, 102, 241, 0.25));
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #818cf8;
+            font-size: 1.75rem;
+            box-shadow: 0 0 24px rgba(99, 102, 241, 0.2);
+        }
+
+        /* KPI Summary Cards */
+        .audit-kpi-card {
+            background: rgba(30, 41, 59, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px 20px;
+            height: 100%;
+            transition: border-color 0.2s ease;
+        }
+
+        .audit-kpi-card:hover {
+            border-color: rgba(99, 102, 241, 0.35);
+        }
+
+        /* Executive Roster Table */
+        .audit-table-wrap {
+            background: rgba(2, 6, 23, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .audit-table {
+            margin-bottom: 0;
+            color: #e2e8f0;
+            font-size: 0.88rem;
+        }
+
+        .audit-table thead th {
+            background: rgba(30, 41, 59, 0.85);
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.74rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            padding: 14px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+
+        .audit-table tbody td {
+            padding: 13px 14px;
+            vertical-align: middle;
+            border-color: rgba(255, 255, 255, 0.06);
+            background: transparent;
+        }
+
+        .audit-table tbody tr:hover td {
+            background: rgba(99, 102, 241, 0.06);
+        }
+
+        /* Readiness Bar */
+        .readiness-bar-track {
+            width: 68px;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .readiness-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+        }
+
+        /* Signatory Box */
+        .signature-card {
+            background: rgba(30, 41, 59, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            padding: 20px 16px 16px;
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px dashed rgba(255, 255, 255, 0.25);
+            margin-top: 28px;
+            padding-top: 10px;
+        }
+
+        /* ======================================================================
+           PRINT / SAVE AS PDF OVERRIDES (CRISP WHITE PAPER SHEET)
+           ====================================================================== */
         @media print {
-            .no-print { display: none !important; }
-            body { padding: 0; }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                padding: 0 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .report-glass-sheet {
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 12px 0 !important;
+                border-radius: 0 !important;
+            }
+            .report-glass-sheet::before {
+                display: none !important;
+            }
+            .institution-seal {
+                background: #eff6ff !important;
+                border-color: #93c5fd !important;
+                color: #1d4ed8 !important;
+                box-shadow: none !important;
+            }
+            .audit-kpi-card {
+                background: #f8fafc !important;
+                border: 1px solid #cbd5e1 !important;
+                color: #0f172a !important;
+            }
+            .audit-table-wrap {
+                background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .audit-table {
+                color: #0f172a !important;
+            }
+            .audit-table thead th {
+                background: #f1f5f9 !important;
+                color: #334155 !important;
+                border-color: #cbd5e1 !important;
+            }
+            .audit-table tbody td {
+                border-color: #e2e8f0 !important;
+                color: #0f172a !important;
+            }
+            .text-white, .text-light {
+                color: #0f172a !important;
+            }
+            .text-secondary {
+                color: #475569 !important;
+            }
+            .readiness-bar-track {
+                background: #e2e8f0 !important;
+            }
+            .signature-card {
+                background: #ffffff !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+            .signature-line {
+                border-top: 1px solid #64748b !important;
+            }
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="container">
-        <!-- Print Toolbar -->
-        <div class="no-print d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded border">
-            <div>
-                <strong>Print / Export Preview:</strong> SkillBridge Institutional Placement Readiness Audit Report
+<body>
+    <div class="container" style="max-width: 1120px;">
+
+        <!-- Floating Print & Export Studio Toolbar -->
+        <div class="no-print print-toolbar d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono px-3 py-2">
+                    <i class="fa-solid fa-file-shield me-1"></i> Audit Export Studio
+                </span>
+                <span class="small text-secondary font-space d-none d-md-inline">
+                    SkillBridge Institutional Placement Readiness Dossier
+                </span>
             </div>
-            <div>
-                <button onclick="window.print()" class="btn btn-primary btn-sm me-2">
-                    <i class="fa-solid fa-print me-1"></i> Print / Save as PDF
+
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a href="{% url 'export_placement_report_csv' %}" class="btn btn-outline-success btn-sm font-space fw-semibold px-3 py-2 rounded-3">
+                    <i class="fa-solid fa-file-csv me-1"></i> Export CSV
+                </a>
+                <button onclick="window.print()" class="btn-gradient-primary btn-sm d-inline-flex align-items-center gap-2">
+                    <i class="fa-solid fa-print"></i>
+                    <span>Print / Save as PDF</span>
                 </button>
-                <a href="{% url 'tpo_dashboard' %}" class="btn btn-outline-secondary btn-sm">Return to Dashboard</a>
+                <a href="{% url 'tpo_dashboard' %}" class="btn btn-outline-secondary btn-sm font-space px-3 py-2 rounded-3">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Return to Dashboard
+                </a>
             </div>
         </div>
 
-        <!-- Official Report Header -->
-        <div class="text-center border-bottom pb-3 mb-4">
-            <h2 class="fw-bold mb-1">{{ college.name|upper }}</h2>
-            <div class="text-secondary small">{{ college.university|default:"Affiliated University" }} | Code: {{ college.code|default:"COLLEGE-01" }} | {{ college.location }}</div>
-            <h4 class="mt-3 text-dark text-decoration-underline fw-bold">TRAINING & PLACEMENT READINESS AUDIT REPORT</h4>
-            <div class="small text-muted">Generated via SkillBridge Industry–Academia Collaboration Engine &bull; Date: {% now "d F Y" %}</div>
-        </div>
+        <!-- Main Institutional Audit Dossier Sheet -->
+        <div class="report-glass-sheet">
 
-        <!-- Key Metrics Summary Table -->
-        <div class="row g-3 mb-4">
-            <div class="col-3">
-                <div class="p-2 border text-center">
-                    <small class="text-muted d-block">Total Registered Cohort</small>
-                    <strong class="fs-4">{{ total_students }}</strong>
+            <!-- Official Institutional Header -->
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-start gap-3 pb-4 mb-4 border-bottom" style="border-color: rgba(255, 255, 255, 0.1) !important;">
+                <div class="d-flex align-items-center gap-3 text-center text-md-start flex-column flex-md-row">
+                    <div class="institution-seal flex-shrink-0">
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                    <div>
+                        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-start gap-2 mb-1">
+                            <span class="badge bg-primary-subtle text-primary font-mono" style="font-size: 0.7rem;">
+                                CODE: {{ college.code|default:"COLLEGE-01" }}
+                            </span>
+                            <span class="badge bg-success-subtle text-success font-mono" style="font-size: 0.7rem;">
+                                <i class="fa-solid fa-certificate me-1"></i> ACCREDITED AUDIT
+                            </span>
+                        </div>
+                        <h2 class="font-space fw-bold text-white mb-1" style="letter-spacing: -0.02em;">
+                            {{ college.name|upper }}
+                        </h2>
+                        <div class="text-secondary small font-space">
+                            {{ college.university|default:"Affiliated University" }} &bull; {{ college.location|default:"India" }}
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-3">
-                <div class="p-2 border text-center">
-                    <small class="text-muted d-block">Placed Candidates</small>
-                    <strong class="fs-4 text-success">{{ placed_count }}</strong>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="p-2 border text-center">
-                    <small class="text-muted d-block">Placement Readiness Index</small>
-                    <strong class="fs-4 text-primary">{{ avg_readiness }}%</strong>
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="p-2 border text-center">
-                    <small class="text-muted d-block">Accreditation Cycle</small>
-                    <strong class="fs-4">2026-27</strong>
-                </div>
-            </div>
-        </div>
 
-        <!-- Cohort Performance Roster -->
-        <h5 class="fw-bold mb-2">Student Cohort Performance & Verified Skill Index</h5>
-        <table class="table table-bordered table-sm align-middle" style="font-size: 0.85rem;">
-            <thead class="table-light">
-                <tr>
-                    <th>#</th>
-                    <th>Student Name</th>
-                    <th>Roll Number</th>
-                    <th>Branch</th>
-                    <th>Sem</th>
-                    <th>CGPA</th>
-                    <th>Placement Readiness (%)</th>
-                    <th>Verified Skills</th>
-                    <th>Projects</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in students %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td class="fw-bold">{{ s.user.get_full_name|default:s.user.username }}</td>
-                        <td>{{ s.roll_number|default:"-" }}</td>
-                        <td>{{ s.department.code|default:"N/A" }}</td>
-                        <td>{{ s.semester }}</td>
-                        <td>{{ s.cgpa }}</td>
-                        <td>{{ s.placement_readiness }}%</td>
-                        <td>{{ s.skills.all|length }} ({{ s.skills.filter.count }})</td>
-                        <td>{{ s.projects.count }}</td>
-                    </tr>
-                {% empty %}
-                    <tr><td colspan="9" class="text-center text-muted">No students currently registered in cohort.</td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                <div class="text-center text-md-end">
+                    <div class="font-mono small text-primary fw-bold mb-1">
+                        TRAINING & PLACEMENT READINESS AUDIT REPORT
+                    </div>
+                    <div class="font-mono text-secondary" style="font-size: 0.78rem;">
+                        Generated: <strong class="text-white">{% now "d F Y" %}</strong>
+                    </div>
+                    <div class="font-mono text-secondary" style="font-size: 0.74rem;">
+                        Engine: SkillBridge Academia–Industry Hub
+                    </div>
+                </div>
+            </div>
 
-        <!-- Signatures & Authentication -->
-        <div class="row mt-5 pt-5 text-center">
-            <div class="col-4">
-                <div class="border-top pt-2">
-                    <strong>{{ college.tpo_name|default:"TPO Incharge" }}</strong><br>
-                    <small class="text-muted">Training & Placement Officer</small>
+            <!-- Executive KPI Summary Grid -->
+            <div class="row g-3 mb-4">
+                <div class="col-lg-3 col-6">
+                    <div class="audit-kpi-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary font-mono" style="font-size: 0.74rem;">REGISTERED COHORT</span>
+                            <i class="fa-solid fa-users text-primary"></i>
+                        </div>
+                        <div class="font-space fw-bold fs-2 text-white mb-0">{{ total_students }}</div>
+                        <small class="text-secondary font-mono" style="font-size: 0.72rem;">Active Final-Year Pool</small>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <div class="audit-kpi-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary font-mono" style="font-size: 0.74rem;">PLACED CANDIDATES</span>
+                            <i class="fa-solid fa-user-check text-success"></i>
+                        </div>
+                        <div class="font-space fw-bold fs-2 text-success mb-0">{{ placed_count }}</div>
+                        <small class="text-success font-mono" style="font-size: 0.72rem;">{{ placement_rate }}% Placement Ratio</small>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <div class="audit-kpi-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary font-mono" style="font-size: 0.74rem;">READINESS INDEX</span>
+                            <i class="fa-solid fa-gauge-high text-info"></i>
+                        </div>
+                        <div class="font-space fw-bold fs-2 text-info mb-0">{{ avg_readiness }}%</div>
+                        <small class="text-secondary font-mono" style="font-size: 0.72rem;">Cohort Weighted Avg</small>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <div class="audit-kpi-card">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="text-secondary font-mono" style="font-size: 0.74rem;">AUDIT CYCLE</span>
+                            <i class="fa-solid fa-shield-check text-warning"></i>
+                        </div>
+                        <div class="font-space fw-bold fs-2 text-warning mb-0">2026-27</div>
+                        <small class="text-secondary font-mono" style="font-size: 0.72rem;">{{ total_verified_skills }} Verified Skills</small>
+                    </div>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="border-top pt-2">
-                    <strong>Head of Department</strong><br>
-                    <small class="text-muted">Academic Verification</small>
+
+            <!-- Cohort Performance & Verified Skill Index Table -->
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+                <div>
+                    <h5 class="font-space fw-bold text-white mb-0">
+                        <i class="fa-solid fa-table-list text-primary me-2"></i>Student Cohort Performance & Verified Skill Index
+                    </h5>
+                    <small class="text-secondary font-space">
+                        Individual candidate readiness derived from CGPA, proctored skill assessments, and verified project portfolios.
+                    </small>
+                </div>
+                <span class="badge bg-secondary-subtle text-secondary font-mono">
+                    {{ student_rows|length }} Candidate Records
+                </span>
+            </div>
+
+            <div class="audit-table-wrap mb-5">
+                <div class="table-responsive">
+                    <table class="table audit-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Student Name</th>
+                                <th>Roll Number</th>
+                                <th>Branch</th>
+                                <th>Sem</th>
+                                <th>CGPA</th>
+                                <th>Placement Readiness</th>
+                                <th>Verified Skills</th>
+                                <th>Projects</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in student_rows %}
+                                <tr>
+                                    <td class="font-mono text-secondary">{{ forloop.counter }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <strong class="font-space text-white">
+                                                {{ row.student.user.get_full_name|default:row.student.user.username }}
+                                            </strong>
+                                            {% if row.is_placed %}
+                                                <span class="badge bg-success-subtle text-success font-mono" style="font-size: 0.66rem;">PLACED</span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="font-mono text-secondary">{{ row.student.roll_number|default:"-" }}</td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle text-primary font-mono" style="font-size: 0.72rem;">
+                                            {{ row.student.department.code|default:"N/A" }}
+                                        </span>
+                                    </td>
+                                    <td class="font-mono">{{ row.student.semester }}</td>
+                                    <td class="font-mono fw-semibold">{{ row.student.cgpa }}</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="font-mono fw-bold {% if row.readiness >= 70 %}text-success{% elif row.readiness >= 45 %}text-warning{% else %}text-danger{% endif %}" style="min-width: 38px;">
+                                                {{ row.readiness }}%
+                                            </span>
+                                            <div class="readiness-bar-track">
+                                                <div class="readiness-bar-fill {% if row.readiness >= 70 %}bg-success{% elif row.readiness >= 45 %}bg-warning{% else %}bg-danger{% endif %}" style="width: {{ row.readiness }}%;"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="font-mono">
+                                        <span class="text-white fw-semibold">{{ row.verified_skills }}</span>
+                                        <span class="text-secondary">/ {{ row.total_skills }}</span>
+                                    </td>
+                                    <td class="font-mono">{{ row.projects_count }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center text-secondary py-4 font-space">
+                                        No students currently registered in cohort.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="border-top pt-2">
-                    <strong>Principal / Dean</strong><br>
-                    <small class="text-muted">Institution Head</small>
+
+            <!-- Official Institutional Signatories -->
+            <div class="row g-3 pt-2">
+                <div class="col-md-4">
+                    <div class="signature-card">
+                        <div class="font-mono text-secondary small mb-1" style="font-size: 0.7rem;">PLACEMENT CELL VERIFICATION</div>
+                        <div class="signature-line">
+                            <strong class="font-space text-white d-block">{{ college.tpo_name|default:"Training & Placement Officer" }}</strong>
+                            <small class="text-secondary font-mono" style="font-size: 0.74rem;">Training & Placement Officer</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="signature-card">
+                        <div class="font-mono text-secondary small mb-1" style="font-size: 0.7rem;">CURRICULUM & COHORT AUDIT</div>
+                        <div class="signature-line">
+                            <strong class="font-space text-white d-block">Head of Department</strong>
+                            <small class="text-secondary font-mono" style="font-size: 0.74rem;">Academic Verification</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="signature-card">
+                        <div class="font-mono text-secondary small mb-1" style="font-size: 0.7rem;">INSTITUTIONAL ENDORSEMENT</div>
+                        <div class="signature-line">
+                            <strong class="font-space text-white d-block">Principal / Dean</strong>
+                            <small class="text-secondary font-mono" style="font-size: 0.74rem;">Institution Head</small>
+                        </div>
+                    </div>
                 </div>
             </div>
+
         </div>
     </div>
 </body>
 </html>
-

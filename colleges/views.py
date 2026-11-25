@@ -156,19 +156,51 @@ def export_placement_report_csv(request):
 @college_required
 def print_placement_report(request):
     college, _ = College.objects.get_or_create(user=request.user)
-    students = StudentProfile.objects.filter(college=college).select_related('user', 'department')
+    students = StudentProfile.objects.filter(college=college).select_related('user', 'department').prefetch_related('skills', 'projects')
     departments = Department.objects.filter(college=college)
 
     total_students = students.count()
-    placed_count = Application.objects.filter(student__college=college, status='SELECTED').values('student').distinct().count()
-    readiness_list = [s.placement_readiness() for s in students]
+    placed_student_ids = set(
+        Application.objects.filter(student__college=college, status='SELECTED').values_list('student_id', flat=True)
+    )
+    placed_count = len(placed_student_ids)
+
+    student_rows = []
+    readiness_list = []
+    total_verified_skills = 0
+    total_projects = 0
+
+    for s in students:
+        readiness = s.placement_readiness()
+        readiness_list.append(readiness)
+        total_skills = s.skills.count()
+        verified_skills = s.skills.filter(is_verified=True).count()
+        proj_count = s.projects.count()
+        total_verified_skills += verified_skills
+        total_projects += proj_count
+
+        student_rows.append({
+            'student': s,
+            'readiness': readiness,
+            'tech_score': s.technical_score(),
+            'total_skills': total_skills,
+            'verified_skills': verified_skills,
+            'projects_count': proj_count,
+            'is_placed': s.id in placed_student_ids,
+        })
+
     avg_readiness = round(sum(readiness_list) / len(readiness_list)) if readiness_list else 0
+    placement_rate = round((placed_count / total_students) * 100) if total_students > 0 else 0
 
     return render(request, 'colleges/print_report.html', {
         'college': college,
         'students': students,
+        'student_rows': student_rows,
         'departments': departments,
         'total_students': total_students,
         'placed_count': placed_count,
+        'placement_rate': placement_rate,
         'avg_readiness': avg_readiness,
+        'total_verified_skills': total_verified_skills,
+        'total_projects': total_projects,
     })
