@@ -31,12 +31,20 @@ def preview_student_applications(request):
     request.user = User.objects.filter(role='STUDENT').first()
     return views.my_applications(request)
 
+def preview_student_gap_analysis(request, job_id=5):
+    from django.contrib.auth import get_user_model
+    User = get_user_model()
+    request.user = User.objects.filter(role='STUDENT').first()
+    return views.job_detail_and_gap_analysis(request, job_id=job_id)
+
 urlpatterns = [
     path('preview/', preview_student_dashboard, name='preview_student_dashboard'),
     path('preview-skills/', preview_student_skills, name='preview_student_skills'),
     path('preview-resume/', preview_resume_parser, name='preview_resume_parser'),
     path('preview-jobs/', preview_student_jobs, name='preview_student_jobs'),
     path('preview-applications/', preview_student_applications, name='preview_student_applications'),
+    path('preview-gap-analysis/', preview_student_gap_analysis, name='preview_student_gap_analysis'),
+    path('preview-gap-analysis/<int:job_id>/', preview_student_gap_analysis, name='preview_student_gap_analysis_id'),
     path('dashboard/', views.student_dashboard, name='student_dashboard'),
     path('profile/', views.student_profile_view, name='student_profile_view'),
     path('profile/<int:student_id>/', views.student_profile_view, name='student_profile_detail'),

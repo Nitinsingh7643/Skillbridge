@@ -424,6 +424,7 @@ def job_browse(request):
 @login_required
 @student_required
 def job_detail_and_gap_analysis(request, job_id):
+    import json
     profile, _ = StudentProfile.objects.get_or_create(user=request.user)
     job = get_object_or_404(JobPosting.objects.select_related('company'), id=job_id)
     analysis = calculate_skill_gap_and_match(profile, job)
@@ -437,6 +438,45 @@ def job_detail_and_gap_analysis(request, job_id):
     if profile.department and job.eligible_departments:
         dept_eligible = (profile.department.code.lower() in job.eligible_departments.lower())
 
+    # Company branding metadata
+    cname = job.company.company_name.lower()
+    if 'google' in cname:
+        brand_color = '#4285F4'
+        brand_bg = 'rgba(66, 133, 244, 0.15)'
+        brand_icon = 'fa-brands fa-google'
+    elif 'microsoft' in cname:
+        brand_color = '#00A4EF'
+        brand_bg = 'rgba(0, 164, 239, 0.15)'
+        brand_icon = 'fa-brands fa-microsoft'
+    elif 'amazon' in cname or 'aws' in cname:
+        brand_color = '#FF9900'
+        brand_bg = 'rgba(255, 153, 0, 0.15)'
+        brand_icon = 'fa-brands fa-aws'
+    elif 'atlassian' in cname:
+        brand_color = '#0052CC'
+        brand_bg = 'rgba(0, 82, 204, 0.15)'
+        brand_icon = 'fa-brands fa-atlassian'
+    elif 'cisco' in cname:
+        brand_color = '#049fd9'
+        brand_bg = 'rgba(4, 159, 217, 0.15)'
+        brand_icon = 'fa-solid fa-network-wired'
+    elif 'flipkart' in cname:
+        brand_color = '#2874F0'
+        brand_bg = 'rgba(40, 116, 240, 0.15)'
+        brand_icon = 'fa-solid fa-bolt'
+    elif 'tata' in cname or 'tcs' in cname:
+        brand_color = '#0070BA'
+        brand_bg = 'rgba(0, 112, 186, 0.15)'
+        brand_icon = 'fa-solid fa-building'
+    else:
+        brand_color = '#6366f1'
+        brand_bg = 'rgba(99, 102, 241, 0.15)'
+        brand_icon = 'fa-solid fa-briefcase'
+
+    chart_labels = [item['skill_name'] for item in analysis['skill_breakdown']]
+    chart_req = [item['required'] for item in analysis['skill_breakdown']]
+    chart_cur = [item['current'] for item in analysis['skill_breakdown']]
+
     context = {
         'profile': profile,
         'job': job,
@@ -445,6 +485,12 @@ def job_detail_and_gap_analysis(request, job_id):
         'application': application,
         'cgpa_eligible': cgpa_eligible,
         'dept_eligible': dept_eligible,
+        'brand_color': brand_color,
+        'brand_bg': brand_bg,
+        'brand_icon': brand_icon,
+        'chart_labels_json': json.dumps(chart_labels),
+        'chart_req_json': json.dumps(chart_req),
+        'chart_cur_json': json.dumps(chart_cur),
     }
     return render(request, 'students/job_gap_analysis.html', context)
 
