@@ -642,48 +642,33 @@
 {% endblock %}
 
 {% block content %}
-<!-- Full-width GradientASCII WebGL2 Background Shader -->
-<div class="hero-ascii-backdrop">
-    <div id="hero-gradient-ascii" class="gradient-ascii-container">
-        <canvas class="gradient-ascii-canvas" aria-hidden="true"></canvas>
-    </div>
-    <div class="hero-ascii-fade"></div>
-</div>
-
-<!-- Subtle Enterprise Blueprint Mesh -->
-<div class="enterprise-grid-overlay"></div>
-
 <div class="container hero-wrapper position-relative" style="z-index: 2;">
-    <!-- Ambient Radial Glow -->
-    <div class="hero-glow-orb"></div>
-
     <!-- Main Hero Split Row -->
     <div class="row align-items-center mb-5 position-relative" style="z-index: 2;">
         <!-- Left Hero Content -->
         <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
             <!-- Authority Header Badge -->
             <div class="gov-badge mb-3">
-                <span class="sim-pulse-dot me-1"></span>
-                <span>Next-Gen Talent Infrastructure</span>
+                <span>Academia–Industry Placement Network</span>
                 <span class="gov-divider"></span>
                 <span>AICTE &amp; NEP 2020 Aligned</span>
             </div>
 
-            <h1 class="display-4 fw-extrabold text-white tracking-tight mb-3 font-space" style="letter-spacing: -1.4px; line-height: 1.14;">
+            <h1 class="display-4 fw-bold text-main tracking-tight mb-3 font-space" style="letter-spacing: -0.03em; line-height: 1.12;">
                 National Academia–Industry <br>
-                <span class="gradient-text-enterprise">Competency &amp; Placement Grid</span>
+                <span class="text-primary">Competency &amp; Placement Grid</span>
             </h1>
 
-            <p class="lead text-white-50 mb-4" style="font-size: 1.12rem; line-height: 1.7; max-width: 540px;">
-                SkillBridge unites Higher Education Institutions (HEIs) and corporate recruiters on a verified talent exchange. Evaluate verified skills with deterministic mathematics, eliminate graduate employability gaps, and automate NAAC &amp; NIRF accreditation analytics.
+            <p class="lead text-secondary mb-4" style="font-size: 1.06rem; line-height: 1.65; max-width: 540px;">
+                SkillBridge connects Higher Education Institutions and corporate recruiters on a verified talent platform. Measure skills objectively, close graduate readiness gaps, and streamline campus hiring.
             </p>
 
             <div class="d-flex flex-wrap gap-3 mb-4">
-                <a href="{% url 'register' %}" class="btn-primary-glow px-4 py-3" style="font-size: 1rem;">
-                    <i class="fa-solid fa-graduation-cap me-1"></i> Enter Institutional Portal <i class="fa-solid fa-arrow-right ms-1"></i>
+                <a href="{% url 'register' %}" class="btn btn-primary px-4 py-2 fw-semibold" style="font-size: 0.95rem;">
+                    Create Institutional Account <i class="fa-solid fa-arrow-right ms-1"></i>
                 </a>
-                <a href="{% url 'login' %}" class="btn-outline-glass px-4 py-3" style="font-size: 1rem;">
-                    <i class="fa-solid fa-shield-halved me-1"></i> Access Dashboard
+                <a href="{% url 'login' %}" class="btn btn-outline-glass px-4 py-2 fw-semibold" style="font-size: 0.95rem;">
+                    Sign in to Dashboard
                 </a>
             </div>
 
@@ -710,31 +695,14 @@
             </div>
         </div>
 
-        <!-- Right Side: Candidate Competency Audit Terminal -->
+        <!-- Right Side: Candidate Match Preview -->
         <div class="col-lg-6">
-            <!-- System Telemetry Status Strip (Zero Overlap) -->
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3 px-1">
-                <div class="system-status-chip">
-                    <span class="badge rounded-circle p-1 bg-success d-inline-flex align-items-center justify-content-center" style="width: 18px; height: 18px;">
-                        <i class="fa-solid fa-check text-white" style="font-size: 0.55rem;"></i>
-                    </span>
-                    <span class="text-white small fw-bold">Live Skill Match Verified</span>
-                </div>
-                <div class="system-status-chip">
-                    <span class="badge rounded-circle p-1 bg-info d-inline-flex align-items-center justify-content-center" style="width: 18px; height: 18px;">
-                        <i class="fa-solid fa-bolt text-white" style="font-size: 0.55rem;"></i>
-                    </span>
-                    <span class="text-white small fw-bold">Algorithmic Gap Calculus Active</span>
-                </div>
-            </div>
-
             <div class="sim-card">
-                <!-- Simulation Top Header & Terminal Status -->
-                <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid rgba(255,255,255,0.08);">
+                <!-- Simulation Top Header -->
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom: 1px solid var(--sb-border);">
                     <div class="d-flex align-items-center gap-2">
-                        <span class="sim-pulse-dot"></span>
-                        <span class="fw-bold small text-white font-space">COMPETENCY AUDIT TERMINAL</span>
-                        <span class="badge rounded-pill bg-success-subtle text-success" style="font-size: 0.65rem;">Active Engine</span>
+                        <span class="fw-semibold small text-main font-space">Candidate Match Preview</span>
+                        <span class="badge bg-success-subtle text-success" style="font-size: 0.68rem;">Verified Sample</span>
                     </div>
 
                     <!-- Candidate Navigator & Play/Pause -->

@@ -1,0 +1,416 @@
+/* ==========================================================================
+   SKILLBRIDGE DESIGN SYSTEM — CLEAN EDITORIAL SAAS (LIGHT & DARK)
+   Eliminates generic AI glass/neon clutter in favor of crisp hierarchy,
+   restrained surfaces, hairline borders, and tabular typography.
+   ========================================================================== */
+
+:root,
+[data-bs-theme="dark"] {
+    --sb-canvas: #0b0d12;
+    --sb-surface: #12161f;
+    --sb-subtle: #181d29;
+    --sb-hover: rgba(255, 255, 255, 0.04);
+    --sb-input-bg: #0f131b;
+    --sb-border: rgba(255, 255, 255, 0.09);
+    --sb-border-strong: rgba(255, 255, 255, 0.16);
+    --sb-text: #f1f5f9;
+    --sb-muted: #94a3b8;
+    --sb-accent: #3b82f6;
+    --sb-accent-hover: #2563eb;
+    --sb-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    --bs-body-bg: var(--sb-canvas);
+    --bs-body-color: var(--sb-text);
+    --bs-card-bg: var(--sb-surface);
+    --bs-border-color: var(--sb-border);
+}
+
+[data-bs-theme="light"] {
+    --sb-canvas: #f8fafc;
+    --sb-surface: #ffffff;
+    --sb-subtle: #f1f5f9;
+    --sb-hover: rgba(15, 23, 42, 0.035);
+    --sb-input-bg: #ffffff;
+    --sb-border: #e2e8f0;
+    --sb-border-strong: #cbd5e1;
+    --sb-text: #0f172a;
+    --sb-muted: #475569;
+    --sb-accent: #2563eb;
+    --sb-accent-hover: #1d4ed8;
+    --sb-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+    --bs-body-bg: var(--sb-canvas);
+    --bs-body-color: var(--sb-text);
+    --bs-card-bg: var(--sb-surface);
+    --bs-border-color: var(--sb-border);
+}
+
+body {
+    background-color: var(--sb-canvas) !important;
+    color: var(--sb-text) !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6,
+.font-space {
+    font-family: 'Space Grotesk', 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+    letter-spacing: -0.025em;
+    color: var(--sb-text);
+}
+
+.text-main {
+    color: var(--sb-text) !important;
+}
+
+.text-secondary,
+.text-muted {
+    color: var(--sb-muted) !important;
+}
+
+/* Remove generic AI WebGL meshes, neon orbs, and rainbow accent bars */
+.hero-glow-orb,
+.dash-hero-glow,
+.hero-ascii-backdrop,
+#hero-gradient-ascii,
+.hero-ascii-fade,
+.sim-glow,
+.dash-hero-card::before,
+.recruiter-hero-card::before,
+.recruiter-hero-card::after,
+.hero-banner::before {
+    display: none !important;
+}
+
+/* Replace gradient-clipped AI heading text with clean sharp ink */
+.gradient-text,
+.gradient-text-enterprise,
+.gradient-text-vibrant,
+.gradient-text-emerald {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    -webkit-text-fill-color: currentColor !important;
+    color: var(--sb-text) !important;
+}
+
+/* Unify Primary Card & Section Surfaces */
+.card,
+.card-glass,
+.dash-hero-card,
+.kpi-glass-card,
+.recruiter-hero-card,
+.rec-kpi-card,
+.rec-glass-card,
+.profile-glass-card,
+.prof-kpi-card,
+.collab-glass-card,
+.collab-kpi-box,
+.admin-glass-card,
+.admin-kpi-card,
+.exam-glass-card,
+.result-glass-card,
+.assessment-glass-card,
+.gap-glass-card,
+.review-glass-card,
+.edit-glass-card,
+.form-glass-card,
+.sim-card,
+.proctor-hud-card,
+.proctor-setup-card,
+.hero-banner,
+.exam-sticky-header {
+    background: var(--sb-surface) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--sb-shadow) !important;
+    color: var(--sb-text) !important;
+}
+
+.card-hover:hover,
+.assessment-glass-card:hover,
+.prof-kpi-card:hover,
+.collab-kpi-box:hover,
+.admin-kpi-card:hover,
+.kpi-glass-card:hover,
+.rec-kpi-card:hover {
+    transform: none !important;
+    border-color: var(--sb-border-strong) !important;
+    box-shadow: var(--sb-shadow) !important;
+}
+
+/* Nested Sub-Cards & Inset Panels */
+.collab-item-card,
+.skill-glass-row,
+.project-glass-card,
+.review-item-card,
+.score-metric-box,
+.meta-tile,
+.readiness-hub,
+.sim-profile-box,
+.telemetry-dock,
+.exam-option-card,
+.proctor-step-box,
+.profile-inner-well,
+.explanation-callout,
+.hero-funnel-dock,
+.kpi-strip,
+.bg-light:not(.badge) {
+    background: var(--sb-subtle) !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 10px !important;
+    box-shadow: none !important;
+    color: var(--sb-text) !important;
+}
+
+.collab-item-card:hover,
+.exam-option-card:hover {
+    transform: none !important;
+    background: var(--sb-hover) !important;
+    border-color: var(--sb-border-strong) !important;
+}
+
+.exam-option-card.selected {
+    background: rgba(37, 99, 235, 0.1) !important;
+    border-color: var(--sb-accent) !important;
+    box-shadow: none !important;
+}
+
+/* Ensure legacy hero banners & cards adapt cleanly in both light & dark */
+[data-bs-theme="light"] .hero-banner .text-white,
+[data-bs-theme="light"] .dash-hero-card .text-white,
+[data-bs-theme="light"] .recruiter-hero-card .text-white,
+[data-bs-theme="light"] .rec-kpi-card .text-white,
+[data-bs-theme="light"] .kpi-glass-card .text-white,
+[data-bs-theme="light"] .sim-card .text-white,
+[data-bs-theme="light"] .card .text-white,
+[data-bs-theme="light"] .btn-outline-light {
+    color: var(--sb-text) !important;
+    border-color: var(--sb-border-strong) !important;
+}
+
+.btn-outline-glass {
+    background: var(--sb-surface) !important;
+    border: 1px solid var(--sb-border-strong) !important;
+    color: var(--sb-text) !important;
+    border-radius: 8px !important;
+}
+
+.btn-outline-glass:hover {
+    background: var(--sb-subtle) !important;
+}
+
+.hero-banner .text-white-50,
+.dash-hero-card .text-white-50,
+.recruiter-hero-card .text-white-50 {
+    color: var(--sb-muted) !important;
+}
+
+/* Restrained, Crisp Buttons (Zero Glow / Levitation) */
+.btn,
+.btn-primary-glow,
+.btn-gradient-primary,
+.btn-gradient-emerald,
+.btn-gradient-amber,
+.btn-hero-warning,
+.btn-white-pill {
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    font-weight: 500;
+    transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease !important;
+}
+
+.btn:hover,
+.btn-primary-glow:hover,
+.btn-gradient-primary:hover,
+.btn-gradient-emerald:hover,
+.btn-gradient-amber:hover {
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.btn-primary,
+.btn-primary-glow,
+.btn-gradient-primary {
+    background: var(--sb-accent) !important;
+    border: 1px solid var(--sb-accent) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary-glow:hover,
+.btn-gradient-primary:hover {
+    background: var(--sb-accent-hover) !important;
+    border-color: var(--sb-accent-hover) !important;
+}
+
+.btn-gradient-emerald {
+    background: #059669 !important;
+    border: 1px solid #059669 !important;
+    color: #ffffff !important;
+}
+
+.btn-gradient-amber,
+.btn-hero-warning {
+    background: #d97706 !important;
+    border: 1px solid #d97706 !important;
+    color: #ffffff !important;
+}
+
+.btn-white-pill {
+    background: var(--sb-text) !important;
+    color: var(--sb-canvas) !important;
+    border: 1px solid var(--sb-text) !important;
+}
+
+/* Calm Status Chips & Remove Constant AI Pulsing Animations */
+.beacon-pulse,
+.beacon-pulse-dot,
+.sim-pulse-dot {
+    animation: none !important;
+    box-shadow: none !important;
+}
+
+.gov-badge,
+.float-badge-dash,
+.skills-beacon-badge,
+.skills-verified-pill,
+.collab-beacon-badge,
+.admin-beacon-badge,
+.verified-badge {
+    background: var(--sb-subtle) !important;
+    border: 1px solid var(--sb-border) !important;
+    color: var(--sb-muted) !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.hires-pill {
+    background: var(--sb-accent) !important;
+    box-shadow: none !important;
+    border-radius: 6px !important;
+}
+
+/* KPI Icon Containers (Clean Muted Monochrome/Accent Tint) */
+.kpi-icon,
+.kpi-icon-pill {
+    border-radius: 8px !important;
+    box-shadow: none !important;
+}
+
+/* Tables & Tabular Numbers */
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--sb-text);
+    --bs-table-hover-bg: var(--sb-hover);
+    --bs-table-border-color: var(--sb-border);
+    color: var(--sb-text) !important;
+}
+
+.table thead th,
+.table-light,
+.table-light > th,
+.table-light > td,
+.admin-table thead th {
+    background-color: var(--sb-subtle) !important;
+    color: var(--sb-muted) !important;
+    border-color: var(--sb-border) !important;
+}
+
+.table tbody td,
+.admin-table tbody td {
+    border-color: var(--sb-border) !important;
+    color: var(--sb-text) !important;
+}
+
+.admin-table-wrap {
+    background: transparent !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 10px !important;
+}
+
+.audit-kpi-card,
+.prof-kpi-card,
+.collab-kpi-box,
+.admin-kpi-card,
+.kpi-glass-card {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Form Controls */
+.form-control,
+.form-select {
+    background-color: var(--sb-input-bg) !important;
+    border: 1px solid var(--sb-border-strong) !important;
+    color: var(--sb-text) !important;
+    border-radius: 8px !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--sb-accent) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14) !important;
+}
+
+/* Tabs & Navigation Pills */
+.collab-tabs-nav {
+    background: var(--sb-subtle) !important;
+    border: 1px solid var(--sb-border) !important;
+    border-radius: 10px !important;
+    padding: 4px !important;
+}
+
+.collab-tabs-nav .nav-link {
+    border-radius: 7px !important;
+    color: var(--sb-muted) !important;
+    font-weight: 500 !important;
+}
+
+.collab-tabs-nav .nav-link.active {
+    background: var(--sb-surface) !important;
+    color: var(--sb-text) !important;
+    border: 1px solid var(--sb-border) !important;
+    box-shadow: var(--sb-shadow) !important;
+    font-weight: 600 !important;
+}
+
+[data-bs-theme="light"] .kpi-strip .text-white,
+[data-bs-theme="light"] .sim-card .text-white,
+[data-bs-theme="light"] .sim-counter .current {
+    color: var(--sb-text) !important;
+}
+
+.sim-nav-btn {
+    background: var(--sb-subtle) !important;
+    border: 1px solid var(--sb-border) !important;
+    color: var(--sb-muted) !important;
+    border-radius: 6px !important;
+}
+
+.sim-nav-btn:hover {
+    color: var(--sb-text) !important;
+    background: var(--sb-hover) !important;
+}
+
+/* Footer Polish */
+footer {
+    background: var(--sb-surface) !important;
+    border-top: 1px solid var(--sb-border) !important;
+    color: var(--sb-muted) !important;
+}
+
+footer .text-white,
+footer .text-white-50 {
+    color: var(--sb-muted) !important;
+}
+
+footer .fw-bold.text-white {
+    color: var(--sb-text) !important;
+}
